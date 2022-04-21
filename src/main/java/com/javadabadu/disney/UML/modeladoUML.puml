@@ -29,6 +29,13 @@ enum TipoPersonaje {
     REAL
 }
 
+enum CalificiacionPelicula {
+    UNO
+    DOS
+    TRES
+    CUATRO
+    CINCO
+}
 
 
 @enduml
