@@ -9,6 +9,4 @@ public class Pelicula {
     private LocalDate fechaCreacion;
     private byte calificacion;
     private List<Personaje> personajes;
-
-
 }

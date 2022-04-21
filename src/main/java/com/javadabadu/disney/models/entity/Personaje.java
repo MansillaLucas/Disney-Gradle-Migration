@@ -10,7 +10,4 @@ public class Personaje {
     private float peso;
     private TipoPersonaje tipo;
     private List<Pelicula> peliculas;
-
-
-
 }

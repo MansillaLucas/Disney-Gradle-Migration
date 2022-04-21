@@ -6,5 +6,4 @@ public class Genero {
      private String  nombre;
      private String imagen;
      private List<Pelicula> peliculas;
-
 }
