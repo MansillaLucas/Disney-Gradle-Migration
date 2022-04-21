@@ -1,0 +1,41 @@
+@startuml
+Personaje "many" -- "many" Pelicula
+Genero  "0"--> "many" Pelicula
+
+ class Personaje {
+    - String nombre;
+    - int edad;
+    - String historia;
+    - String imagen;
+    - float peso;
+    - TipoPersonaje tipo;
+}
+
+ class Genero {
+     - String  nombre;
+     - String imagen;
+}
+
+ class Pelicula {
+    - String titulo;
+    - String imagen;
+    - LocalDate fechaCreacion;
+    - byte calificacion;
+}
+
+
+enum TipoPersonaje {
+    ANIMADO
+    REAL
+}
+
+enum CalificiacionPelicula {
+    UNO
+    DOS
+    TRES
+    CUATRO
+    CINCO
+}
+
+
+@enduml
