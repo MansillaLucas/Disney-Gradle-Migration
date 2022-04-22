@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.management.Query;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,5 +38,5 @@ public class Personaje {
     private boolean estado;
 
     @ManyToMany(mappedBy="personajes")
-    private List<Pelicula> peliculas;
+    private List<Pelicula> peliculas = new ArrayList<>();
 }

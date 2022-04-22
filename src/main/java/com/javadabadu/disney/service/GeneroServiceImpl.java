@@ -36,7 +36,7 @@ public class GeneroServiceImpl implements GeneroService{
     @Override
     @Transactional(readOnly = true)
     public Integer lastValueId() {
-        return lastValueId();
+        return generoRepository.lastValueId();
     }
 
     @Override

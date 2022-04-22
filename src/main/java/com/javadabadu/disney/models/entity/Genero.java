@@ -3,6 +3,7 @@ package com.javadabadu.disney.models.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,5 +21,5 @@ public class Genero {
      private String imagen;
 
      @OneToMany(mappedBy = "genero")
-     private List<Pelicula> peliculas;
+     private List<Pelicula> peliculas = new ArrayList<>();
 }
