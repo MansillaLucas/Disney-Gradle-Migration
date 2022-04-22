@@ -1,5 +1,10 @@
 package com.javadabadu.disney.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +60,26 @@ public class GeneroController {
                     return generoService.save(genero);
                 })
         );
+    }
+
+    @PatchMapping(path = "/patch/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonPatch patch) {
+        try {
+            Genero generoSearch = generoService.findById(id).orElseThrow(()-> new Exception());
+            Genero generoPatched = applyPatchToCustomer(patch, generoSearch);
+            generoService.save(generoPatched);
+            return ResponseEntity.ok(generoPatched);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    private Genero applyPatchToCustomer(JsonPatch patch, Genero targetGenero) throws JsonPatchException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetGenero, JsonNode.class));
+        return objectMapper.treeToValue(patched, Genero.class);
     }
 
 }
