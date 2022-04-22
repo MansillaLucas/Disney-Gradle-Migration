@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -42,5 +43,5 @@ public class Pelicula {
                     @JoinColumn(name = "id_personaje")},
             inverseJoinColumns = {
                     @JoinColumn(name = "id_pelicula")})
-    private List<Personaje> personajes;
+    private List<Personaje> personajes = new ArrayList<>();
 }

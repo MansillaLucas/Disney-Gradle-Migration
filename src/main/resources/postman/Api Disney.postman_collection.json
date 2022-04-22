@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "9159519c-a5c7-460d-be97-d251be6fd117",
+		"name": "Api Disney",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Genero : last id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const URI_NEXT_RESOURCE = pm.response.headers.get(\"Location\");\r",
+							"console.log(URI_NEXT_RESOURCE)\r",
+							"postman.setEnvironmentVariable(\"uri_next_resource\", URI_NEXT_RESOURCE); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero : create",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'localhost:8080/api/v1/generos/',\r",
+							"    method: 'POST',\r",
+							"    body: {}\r",
+							"    }, function (err, res) {\r",
+							"            const URI_NEXT_RESOURCE = res.headers.get(\"Location\");\r",
+							"            postman.setEnvironmentVariable(\"uri_next_resource\", URI_NEXT_RESOURCE); \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imagen\": \"/imagen/a\",\r\n    \"nombre\": \"Antiguo\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri_next_resource}}",
+					"host": [
+						"{{uri_next_resource}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero : Update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imagen\": \"/imagen/s\",\r\n    \"nombre\": \"Ciencia ficción\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
