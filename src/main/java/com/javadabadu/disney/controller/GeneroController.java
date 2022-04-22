@@ -62,7 +62,7 @@ public class GeneroController {
         );
     }
 
-    @PatchMapping(path = "/patch/{id}", consumes = "application/json-patch+json")
+    @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonPatch patch) {
         try {
             Genero generoSearch = generoService.findById(id).orElseThrow(()-> new Exception());
