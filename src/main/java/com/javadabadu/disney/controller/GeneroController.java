@@ -3,8 +3,8 @@ package com.javadabadu.disney.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
+import com.flipkart.zjsonpatch.JsonPatch;
+import com.flipkart.zjsonpatch.JsonPatchApplicationException;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,25 +65,32 @@ public class GeneroController {
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonPatch patch) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {
         try {
-            Genero generoSearch = generoService.findById(id).orElseThrow(()-> new Exception());
-            Genero generoPatched = applyPatchToCustomer(patch, generoSearch);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            //Genero generoSearch = generoService.findById(id).orElseThrow(()-> new Exception());
+            JsonNode generoSearchedNode = objectMapper.convertValue(generoService.findById(id).orElseThrow(()-> new Exception()), JsonNode.class);
+
+            //JsonNode target = JsonPatch.apply(patch, generoSearchNode);
+
+            Genero generoPatched = objectMapper.treeToValue(JsonPatch.apply(patch, generoSearchedNode), Genero.class);
+
             generoService.save(generoPatched);
             return ResponseEntity.ok(generoPatched);
-        } catch (JsonPatchException | JsonProcessingException e) {
+        } catch (JsonPatchApplicationException | JsonProcessingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    private Genero applyPatchToCustomer(JsonPatch patch, Genero targetGenero) throws JsonPatchException, JsonProcessingException {
+ /*   private Genero applyPatchToCustomer(JsonPatch patch, Genero targetGenero) throws JsonPatchException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode patched = patch.apply(objectMapper.convertValue(targetGenero, JsonNode.class));
         return objectMapper.treeToValue(patched, Genero.class);
     }
-
+*/
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete( @PathVariable Integer id){
         return ResponseEntity.ok().body(generoService.findById(id)

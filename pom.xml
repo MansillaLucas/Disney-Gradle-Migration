@@ -62,12 +62,18 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.12.6.1</version>
 		</dependency>
-
 		<dependency>
+			<groupId>com.flipkart.zjsonpatch</groupId>
+			<artifactId>zjsonpatch</artifactId>
+			<version>0.4.12</version>
+		</dependency>
+
+
+		<!--<dependency>
 			<groupId>com.github.java-json-tools</groupId>
 			<artifactId>json-patch</artifactId>
 			<version>1.13</version>
-		</dependency>
+		</dependency>-->
 	</dependencies>
 
 	<build>
