@@ -54,4 +54,5 @@ public class GeneroServiceImpl implements GeneroService{
     public Boolean softDelete(Integer id) {
         return generoRepository.changeStatus(id);
     }
+
 }

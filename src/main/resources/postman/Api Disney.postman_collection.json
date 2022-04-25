@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9159519c-a5c7-460d-be97-d251be6fd117",
+		"_postman_id": "7b02b8e2-dac3-4499-aa79-931d2b574693",
 		"name": "Api Disney",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -115,6 +115,47 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"imagen\": \"/imagen/s\",\r\n    \"nombre\": \"Ciencia ficción\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero :  Partial Update",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json-patch+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n      \"op\":\"replace\",\r\n      \"path\":\"/nombre\",\r\n      \"value\":\"Comedia\"\r\n    },\r\n     {\r\n      \"op\":\"replace\",\r\n      \"path\":\"/imagen\",\r\n      \"value\":\"foto\"\r\n    }\r\n]\r\n   \r\n",
 					"options": {
 						"raw": {
 							"language": "json"
