@@ -20,6 +20,9 @@ public class Genero {
      @Column(nullable = false, length = 132)
      private String imagen;
 
+     @Column(nullable = false )
+     private Boolean alta ;
+
      @OneToMany(mappedBy = "genero")
      private List<Pelicula> peliculas = new ArrayList<>();
 }

@@ -49,11 +49,13 @@ public class GeneroController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id){
+        public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id){
         return ResponseEntity.ok().body(generoService.findById(id)
                 .map(generoUpdate -> {
+
                     generoUpdate.setNombre(genero.getNombre());
                     generoUpdate.setImagen(genero.getImagen());
+                    generoUpdate.setAlta(true);
                     return generoService.save(generoUpdate);
                 })
                 .orElseGet(() -> {
@@ -80,6 +82,16 @@ public class GeneroController {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode patched = patch.apply(objectMapper.convertValue(targetGenero, JsonNode.class));
         return objectMapper.treeToValue(patched, Genero.class);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete( @PathVariable Integer id){
+        return ResponseEntity.ok().body(generoService.findById(id)
+                .map(generoUpdate -> {
+                    generoUpdate.setAlta(false);
+                    return generoService.save(generoUpdate);
+                })
+        );
     }
 
 }
