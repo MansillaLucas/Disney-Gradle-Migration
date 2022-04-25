@@ -34,7 +34,7 @@ public class Pelicula {
     private CalificacionPelicula calificacion;
 
     @ManyToOne
-    @JoinColumn(name = "fk_genero")
+    @JoinColumn(name = "fk_genero" ,nullable = false)
     private Genero genero;
 
     @ManyToMany
