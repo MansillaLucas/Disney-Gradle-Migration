@@ -1,6 +1,6 @@
 @startuml
 Personaje "many" -- "many" Pelicula
-Genero  "0"--> "many" Pelicula
+Genero  "1" --> "many" Pelicula
 
  class Personaje {
     - String nombre;
