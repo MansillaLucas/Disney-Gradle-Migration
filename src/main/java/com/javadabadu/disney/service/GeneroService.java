@@ -11,5 +11,5 @@ public interface GeneroService {
     Genero save(Genero genero);
     Integer lastValueId();
     Genero update(Genero genero, Integer id);
-    Boolean softDelete(Integer id);
+    String softDelete(Integer id);
 }

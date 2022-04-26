@@ -85,13 +85,8 @@ public class GeneroController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete( @PathVariable Integer id){
-        return ResponseEntity.ok().body(generoService.findById(id)
-                .map(generoUpdate -> {
-                    generoUpdate.setAlta(false);
-                    return generoService.save(generoUpdate);
-                })
-        );
+    public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).orElseThrow(Exception::new).getId()));
     }
 
 }

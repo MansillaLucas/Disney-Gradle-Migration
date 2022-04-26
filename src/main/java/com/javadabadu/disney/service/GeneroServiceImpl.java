@@ -51,8 +51,11 @@ public class GeneroServiceImpl implements GeneroService{
 
     @Override
     @Transactional
-    public Boolean softDelete(Integer id) {
-        return generoRepository.changeStatus(id);
+    public String softDelete(Integer id) {
+        if (generoRepository.softDelete(id)) {
+            return "Se elimino el genero seleccionado";
+        } else  return "Error en la transaccion contacte con su ADMI"
+        ;
     }
 
 }
