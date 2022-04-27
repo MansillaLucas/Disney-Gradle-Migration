@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.JsonPatch;
 import com.flipkart.zjsonpatch.JsonPatchApplicationException;
+import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,9 @@ public class GeneroController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
         try {
-            return ResponseEntity.ok().body(generoService.findById(id).orElseThrow());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.ok().body(generoService.findById(id));
+        } catch (ExceptionBBDD e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(),"api/v1/generos/"+id, HttpStatus.NOT_FOUND.value()));
         }
     }
 
@@ -41,7 +43,7 @@ public class GeneroController {
         return ResponseEntity.created(URI.create("localhost:8080/api/v1/generos/" + generoService.lastValueId())).body("se creo un registro");
     }
 
-    @PutMapping("/{id}")
+/*    @PutMapping("/{id}")
     public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id) {
         return ResponseEntity.ok().body(generoService.findById(id)
                 .map(generoUpdate -> {
@@ -53,12 +55,12 @@ public class GeneroController {
                 })
                 .orElseGet(() -> generoService.save(genero))
         );
-    }
+    }*/
 
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {
         try {
-            Genero searchedGenero = generoService.findById(id).orElseThrow(() -> new Exception());
+            Genero searchedGenero = generoService.findById(id);
 
             searchedGenero = patchGenero(searchedGenero, patch);
             generoService.save(searchedGenero);
@@ -74,7 +76,7 @@ public class GeneroController {
     @DeleteMapping("/{id}")
 
     public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
-        return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).orElseThrow(Exception::new).getId()));
+        return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
 
     }
 

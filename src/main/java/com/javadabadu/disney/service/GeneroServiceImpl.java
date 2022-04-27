@@ -1,5 +1,6 @@
 package com.javadabadu.disney.service;
 
+import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.repository.GeneroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GeneroServiceImpl implements GeneroService{
+public class GeneroServiceImpl implements GeneroService {
 
     @Autowired
     private GeneroRepository generoRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Genero> findById(Integer id) {
-        return generoRepository.findById(id);
+    public Genero findById(Integer id) throws ExceptionBBDD {
+        return generoRepository.findById(id).orElseThrow(()-> new ExceptionBBDD("No se encontro el registro con ese id"));
     }
 
     @Override
@@ -54,8 +55,9 @@ public class GeneroServiceImpl implements GeneroService{
     public String softDelete(Integer id) {
         if (generoRepository.softDelete(id)) {
             return "Se elimino el genero seleccionado";
-        } else  return "Error en la transaccion contacte con su ADMI"
-        ;
+        }
+        return "Error en la transaccion contacte con su ADMI";
+
     }
 
 }
