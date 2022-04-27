@@ -29,10 +29,6 @@ public class GeneroController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Integer id) {
-//        if(generoService.findById(id).isPresent()){
-//            return ResponseEntity.ok().body(generoService.findById(id).get());
-//        }
-//        return ResponseEntity.ok().body("No se encontro");
         try {
             return ResponseEntity.ok().body(generoService.findById(id).orElseThrow());
         } catch (Exception e) {
@@ -62,14 +58,9 @@ public class GeneroController {
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
             Genero searchedGenero = generoService.findById(id).orElseThrow(() -> new Exception());
-            JsonNode searchedGeneroNode = objectMapper.convertValue(searchedGenero, JsonNode.class);
 
-            JsonNode patchedGeneroNode = JsonPatch.apply(patch, searchedGeneroNode); // [Parcheo]
-            searchedGenero = objectMapper.treeToValue(patchedGeneroNode, Genero.class);
-
+            searchedGenero = patchGenero(searchedGenero, patch);
             generoService.save(searchedGenero);
             return ResponseEntity.ok(searchedGenero);
 
@@ -86,4 +77,17 @@ public class GeneroController {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).orElseThrow(Exception::new).getId()));
 
     }
+
+    private Genero patchGenero(Genero generoToPatch, JsonNode patch) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode searchedGeneroNode = objectMapper.convertValue(generoToPatch, JsonNode.class);
+
+        JsonNode patchedGeneroNode = JsonPatch.apply(patch, searchedGeneroNode); // [Parcheo]
+        generoToPatch = objectMapper.treeToValue(patchedGeneroNode, Genero.class);
+
+        return generoToPatch;
+    }
+
+
 }
