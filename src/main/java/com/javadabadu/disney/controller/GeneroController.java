@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -75,8 +76,25 @@ public class GeneroController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping(path = "/v2/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateCustomer2(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Genero searchedGenero = generoService.findById(id);
+            Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGenero, Map.class);
+            propiedades.forEach((k, v) -> {
+                if (searchedGeneroMap.containsKey(k)) {
+                    searchedGeneroMap.replace(k, searchedGeneroMap.get(k), v);
+                }
+            });
+            searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
+            return ResponseEntity.status(HttpStatus.OK).body(generoService.save(searchedGenero));
+        } catch (ExceptionBBDD ebd) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), "acá va el path", HttpStatus.NOT_FOUND.value()));
+        }
+    }
 
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
 
