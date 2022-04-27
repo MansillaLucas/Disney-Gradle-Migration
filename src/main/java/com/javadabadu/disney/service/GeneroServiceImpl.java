@@ -24,7 +24,7 @@ public class GeneroServiceImpl implements GeneroService {
     @Override
     @Transactional(readOnly = true)
     public Genero findById(Integer id) throws ExceptionBBDD {
-        return generoRepository.findById(id).orElseThrow(()-> new ExceptionBBDD(message.getMessage("id.not.found", null, Locale.US)));
+        return generoRepository.findById(id).orElseThrow(()-> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
     }
 
     @Override
