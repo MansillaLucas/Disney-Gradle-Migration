@@ -4,10 +4,12 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.repository.GeneroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -16,10 +18,13 @@ public class GeneroServiceImpl implements GeneroService {
     @Autowired
     private GeneroRepository generoRepository;
 
+    @Autowired
+    private MessageSource message;
+
     @Override
     @Transactional(readOnly = true)
     public Genero findById(Integer id) throws ExceptionBBDD {
-        return generoRepository.findById(id).orElseThrow(()-> new ExceptionBBDD("No se encontro el registro con ese id"));
+        return generoRepository.findById(id).orElseThrow(()-> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
     }
 
     @Override
