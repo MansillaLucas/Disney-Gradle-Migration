@@ -11,31 +11,33 @@ import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("api/v1/generos")
+@RequestMapping(value = "api/v1/generos")
 public class GeneroController {
 
     @Autowired
     private GeneroService generoService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok().body(generoService.findAll());
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Integer id) {
+    public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
             return ResponseEntity.ok().body(generoService.findById(id));
         } catch (ExceptionBBDD e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(),"api/v1/generos/"+id, HttpStatus.NOT_FOUND.value()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(),request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
+    }
+
+    @GetMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok().body(generoService.findAll());
     }
 
     @PostMapping("/")
