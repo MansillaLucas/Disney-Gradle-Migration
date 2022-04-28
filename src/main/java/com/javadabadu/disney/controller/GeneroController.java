@@ -62,23 +62,7 @@ public class GeneroController {
         return ResponseEntity.ok().body(generoService.save(genero));
     }
 
-    @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {
-        try {
-            Genero searchedGenero = generoService.findById(id);
-
-            searchedGenero = patchGenero(searchedGenero, patch);
-            generoService.save(searchedGenero);
-            return ResponseEntity.ok(searchedGenero);
-
-        } catch (JsonPatchApplicationException | JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    @PatchMapping(path = "/v2/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCustomer2(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -101,17 +85,5 @@ public class GeneroController {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
 
     }
-
-    private Genero patchGenero(Genero generoToPatch, JsonNode patch) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode searchedGeneroNode = objectMapper.convertValue(generoToPatch, JsonNode.class);
-
-        JsonNode patchedGeneroNode = JsonPatch.apply(patch, searchedGeneroNode); // [Parcheo]
-        generoToPatch = objectMapper.treeToValue(patchedGeneroNode, Genero.class);
-
-        return generoToPatch;
-    }
-
 
 }
