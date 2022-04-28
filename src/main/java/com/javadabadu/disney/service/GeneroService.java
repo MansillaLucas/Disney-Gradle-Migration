@@ -4,7 +4,6 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Genero;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface GeneroService {
     Genero findById(Integer id) throws ExceptionBBDD;
@@ -13,4 +12,6 @@ public interface GeneroService {
     Integer lastValueId();
     Genero update(Genero genero, Integer id);
     String softDelete(Integer id);
+
+    Boolean existsById(Integer id);
 }

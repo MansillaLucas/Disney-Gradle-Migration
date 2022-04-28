@@ -9,6 +9,7 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "api/v1/generos")
@@ -42,23 +44,23 @@ public class GeneroController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> lastId() {
-        return ResponseEntity.created(URI.create("localhost:8080/api/v1/generos/" + generoService.lastValueId())).body("se creo un registro");
+    public ResponseEntity<?> lastId(HttpServletRequest request) {
+        return ResponseEntity.created(URI.create(request.getRequestURI() + generoService.lastValueId())).body("se creo un registro");
     }
 
-/*    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id) {
-        return ResponseEntity.ok().body(generoService.findById(id)
-                .map(generoUpdate -> {
-
-                    generoUpdate.setNombre(genero.getNombre());
-                    generoUpdate.setImagen(genero.getImagen());
-                    generoUpdate.setAlta(true);
-                    return generoService.save(generoUpdate);
-                })
-                .orElseGet(() -> generoService.save(genero))
-        );
-    }*/
+        Genero source = null;
+        try {
+            source = generoService.findById(id);
+            genero.setImagen(source.getImagen());
+            genero.setPeliculas(source.getPeliculas());
+        } catch (ExceptionBBDD e) {
+            genero.setId(id);
+            genero.setAlta(true);
+        }
+        return ResponseEntity.ok().body(generoService.save(genero));
+    }
 
     @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {

@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Service
 public class GeneroServiceImpl implements GeneroService {
@@ -63,6 +62,11 @@ public class GeneroServiceImpl implements GeneroService {
         }
         return "Error en la transaccion contacte con su ADMI";
 
+    }
+
+    @Override
+    public Boolean existsById(Integer id) {
+        return generoRepository.existsById(id);
     }
 
 }
