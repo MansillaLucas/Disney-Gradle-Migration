@@ -9,7 +9,7 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
-import lombok.extern.slf4j.Slf4j;
+import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Map;
 
-@Slf4j
+
 @RestController
 @CrossOrigin("*")
-@RequestMapping(value = "api/v1/generos")
+@RequestMapping(value = Uri.generos)
 public class GeneroController {
 
     @Autowired
@@ -66,7 +66,6 @@ public class GeneroController {
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody JsonNode patch) {
         try {
             Genero searchedGenero = generoService.findById(id);
-
             searchedGenero = patchGenero(searchedGenero, patch);
             generoService.save(searchedGenero);
             return ResponseEntity.ok(searchedGenero);
