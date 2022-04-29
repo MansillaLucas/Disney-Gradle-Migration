@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping(value = Uri.generos)
+@RequestMapping(value = Uri.GENEROS)
 public class GeneroController {
 
     @Autowired

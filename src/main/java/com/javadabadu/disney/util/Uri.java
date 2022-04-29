@@ -1,8 +1,8 @@
 package com.javadabadu.disney.util;
 
 public class Uri {
-    private final static String pathBase = "api/v1/";
-    public final static String generos = pathBase + "/generos";
-    public final static String peliculas = pathBase + "/movies";
-    public final static String persones = pathBase + "/characters";
+    private final static String PATH_BASE = "api/v1/";
+    public final static String GENEROS = PATH_BASE + "/generos";
+    public final static String PELICULAS = PATH_BASE + "/movies";
+    public final static String PERSONAJES = PATH_BASE + "/characters";
 }
