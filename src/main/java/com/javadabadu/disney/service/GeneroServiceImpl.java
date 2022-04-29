@@ -34,8 +34,8 @@ public class GeneroServiceImpl implements GeneroService {
 
     @Override
     @Transactional
-    public Genero save(Genero genero) {
-        return generoRepository.save(genero);
+    public Genero save(Genero genero , Integer id) throws ExceptionBBDD {
+        return responseBBDD(generoRepository.create(id, genero.getNombre(),genero.getImagen()),id);
     }
 
     @Override
@@ -46,12 +46,10 @@ public class GeneroServiceImpl implements GeneroService {
 
     @Override
     @Transactional
-    public Genero update(Genero genero, Integer id) {
-        Genero generoEncontrado = generoRepository.findById(id).orElseThrow();
-        generoEncontrado.setImagen(genero.getImagen());
-        generoEncontrado.setNombre(genero.getNombre());
+    public Genero update(Genero genero) throws ExceptionBBDD {
+        String response =generoRepository.update(genero.getId(), genero.getNombre(),genero.getImagen());
+        return responseBBDD(response, genero.getId());
 
-        return save(generoEncontrado);
     }
 
     @Override
@@ -69,4 +67,17 @@ public class GeneroServiceImpl implements GeneroService {
         return generoRepository.existsById(id);
     }
 
+    @Override
+    public Genero responseBBDD(String response, Integer id) throws ExceptionBBDD{
+        responseBBDDOk(response);
+        System.out.println(findById(id));
+        System.out.println(" <<<<<<<<<<<<<<<<<<<<<<<REPOSITORI!!!!!!!!!!!! ");
+        System.out.println(generoRepository.findById(id).get());
+        return generoRepository.findById(id).get();
+    }
+    private void responseBBDDOk(String response) throws ExceptionBBDD {
+        if (!response.contains("Se creo correctamente") && !response.contains("Se modifico correctamente")) {
+            throw new ExceptionBBDD(response);
+        }
+    }
 }

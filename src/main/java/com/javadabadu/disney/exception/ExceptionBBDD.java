@@ -1,6 +1,9 @@
 package com.javadabadu.disney.exception;
 
-public class ExceptionBBDD extends Exception{
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+public class ExceptionBBDD extends Exception  {
+
     public ExceptionBBDD() {
     }
 
