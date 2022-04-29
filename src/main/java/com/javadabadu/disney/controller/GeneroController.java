@@ -29,7 +29,7 @@ public class GeneroController {
     @Autowired
     private GeneroService generoService;
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
             return ResponseEntity.ok().body(generoService.findById(id));
@@ -38,7 +38,7 @@ public class GeneroController {
         }
     }
 
-    @GetMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(generoService.findAll());
     }
@@ -63,7 +63,7 @@ public class GeneroController {
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateCustomer2(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades) {
+    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Genero searchedGenero = generoService.findById(id);
@@ -76,11 +76,11 @@ public class GeneroController {
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
             return ResponseEntity.status(HttpStatus.OK).body(generoService.save(searchedGenero));
         } catch (ExceptionBBDD ebd) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), "acá va el path", HttpStatus.NOT_FOUND.value()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
 

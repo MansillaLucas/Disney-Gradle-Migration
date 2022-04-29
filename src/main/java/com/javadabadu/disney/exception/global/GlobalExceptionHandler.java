@@ -3,7 +3,9 @@ package com.javadabadu.disney.exception.global;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -20,7 +22,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({HttpMediaTypeNotSupportedException.class})
     public ResponseEntity<?> MediaTypeNotSupportedException(HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO("MediaType inválido", request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(new ResponseInfoDTO("MediaType inválido", request.getRequestURI(), HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()));
+    }
+
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    public ResponseEntity<?> MethodNotSupportedException(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ResponseInfoDTO("Método no soportado para el path correspondiente", request.getRequestURI(), HttpStatus.METHOD_NOT_ALLOWED.value()));
     }
 
 }
