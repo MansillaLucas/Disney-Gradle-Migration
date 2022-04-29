@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Map;
 
-@Slf4j
+
 @RestController
 @CrossOrigin("*")
-@RequestMapping(value = "api/v1/generos")
+@RequestMapping(value = Uri.GENEROS)
 public class GeneroController {
 
     @Autowired
