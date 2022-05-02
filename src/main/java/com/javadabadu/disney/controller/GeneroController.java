@@ -71,11 +71,13 @@ public class GeneroController {
             source.setAlta(genero.getAlta());
             source.setImagen(genero.getImagen());
             source.setPeliculas(genero.getPeliculas());
-            return ResponseEntity.ok().body(EntityModel.of(generoService.save(source), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
+            return ResponseEntity.ok().body(EntityModel.of(generoService.save(source), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(),
+                    linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
             genero.setId(id);
             genero.setAlta(genero.getAlta());
-            return ResponseEntity.ok().body(EntityModel.of(generoService.save(genero), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
+            return ResponseEntity.ok().body(EntityModel.of(generoService.save(genero), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(),
+                    linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
 
         }
 
