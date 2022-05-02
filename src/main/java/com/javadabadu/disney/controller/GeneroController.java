@@ -7,15 +7,24 @@ import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import com.javadabadu.disney.util.Uri;
+import org.hibernate.EntityMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.parser.Entity;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
@@ -29,15 +38,23 @@ public class GeneroController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok().body(generoService.findById(id));
+            Genero genero = generoService.findById(id);
+
+            return ResponseEntity.ok().body(EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(),
+                    linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(),request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
     }
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok().body(generoService.findAll());
+    public ResponseEntity<?> findAll(HttpServletRequest request) {
+        List<EntityModel<Genero>> generos = generoService.findAll().stream().map(genero -> EntityModel.of(genero,
+                        linkTo(methodOn(GeneroController.class).findById(genero.getId(), request)).withSelfRel()))
+                .collect(Collectors.toList());
+
+
+        return ResponseEntity.ok().body(CollectionModel.of(generos, linkTo(methodOn(GeneroController.class).findAll(request)).withSelfRel()));
     }
 
     @PostMapping("/")
@@ -46,17 +63,22 @@ public class GeneroController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id) {
+    public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id, HttpServletRequest request) {
         Genero source = null;
         try {
             source = generoService.findById(id);
-            genero.setImagen(source.getImagen());
-            genero.setPeliculas(source.getPeliculas());
+            source.setNombre(genero.getNombre());
+            source.setAlta(genero.getAlta());
+            source.setImagen(genero.getImagen());
+            source.setPeliculas(genero.getPeliculas());
+            return ResponseEntity.ok().body(EntityModel.of(generoService.save(source), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
         } catch (ExceptionBBDD e) {
             genero.setId(id);
             genero.setAlta(true);
+            return ResponseEntity.ok().body(EntityModel.of(generoService.save(genero), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
+
         }
-        return ResponseEntity.ok().body(generoService.save(genero));
+
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,14 +93,14 @@ public class GeneroController {
                 }
             });
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
-            return ResponseEntity.status(HttpStatus.OK).body(generoService.save(searchedGenero));
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoService.save(searchedGenero), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
+    public ResponseEntity<?> delete(@PathVariable Integer id) throws Exception {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
 
     }
