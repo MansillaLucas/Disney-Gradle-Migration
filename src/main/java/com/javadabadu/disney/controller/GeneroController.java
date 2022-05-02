@@ -7,6 +7,7 @@ import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.service.GeneroService;
 import com.javadabadu.disney.util.Uri;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,24 +47,21 @@ public class GeneroController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id) {
-        Genero source = null;
+    public ResponseEntity<?> create(@RequestBody Genero genero, @PathVariable Integer id, HttpServletRequest request) {
         try {
-            source = generoService.findById(id);
-            genero.setImagen(source.getImagen());
-            genero.setPeliculas(source.getPeliculas());
-        } catch (ExceptionBBDD e) {
-            genero.setId(id);
-            genero.setAlta(true);
+            return ResponseEntity.ok().body(generoService.save(genero, id));
+        } catch (ExceptionBBDD ebd) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(ebd.getMessage(),request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.ok().body(generoService.save(genero));
     }
 
-    @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
+   @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Genero searchedGenero = generoService.findById(id);
+
+            System.out.println(searchedGenero.hashCode());
             Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGenero, Map.class);
             propiedades.forEach((k, v) -> {
                 if (searchedGeneroMap.containsKey(k)) {
@@ -71,11 +69,14 @@ public class GeneroController {
                 }
             });
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
-            return ResponseEntity.status(HttpStatus.OK).body(generoService.save(searchedGenero));
+            Genero generoNuevo=generoService.update(searchedGenero);
+            return ResponseEntity.status(HttpStatus.OK).body(generoNuevo);
+
+
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
-        }
-    }
+
+    }}
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete( @PathVariable Integer id) throws Exception {
