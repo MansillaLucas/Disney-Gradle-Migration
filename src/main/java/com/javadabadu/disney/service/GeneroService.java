@@ -12,6 +12,6 @@ public interface GeneroService {
     Integer lastValueId();
     Genero update(Genero genero) throws ExceptionBBDD;
     String softDelete(Integer id);
-    Genero responseBBDD(String response, Integer id)throws ExceptionBBDD;
+    void responseBBDD(String response, Integer id)throws ExceptionBBDD;
     Boolean existsById(Integer id);
 }

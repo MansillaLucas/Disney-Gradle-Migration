@@ -60,6 +60,8 @@ public class GeneroController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             Genero searchedGenero = generoService.findById(id);
+
+            System.out.println(searchedGenero.hashCode());
             Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGenero, Map.class);
             propiedades.forEach((k, v) -> {
                 if (searchedGeneroMap.containsKey(k)) {
@@ -67,9 +69,9 @@ public class GeneroController {
                 }
             });
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
-            System.out.println(">>>>>>>>> CONTROLLER! ");
-            System.out.println(generoService.update(searchedGenero));
-            return ResponseEntity.status(HttpStatus.OK).body(generoService.update(searchedGenero));
+            Genero generoNuevo=generoService.update(searchedGenero);
+            return ResponseEntity.status(HttpStatus.OK).body(generoNuevo);
+
 
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
