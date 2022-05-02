@@ -74,7 +74,7 @@ public class GeneroController {
             return ResponseEntity.ok().body(EntityModel.of(generoService.save(source), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
         } catch (ExceptionBBDD e) {
             genero.setId(id);
-            genero.setAlta(true);
+            genero.setAlta(genero.getAlta());
             return ResponseEntity.ok().body(EntityModel.of(generoService.save(genero), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
 
         }
