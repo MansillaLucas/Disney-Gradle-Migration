@@ -62,13 +62,14 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Override
     public List<Personaje> filterCharacter(String name, Integer edad, Integer idMovie) {
-/*        if(name!=null){
-            return personajeRepository.findByNombre(name).orElseThrow();
+
+        if(name!=null){
+            return personajeRepository.findByNombre(name);
         }
         if(edad!=null){
-            return personajeRepository.findByEdad(edad).orElseThrow();
+            return personajeRepository.findByEdad(edad);
         }
-        if(idMovie!=null){
+/*        if(idMovie!=null){
             return
         }*/
         return Collections.emptyList();
