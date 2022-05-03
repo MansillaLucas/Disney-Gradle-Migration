@@ -35,7 +35,7 @@ public class Personaje {
     private TipoPersonaje tipo;
 
     @Column(nullable = false)
-    private boolean estado;
+    private boolean estado =true;
 
     @ManyToMany(mappedBy="personajes")
     private List<Pelicula> peliculas = new ArrayList<>();
