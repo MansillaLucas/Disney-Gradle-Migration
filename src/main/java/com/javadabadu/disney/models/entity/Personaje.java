@@ -2,7 +2,6 @@ package com.javadabadu.disney.models.entity;
 
 import lombok.Data;
 
-import javax.management.Query;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,7 @@ package com.javadabadu.disney.service;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Genero;
+import com.javadabadu.disney.models.entity.Personaje;
 
 import java.util.List;
 

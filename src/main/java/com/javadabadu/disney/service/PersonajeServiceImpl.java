@@ -6,6 +6,7 @@ import com.javadabadu.disney.repository.PersonajeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,7 +31,6 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Override
     public Personaje findById(Integer id) throws ExceptionBBDD {
-
         return personajeRepository.findById(id).orElseThrow(()->new ExceptionBBDD("Id no válido"));
     }
 
@@ -58,5 +58,19 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
         }
 
+    }
+
+    @Override
+    public List<Personaje> filterCharacter(String name, Integer edad, Integer idMovie) {
+/*        if(name!=null){
+            return personajeRepository.findByNombre(name).orElseThrow();
+        }
+        if(edad!=null){
+            return personajeRepository.findByEdad(edad).orElseThrow();
+        }
+        if(idMovie!=null){
+            return
+        }*/
+        return Collections.emptyList();
     }
 }

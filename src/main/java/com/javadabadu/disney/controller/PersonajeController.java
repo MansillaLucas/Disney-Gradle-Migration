@@ -88,9 +88,8 @@ public class PersonajeController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws Exception {
         try {
-
             String body = personajeService.softDelete(personajeService.findById(id).getId());
-            ResponseInfoDTO response = new ResponseInfoDTO (body,request.getRequestURI(),HttpStatus.OK.value());
+            ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
             return ResponseEntity.ok().body(EntityModel.of(response, linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Personajes:")));
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
@@ -108,7 +107,6 @@ public class PersonajeController {
         } else {
             return personaje;
         }
-
     }
 
     private Personaje getPersonaje(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
@@ -126,4 +124,20 @@ public class PersonajeController {
         searchedPersonaje = mapper.convertValue(searchedPersonajeMap, Personaje.class);
         return searchedPersonaje;
     }
+
+
+/*    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(@RequestParam(value = "name", required = false) String nombre,
+                                     @RequestParam(value = "age", required = false) Integer edad,
+                                     @RequestParam(value = "movies", required = false) Integer idPelicula,
+                                     HttpServletRequest request) {
+        try {
+            List<EntityModel<Personaje>> personajes = personajeService.findAll().stream()
+                    .map(personaje -> EntityModel.of(personaje, linkTo(methodOn(PersonajeController.class).findById(personaje.getId(), request)).withSelfRel()))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(CollectionModel.of(personajes, linkTo(methodOn(PersonajeController.class).findAll(request)).withSelfRel()));
+        } catch (ExceptionBBDD e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }*/
 }
