@@ -1,6 +1,6 @@
 package com.javadabadu.disney.models.entity;
 
-public enum CalificiacionPelicula {
+public enum CalificacionPelicula {
     UNO(1),
     DOS(2),
     TRES(3),
@@ -9,7 +9,7 @@ public enum CalificiacionPelicula {
 
     private int puntaje;
 
-    private CalificiacionPelicula(int puntaje){
+    private CalificacionPelicula(int puntaje){
         this.puntaje = puntaje;
     }
 

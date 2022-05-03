@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "7b02b8e2-dac3-4499-aa79-931d2b574693",
+		"name": "Api Disney",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Genero : last id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const URI_NEXT_RESOURCE = pm.response.headers.get(\"Location\");\r",
+							"console.log(URI_NEXT_RESOURCE)\r",
+							"postman.setEnvironmentVariable(\"uri_next_resource\", URI_NEXT_RESOURCE); "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero : create",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest({\r",
+							"    url: 'localhost:8080/api/v1/generos/',\r",
+							"    method: 'POST',\r",
+							"    body: {}\r",
+							"    }, function (err, res) {\r",
+							"            const URI_NEXT_RESOURCE = res.headers.get(\"Location\");\r",
+							"            postman.setEnvironmentVariable(\"uri_next_resource\", URI_NEXT_RESOURCE); \r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imagen\": \"/imagen/a\",\r\n    \"nombre\": \"Antiguo\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri_next_resource}}",
+					"host": [
+						"{{uri_next_resource}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero : Update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"imagen\": \"/imagen/s\",\r\n    \"nombre\": \"Ciencia ficción\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genero :  Partial Update",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json-patch+json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n      \"op\":\"replace\",\r\n      \"path\":\"/nombre\",\r\n      \"value\":\"Comedia\"\r\n    },\r\n     {\r\n      \"op\":\"replace\",\r\n      \"path\":\"/imagen\",\r\n      \"value\":\"foto\"\r\n    }\r\n]\r\n   \r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/generos/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"generos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
