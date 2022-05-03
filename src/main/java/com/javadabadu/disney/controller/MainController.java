@@ -20,7 +20,6 @@ public class MainController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> mainMethod(HttpServletRequest request) {
-
         Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel(),
                 generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:"),
                 characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:"), //Cambiar

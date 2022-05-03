@@ -18,19 +18,19 @@ Serie     --|> AudioVisual
 }
 
  class Pelicula {
-    - String duracion;
-    - CalificacionPelicula calificacion;
+    - String duracion
+    - CalificacionPelicula calificacion
 }
 class Serie{
- - byte temporadas;
- - byte capitulos;
+ - byte temporadas
+ - byte capitulos
 }
 
 
 class AudioVisual {
-    - String titulo;
-    - String imagen;
-    - LocalDate fechaCreacion;
+    - String titulo
+    - String imagen
+    - LocalDate fechaCreacion
 }
 
 
