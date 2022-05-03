@@ -4,17 +4,17 @@ Genero  "1" --> "many" AudioVisual
 Pelicula  --|> AudioVisual
 Serie     --|> AudioVisual
  class Personaje {
-    - String nombre;
-    - int edad;
-    - String historia;
-    - String imagen;
-    - float peso;
-    - TipoPersonaje tipo;
+    - String nombre
+    - int edad
+    - String historia
+    - String imagen
+    - float peso
+    - TipoPersonaje tipo
 }
 
  class Genero {
-     - String  nombre;
-     - String imagen;
+     - String  nombre
+     - String imagen
 }
 
  class Pelicula {
