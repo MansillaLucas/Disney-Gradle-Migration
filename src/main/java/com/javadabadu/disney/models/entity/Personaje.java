@@ -2,7 +2,6 @@ package com.javadabadu.disney.models.entity;
 
 import lombok.Data;
 
-import javax.management.Query;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class Personaje {
     private TipoPersonaje tipo;
 
     @Column(nullable = false)
-    private boolean estado;
+    private boolean estado =true;
 
     @ManyToMany(mappedBy="personajes")
     private List<Pelicula> peliculas = new ArrayList<>();
