@@ -26,5 +26,5 @@ public class Genero extends RepresentationModel<Genero> {
      private Boolean alta ;
 
      @OneToMany(mappedBy = "genero")
-     private List<Pelicula> peliculas = new ArrayList<>();
+     private List<AudioVisual> audioVisuals = new ArrayList<>();
 }

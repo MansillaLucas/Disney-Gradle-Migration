@@ -64,7 +64,7 @@ public class GeneroController {
             source.setNombre(genero.getNombre());
             source.setAlta(genero.getAlta());
             source.setImagen(genero.getImagen());
-            source.setPeliculas(genero.getPeliculas());
+            source.setAudioVisuals(genero.getAudioVisuals());
 
             return ResponseEntity.ok().body(EntityModel.of(generoService.save(source, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
