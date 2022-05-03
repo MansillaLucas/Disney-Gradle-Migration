@@ -25,8 +25,6 @@ public class MainController {
                 generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:"),
                 characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:"), //Cambiar
                 movieLink = linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Movie:"); //Cambiar
-
-
         return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink, movieLink));
     }
 }

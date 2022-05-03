@@ -37,7 +37,6 @@ public class GeneroController {
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
             Genero genero = generoService.findById(id);
-
             return ResponseEntity.ok().body(EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
