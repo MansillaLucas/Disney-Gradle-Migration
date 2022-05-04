@@ -12,5 +12,10 @@ public interface PeliculaService {
 
    ResponseEntity<?> save(Pelicula pelicula, HttpServletRequest resquest);
 
+   ResponseEntity<?> findAll(HttpServletRequest request);
+
+   ResponseEntity<?> update(Pelicula pelicula, Integer id, HttpServletRequest request);
+
+   ResponseEntity<?> softDelete(Integer id, HttpServletRequest request);
 
 }
