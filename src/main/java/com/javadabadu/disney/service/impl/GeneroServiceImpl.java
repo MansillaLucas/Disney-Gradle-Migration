@@ -1,8 +1,9 @@
-package com.javadabadu.disney.service;
+package com.javadabadu.disney.service.impl;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.repository.GeneroRepository;
+import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
