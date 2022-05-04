@@ -23,8 +23,7 @@ public class MainController {
 
         Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel(),
                 generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:"),
-                characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:"), //Cambiar
-                movieLink = linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Movie:"); //Cambiar
-        return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink, movieLink));
+                characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:");
+        return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink));
     }
 }

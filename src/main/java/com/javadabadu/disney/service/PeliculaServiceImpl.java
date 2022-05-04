@@ -1,35 +1,44 @@
 package com.javadabadu.disney.service;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.repository.PeliculaRepository;
+import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
+import com.javadabadu.disney.repository.AudioVisualRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @Service
-public class PeliculaServiceImpl implements PeliculaService{
+public class PeliculaServiceImpl implements PeliculaService {
     @Autowired
-    PeliculaRepository peliculaRepository;
-
+    AudioVisualRepository av;
     @Autowired
-    MessageSource message;
+    private MessageSource message;
+    @Autowired
+    private ModelMapperDTOImp mm;
 
     @Override
-    public List<Pelicula> findAll() {
-        return peliculaRepository.findAll();
+    public ResponseEntity<?> findById(Integer id, HttpServletRequest request) {
+        try {
+            Pelicula p = (Pelicula) av.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
+            var dto = mm.peliculaToResponseDTO(p);
+            return ResponseEntity.ok().body(dto);
+        } catch (ExceptionBBDD e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+        }
+
+
     }
 
     @Override
-    public Pelicula findByID(Integer id) {
-        try {
-            peliculaRepository.findById(id).orElseThrow(()-> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
-        } catch (ExceptionBBDD e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ResponseEntity<?> save(Pelicula pelicula, HttpServletRequest request) {
+        var peli = av.save(pelicula);
+        return ResponseEntity.ok().body(peli);
     }
 }
