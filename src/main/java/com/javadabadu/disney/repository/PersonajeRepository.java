@@ -18,9 +18,9 @@ public interface PersonajeRepository extends JpaRepository<Personaje, Integer> {
     @Query(value = "SELECT p FROM Personaje p WHERE p.nombre LIKE %:nombre%")
     List<Personaje> findByNombre(@Param("nombre") String nombre);
 
-//    @Query(value = "SELECT p FROM Personaje p WHERE p.edad = :edad")
     List<Personaje> findByEdad(@Param("edad") Integer edad);
 
-
+    @Query(value = "SELECT p FROM Personaje p WHERE p.nombre LIKE %:nombre% AND p.edad = :edad")
+    List<Personaje> findByEdadYNombre(@Param("nombre") String nombre, @Param("edad") Integer edad);
 
 }
