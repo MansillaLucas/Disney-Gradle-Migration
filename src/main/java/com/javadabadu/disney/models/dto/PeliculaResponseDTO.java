@@ -14,11 +14,11 @@ public class PeliculaResponseDTO {
    private String imagen;
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Calendar fechaCreacion;
-   private String genero;
+   private String generoNombre;
    private String duracion;
    private int calificacion;
 
-   public void setGenero(String genero) {
+   /*public void setGenero(String genero) {
       this.genero = genero;
-   }
+   }*/
 }
