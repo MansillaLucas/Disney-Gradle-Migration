@@ -88,7 +88,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
         }
     }
-
+    @Override
     public Personaje getEntity(Personaje personaje, Integer id) throws ExceptionBBDD {
         Personaje source = null;
         if (existsById(id)) {
@@ -100,7 +100,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             return personaje;
         }
     }
-
+    @Override
     public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();

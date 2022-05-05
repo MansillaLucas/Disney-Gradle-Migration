@@ -37,5 +37,5 @@ public class Personaje {
     private boolean estado =true;
 
     @ManyToMany(mappedBy="personajes")
-    private List<Pelicula> peliculas = new ArrayList<>();
+    private List<AudioVisual> audioVisual = new ArrayList<>();
 }
