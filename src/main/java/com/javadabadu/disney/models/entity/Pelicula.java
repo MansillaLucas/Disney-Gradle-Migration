@@ -1,10 +1,5 @@
 package com.javadabadu.disney.models.entity;
 
-<<<<<<< HEAD
-import lombok.Data;
-
-import javax.persistence.*;
-=======
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +7,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
->>>>>>> feature-find-audiovisual
 
 
 @Entity
@@ -30,8 +24,7 @@ public class Pelicula extends AudioVisual {
     @Column(nullable = false)
     private String duracion;
 
-<<<<<<< HEAD
-=======
+
     public Pelicula() {
     }
 
@@ -44,5 +37,5 @@ public class Pelicula extends AudioVisual {
     public int getCalificacion() {
         return calificacion.get();
     }
->>>>>>> feature-find-audiovisual
+
 }

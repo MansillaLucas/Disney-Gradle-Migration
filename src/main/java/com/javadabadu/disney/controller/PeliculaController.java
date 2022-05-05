@@ -1,6 +1,8 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.models.entity.Pelicula;
+import com.javadabadu.disney.models.mapped.ModelMapperDTO;
+import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +23,13 @@ public class PeliculaController {
         return peliculaService.findById(id, request);
     }
 
-    /*
+
         @GetMapping("/")
         public ResponseEntity<?> findAll(HttpServletRequest request) {
-            return ResponseEntity.ok(peliculaService.findAll());
+            return ResponseEntity.ok(peliculaService.findAll(request));
         }
 
-     */
+
     @PostMapping("/")
     public ResponseEntity<?> save(@RequestBody Pelicula pelicula, HttpServletRequest request) {
         return peliculaService.save(pelicula, request);
