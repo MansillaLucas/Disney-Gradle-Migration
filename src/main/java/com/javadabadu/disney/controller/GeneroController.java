@@ -45,32 +45,32 @@ public class GeneroController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(HttpServletRequest request) {
-        List<EntityModel<Genero>> generos = generoService.findAll().stream().map(genero -> EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(genero.getId(), request)).withSelfRel())).collect(Collectors.toList());
-
-
-        return ResponseEntity.ok().body(CollectionModel.of(generos, linkTo(methodOn(GeneroController.class).findAll(request)).withSelfRel()));
+        try {
+            List<EntityModel<Genero>> generos = generoService.findAll().stream().map(genero -> EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(genero.getId(), request)).withSelfRel())).collect(Collectors.toList());
+            return ResponseEntity.ok().body(CollectionModel.of(generos, linkTo(methodOn(GeneroController.class).findAll(request)).withSelfRel()));
+        } catch (ExceptionBBDD e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
+        }
     }
 
     @PostMapping("/")
     public ResponseEntity<?> lastId(HttpServletRequest request) {
-        return ResponseEntity.created(URI.create(request.getRequestURI() + generoService.lastValueId())).body("se creo un registro");
+        try {
+            return ResponseEntity.created(URI.create(request.getRequestURI() + generoService.lastValueId())).body("se creo un registro");
+        } catch (ExceptionBBDD e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+        }
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> crear(@RequestBody Genero genero, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        Genero source = null;
-        try {
-            source = generoService.findById(id);
-            source.setNombre(genero.getNombre());
-            source.setAlta(genero.getAlta());
-            source.setImagen(genero.getImagen());
-            source.setAudioVisuals(genero.getAudioVisuals());
 
+        try {
+            Genero source = generoService.getGenero(genero, id);
             return ResponseEntity.ok().body(EntityModel.of(generoService.save(source, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
-            genero.setId(id);
-            genero.setAlta(genero.getAlta());
-            return ResponseEntity.ok().body(EntityModel.of(generoService.save(genero, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
+
         }
     }
 
@@ -89,7 +89,7 @@ public class GeneroController {
             });
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
 
-            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoService.save(searchedGenero,id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoService.save(searchedGenero, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
 
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));

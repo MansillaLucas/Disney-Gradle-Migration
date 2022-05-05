@@ -60,7 +60,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Integer lastValueId() throws ExceptionBBDD {
+        public Integer lastValueId() throws ExceptionBBDD {
         if (personajeRepository.lastValueId() >= 1) {
             return personajeRepository.lastValueId();
         } else {
