@@ -1,7 +1,6 @@
 package com.javadabadu.disney.models.entity;
 
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

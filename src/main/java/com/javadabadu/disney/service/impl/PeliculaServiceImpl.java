@@ -50,7 +50,7 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public ResponseEntity<?> findAll(HttpServletRequest request) {
-        return null;
+        return ResponseEntity.ok().body(peliculaRepository.findAll());
     }
 
     @Override

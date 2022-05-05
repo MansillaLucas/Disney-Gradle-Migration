@@ -38,9 +38,9 @@ public abstract class AudioVisual {
     @ManyToMany
     @JoinTable(name = "personajes_por_audiovisual",
             joinColumns = {
-                    @JoinColumn(name = "id_personaje")},
+                    @JoinColumn(name = "id_audiovisual")},
             inverseJoinColumns = {
-                    @JoinColumn(name = "id_audiovisual")})
+                    @JoinColumn(name = "id_personaje")})
     private List<Personaje> personajes = new ArrayList<>();
 
     public AudioVisual() {
