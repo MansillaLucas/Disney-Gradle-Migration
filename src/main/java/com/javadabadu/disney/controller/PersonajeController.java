@@ -59,7 +59,7 @@ public class PersonajeController {
     public ResponseEntity<?> crear(@RequestBody Personaje personaje, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
 
         try {
-            Personaje source = personajeService.getPersonaje(personaje, id);
+            Personaje source = personajeService.getEntity(personaje, id);
             return ResponseEntity.ok().body(EntityModel.of(personajeService.save(source), personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
@@ -67,9 +67,9 @@ public class PersonajeController {
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateCustomer(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
         try {
-            Personaje searchedPersonaje = personajeService.getPersonaje(id, propiedades);
+            Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
 
             return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(personajeService.save(searchedPersonaje), personajeService.getSelfLink(id, request)));
 

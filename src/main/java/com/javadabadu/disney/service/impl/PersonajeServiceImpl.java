@@ -89,7 +89,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         }
     }
 
-    public Personaje getPersonaje(Personaje personaje, Integer id) throws ExceptionBBDD {
+    public Personaje getEntity(Personaje personaje, Integer id) throws ExceptionBBDD {
         Personaje source = null;
         if (existsById(id)) {
             source = findById(id);
@@ -101,7 +101,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         }
     }
 
-    public Personaje getPersonaje(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
         Personaje searchedPersonaje = findById(id);
