@@ -25,29 +25,33 @@ public class PersonajeServiceImpl implements PersonajeService {
     @Autowired
     PersonajeRepository personajeRepository;
 
+    @Autowired
+    private ModelMapperDTOImp mapperDTO;
+
     @Override
-    public Personaje save(Personaje personaje) {
-        return personajeRepository.save(personaje);
+    public PersonajeResponseDTO save(Personaje personaje) {
+        return mapperDTO.personajeToResponseDTO(personajeRepository.save(personaje));
     }
 
     @Override
-    public List<Personaje> findAll() throws ExceptionBBDD {
+    public List<PersonajeResponseDTO> findAll() throws ExceptionBBDD {
         try {
-            return personajeRepository.findAll();
+            return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
         } catch (Exception e) {
             throw new ExceptionBBDD("Error en la transacción contacte con su ADM");
         }
     }
 
     @Override
-    public Personaje findById(Integer id) throws ExceptionBBDD {
-        return personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
+    public PersonajeResponseDTO findById(Integer id) throws ExceptionBBDD {
+        Personaje personaje = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
+        return mapperDTO.personajeToResponseDTO(personaje);
     }
 
     @Override
     public String softDelete(Integer id) throws ExceptionBBDD {
         if (personajeRepository.softDelete(id)) {
-            return "Se elimino el genero seleccionado";
+            return "Se elimino el personaje seleccionado";
         } else {
             throw new ExceptionBBDD("Error en la transacción contacte con su ADM");
         }
@@ -65,23 +69,21 @@ public class PersonajeServiceImpl implements PersonajeService {
         } else {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
         }
-
     }
 
     @Override
-    public List<Personaje> filterCharacter(String name, Integer edad, Integer idMovie) throws ExceptionBBDD {
-
+    public List<PersonajeResponseDTO> filterCharacter(String name, Integer edad, Integer idMovie) throws ExceptionBBDD {
         try {
             if (name != null && edad != null) {
-                return personajeRepository.findByEdadYNombre(name, edad);
+                return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findByEdadYNombre(name, edad));
             } else if (name != null) {
-                return personajeRepository.findByNombre(name);
+                return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findByNombre(name));
             } else if (edad != null) {
-                return personajeRepository.findByEdad(edad);
+                return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findByEdad(edad));
             } else if (idMovie != null) {
-                return personajeRepository.findByMovieId(idMovie);
+                return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findByMovieId(idMovie));
             } else {
-                return personajeRepository.findAll();
+                return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
             }
         } catch (Exception e) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
@@ -90,24 +92,21 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Override
     public Personaje getEntity(Personaje personaje, Integer id) throws ExceptionBBDD {
-        Personaje source = null;
-        if (existsById(id)) {
-            source = findById(id);
-            personaje.setId(id);
-            source = personaje;
-            return source;
-        } else {
+        if (!existsById(id)) {
             return personaje;
         }
+        Personaje source = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
+        personaje.setId(id);
+        source = personaje;
+        return source;
     }
 
     @Override
     public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
-        ModelMapperDTOImp mapperDTO = new ModelMapperDTOImp();
 
-        PersonajeResponseDTO searchedPersonajeDTO = mapperDTO.personajeToResponseDTO(findById(id));
+        PersonajeResponseDTO searchedPersonajeDTO = findById(id);
 
         Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonajeDTO, Map.class);
         propiedades.forEach((k, v) -> {
@@ -115,9 +114,8 @@ public class PersonajeServiceImpl implements PersonajeService {
                 searchedPersonajeMap.replace(k, searchedPersonajeMap.get(k), v);
             }
         });
-        searchedPersonajeDTO = mapper.convertValue(searchedPersonajeMap, PersonajeResponseDTO.class);
 
-        Personaje searchedPersonaje2 = mapperDTO.personajeResponseDTOtoPersonaje(searchedPersonajeDTO);
+        Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
 
         return searchedPersonaje2;
     }

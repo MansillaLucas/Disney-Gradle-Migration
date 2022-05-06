@@ -34,7 +34,7 @@ public class PersonajeController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
-            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.findById(id));
+            PersonajeResponseDTO personajeDTO = personajeService.findById(id);
             return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
@@ -44,7 +44,7 @@ public class PersonajeController {
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(HttpServletRequest request) {
         try {
-            List<PersonajeResponseDTO> listPersonajeResponseDTO = mapperDTO.listPersonajeToResponseDTO(personajeService.findAll());
+            List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.findAll();
 
             List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
                     .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))
@@ -70,21 +70,21 @@ public class PersonajeController {
 
         try {
             Personaje source = personajeService.getEntity(personaje, id);
-            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.save(source));
+            PersonajeResponseDTO personajeDTO = personajeService.save(source);
             return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
     }
 
-    @PatchMapping(path = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
+    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@PathVariable Integer id,
+                                    @RequestBody Map<String, Object> propiedades,
+                                    HttpServletRequest request) {
         try {
             Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
-            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.save(searchedPersonaje));
-
-            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(searchedPersonaje, personajeService.getSelfLink(id, request)));
-
+            PersonajeResponseDTO personajeDTO = personajeService.save(searchedPersonaje);
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request)));
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
@@ -108,7 +108,7 @@ public class PersonajeController {
                                            @RequestParam(value = "movies", required = false) Integer idPelicula,
                                            HttpServletRequest request) {
         try {
-            List<PersonajeResponseDTO> listPersonajeResponseDTO = mapperDTO.listPersonajeToResponseDTO(personajeService.filterCharacter(nombre, edad, idPelicula));
+            List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.filterCharacter(nombre, edad, idPelicula);
 
             List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
                     .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))

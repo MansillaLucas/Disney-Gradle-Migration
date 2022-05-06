@@ -30,5 +30,4 @@ public class PeliculaController {
         return ResponseEntity.ok().body(peliculaService.findAll());
     }
 
-
 }
