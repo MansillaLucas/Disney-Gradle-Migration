@@ -1,6 +1,5 @@
 package com.javadabadu.disney.models.dto;
 
-
 import com.javadabadu.disney.models.entity.TipoPersonaje;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PersonajeResponseDTO {
-
     private Integer id;
     private String nombre;
     private int edad;
