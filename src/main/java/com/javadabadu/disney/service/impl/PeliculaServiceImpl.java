@@ -9,8 +9,10 @@ import com.javadabadu.disney.repository.PeliculaRepository;
 import com.javadabadu.disney.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -53,5 +55,15 @@ public class PeliculaServiceImpl implements PeliculaService {
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
         return 99;
+    }
+
+    @Override
+    public Link getSelfLink(Integer id, HttpServletRequest request) {
+        return null;
+    }
+
+    @Override
+    public Link getCollectionLink(HttpServletRequest request) {
+        return null;
     }
 }
