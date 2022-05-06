@@ -13,7 +13,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return personajeRepository.findAll();
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM");
         }
     }
 
@@ -47,13 +46,11 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Override
     public String softDelete(Integer id) throws ExceptionBBDD {
-
         if (personajeRepository.softDelete(id)) {
             return "Se elimino el genero seleccionado";
         } else {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM");
         }
-
     }
 
     @Override
@@ -62,7 +59,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-        public Integer lastValueId() throws ExceptionBBDD {
+    public Integer lastValueId() throws ExceptionBBDD {
         if (personajeRepository.lastValueId() >= 1) {
             return personajeRepository.lastValueId();
         } else {
@@ -81,7 +78,7 @@ public class PersonajeServiceImpl implements PersonajeService {
                 return personajeRepository.findByNombre(name);
             } else if (edad != null) {
                 return personajeRepository.findByEdad(edad);
-            }else if (idMovie != null){
+            } else if (idMovie != null) {
                 return personajeRepository.findByMovieId(idMovie);
             } else {
                 return personajeRepository.findAll();
@@ -90,6 +87,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
         }
     }
+
     @Override
     public Personaje getEntity(Personaje personaje, Integer id) throws ExceptionBBDD {
         Personaje source = null;
@@ -102,6 +100,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             return personaje;
         }
     }
+
     @Override
     public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 

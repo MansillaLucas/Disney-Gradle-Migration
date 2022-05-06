@@ -4,11 +4,9 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Personaje;
-import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.service.PersonajeService;
 import com.javadabadu.disney.util.Uri;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -26,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = Uri.PERSONAJES)
 public class PersonajeController {
+
     @Autowired
     PersonajeService personajeService;
 
@@ -35,7 +34,7 @@ public class PersonajeController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
-            PersonajeResponseDTO personajeDTO =mapperDTO.personajeToResponseDTO(personajeService.findById(id)) ;
+            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.findById(id));
             return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
@@ -46,7 +45,11 @@ public class PersonajeController {
     public ResponseEntity<?> findAll(HttpServletRequest request) {
         try {
             List<PersonajeResponseDTO> listPersonajeResponseDTO = mapperDTO.listPersonajeToResponseDTO(personajeService.findAll());
-            List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream().map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request))).collect(Collectors.toList());
+
+            List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
+                    .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))
+                    .collect(Collectors.toList());
+
             return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
@@ -67,7 +70,7 @@ public class PersonajeController {
 
         try {
             Personaje source = personajeService.getEntity(personaje, id);
-            PersonajeResponseDTO personajeDTO =mapperDTO.personajeToResponseDTO(personajeService.save(source));
+            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.save(source));
             return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
@@ -78,13 +81,12 @@ public class PersonajeController {
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
         try {
             Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
-            PersonajeResponseDTO personajeDTO =mapperDTO.personajeToResponseDTO(personajeService.save(searchedPersonaje));
+            PersonajeResponseDTO personajeDTO = mapperDTO.personajeToResponseDTO(personajeService.save(searchedPersonaje));
 
             return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(searchedPersonaje, personajeService.getSelfLink(id, request)));
 
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
-
         }
     }
 
@@ -106,14 +108,13 @@ public class PersonajeController {
                                            @RequestParam(value = "movies", required = false) Integer idPelicula,
                                            HttpServletRequest request) {
         try {
-
             List<PersonajeResponseDTO> listPersonajeResponseDTO = mapperDTO.listPersonajeToResponseDTO(personajeService.filterCharacter(nombre, edad, idPelicula));
 
             List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
                     .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))
                     .collect(Collectors.toList());
-            return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
 
+            return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
