@@ -43,4 +43,14 @@ public class PeliculaServiceImpl implements PeliculaService {
         }
         throw new ExceptionBBDD("el id no coincide con el de una pelicula");
     }
+
+    @Override
+    public Boolean existsById(Integer id) {
+        return peliculaRepository.existsById(id);
+    }
+
+    @Override
+    public Integer lastValueId() throws ExceptionBBDD {
+        return 99;
+    }
 }

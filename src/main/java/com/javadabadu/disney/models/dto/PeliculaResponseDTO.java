@@ -1,5 +1,6 @@
 package com.javadabadu.disney.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,11 +15,8 @@ public class PeliculaResponseDTO {
    private String imagen;
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Calendar fechaCreacion;
+   @JsonProperty(value = "genero")
    private String generoNombre;
    private String duracion;
    private int calificacion;
-
-   /*public void setGenero(String genero) {
-      this.genero = genero;
-   }*/
 }
