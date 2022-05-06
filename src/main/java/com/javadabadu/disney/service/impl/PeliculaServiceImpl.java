@@ -41,7 +41,8 @@ public class PeliculaServiceImpl implements PeliculaService {
             PeliculaResponseDTO peliculaResponseDTO = mm.peliculaToResponseDTO(p);
             return peliculaResponseDTO;
         }
-        throw new ExceptionBBDD("el id no coincide con el de una pelicula");
+        throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US));
+
     }
 
     @Override
