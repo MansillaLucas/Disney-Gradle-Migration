@@ -3,7 +3,9 @@ package com.javadabadu.disney.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Personaje;
+import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.PersonajeRepository;
 import com.javadabadu.disney.service.PersonajeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,16 +106,21 @@ public class PersonajeServiceImpl implements PersonajeService {
     public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
-        Personaje searchedPersonaje = findById(id);
+        ModelMapperDTOImp mapperDTO = new ModelMapperDTOImp();
 
-        Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonaje, Map.class);
+        PersonajeResponseDTO searchedPersonajeDTO = mapperDTO.personajeToResponseDTO(findById(id));
+
+        Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonajeDTO, Map.class);
         propiedades.forEach((k, v) -> {
             if (searchedPersonajeMap.containsKey(k)) {
                 searchedPersonajeMap.replace(k, searchedPersonajeMap.get(k), v);
             }
         });
-        searchedPersonaje = mapper.convertValue(searchedPersonajeMap, Personaje.class);
-        return searchedPersonaje;
+        searchedPersonajeDTO = mapper.convertValue(searchedPersonajeMap, PersonajeResponseDTO.class);
+
+        Personaje searchedPersonaje2 = mapperDTO.personajeResponseDTOtoPersonaje(searchedPersonajeDTO);
+
+        return searchedPersonaje2;
     }
 
     public Link getCollectionLink(HttpServletRequest request) {

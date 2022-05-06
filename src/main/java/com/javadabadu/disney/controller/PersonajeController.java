@@ -74,13 +74,13 @@ public class PersonajeController {
         }
     }
 
-    @PatchMapping(path = "/{id}", consumes = "application/merge-patch+json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/{id}", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) {
         try {
             Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
             PersonajeResponseDTO personajeDTO =mapperDTO.personajeToResponseDTO(personajeService.save(searchedPersonaje));
 
-            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request)));
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(searchedPersonaje, personajeService.getSelfLink(id, request)));
 
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));

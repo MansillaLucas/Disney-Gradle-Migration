@@ -14,7 +14,8 @@ import java.util.List;
 @Table(name = "audiovisual")
 @Getter
 @Setter
-public abstract class AudioVisual {
+
+public class AudioVisual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
