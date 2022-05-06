@@ -1,14 +1,14 @@
 package com.javadabadu.disney.service.impl;
 
-import com.javadabadu.disney.models.entity.Serie;
+import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.repository.SerieRepository;
 import com.javadabadu.disney.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 public class SerieServiceImpl implements SerieService {
@@ -17,29 +17,29 @@ public class SerieServiceImpl implements SerieService {
     @Autowired
     private MessageSource message;
 
+    //TODO implementar metodo
     @Override
-    public ResponseEntity<?> findById(Integer id, HttpServletRequest request) {
+    public List<SerieResponseDTO> findAll() throws ExceptionBBDD {
         return null;
     }
 
+    //TODO implementar metodo
     @Override
-    public ResponseEntity<?> save(Serie serie, HttpServletRequest resquest) {
+    public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
         return null;
     }
 
+    //TODO implementar metodo
     @Override
-    public ResponseEntity<?> findAll(HttpServletRequest request) {
+    public Boolean existsById(Integer id) {
         return null;
     }
 
+    //TODO implementar metodo
     @Override
-    public ResponseEntity<?> update(Integer id, HttpServletRequest request) {
+    public Integer lastValueId() throws ExceptionBBDD {
         return null;
     }
 
-    @Override
-    public ResponseEntity<?> softDelete(Serie serie, Integer id, HttpServletRequest request) {
-        return null;
-    }
-
+    //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
 }

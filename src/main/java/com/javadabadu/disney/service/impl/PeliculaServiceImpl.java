@@ -6,6 +6,7 @@ import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Pelicula;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.PeliculaRepository;
+import com.javadabadu.disney.service.BaseServiceRead;
 import com.javadabadu.disney.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -42,7 +43,6 @@ public class PeliculaServiceImpl implements PeliculaService {
             return peliculaResponseDTO;
         }
         throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US));
-
     }
 
     @Override
@@ -52,6 +52,12 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
-        return 99;
+        if (peliculaRepository.lastValueId() >= 1) {
+            return peliculaRepository.lastValueId();
+        } else {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US));
+        }
     }
+    //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
+
 }
