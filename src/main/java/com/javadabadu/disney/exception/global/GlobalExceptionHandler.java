@@ -1,9 +1,9 @@
 package com.javadabadu.disney.exception.global;
 
+import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +29,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> MethodNotSupportedException(HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ResponseInfoDTO("Método no soportado para el path correspondiente", request.getRequestURI(), HttpStatus.METHOD_NOT_ALLOWED.value()));
     }
+
+
+    @ExceptionHandler({ExceptionBBDD.class})
+    public ResponseEntity<?> BBDDException(HttpServletRequest request, ExceptionBBDD e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+    }
+
 
 }
