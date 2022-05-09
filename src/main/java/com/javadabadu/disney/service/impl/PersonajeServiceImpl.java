@@ -3,6 +3,7 @@ package com.javadabadu.disney.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
@@ -102,7 +103,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    public Personaje getEntity(Integer id, PersonajeRequestDTO propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
 

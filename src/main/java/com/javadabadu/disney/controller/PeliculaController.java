@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = Uri.PELICULAS)
 public class PeliculaController {
+
     @Autowired
     PeliculaService peliculaService;
 
@@ -24,10 +25,8 @@ public class PeliculaController {
         return ResponseEntity.ok().body(peliculaService.findById(id));
     }
 
-
     @GetMapping("/")
     public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
         return ResponseEntity.ok().body(peliculaService.findAll());
     }
-
 }
