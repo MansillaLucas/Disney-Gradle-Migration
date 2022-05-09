@@ -19,6 +19,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = Uri.PELICULAS)
 public class PeliculaController {
+
     @Autowired
     PeliculaService peliculaService;
 
@@ -45,12 +46,13 @@ public class PeliculaController {
     public ResponseEntity<?> crear(@RequestBody Pelicula pelicula, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
 
         try {
-            Pelicula source = peliculaService.getEntity(pelicula, id);
+            Pelicula source = peliculaService.getEntitySave(pelicula, id);
             return ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+
 
 
 }

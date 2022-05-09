@@ -1,17 +1,14 @@
 package com.javadabadu.disney.service.impl;
 
 import com.javadabadu.disney.controller.PeliculaController;
-import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
-import com.javadabadu.disney.service.BaseServiceRead;
 import com.javadabadu.disney.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -22,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -71,8 +69,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         }
     }
 
-    @Override
-    public Pelicula getEntity(Pelicula entity, Integer id) throws ExceptionBBDD {
+    public Pelicula getEntitySave(Pelicula entity, Integer id) throws ExceptionBBDD {
         Pelicula source = null;
         setGenero(entity);
         if (existsById(id)) {
@@ -97,14 +94,25 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        return linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel();
+    public Link getSelfLink(Integer id, HttpServletRequest request)  {
+        return null /*linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel()*/;
     }
 
     @Override
-    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
-        return linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:");
+    public Link getCollectionLink(HttpServletRequest request) {
+        return null/* linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:")*/;
     }
+
+    @Override
+    public String softDelete(Integer id)  {
+        return null;
+    }
+
+    @Override
+    public Pelicula getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+        return null;
+    }
+
 
     //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
 

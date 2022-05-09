@@ -1,10 +1,11 @@
 package com.javadabadu.disney.models.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 @Data

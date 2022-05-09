@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SerieServiceImpl implements SerieService {
@@ -51,9 +52,12 @@ public class SerieServiceImpl implements SerieService {
         return null;
     }
 
-    @Override
+
     //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
-    public Serie getEntity(Serie entity, Integer id) throws ExceptionBBDD {
+
+
+    @Override
+    public Serie getEntitySave(Serie entity, Integer id) throws ExceptionBBDD {
         return null;
     }
 
@@ -63,12 +67,22 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+    public Link getSelfLink(Integer id, HttpServletRequest request)  {
         return null;
     }
 
     @Override
-    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+    public Link getCollectionLink(HttpServletRequest request)  {
+        return null;
+    }
+
+    @Override
+    public String softDelete(Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public Serie getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         return null;
     }
 }

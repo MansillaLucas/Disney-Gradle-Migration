@@ -1,6 +1,5 @@
 package com.javadabadu.disney.controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = Uri.GENEROS)
@@ -37,7 +35,9 @@ public class GeneroController {
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
         try {
             Genero genero = generoService.findById(id);
-            return ResponseEntity.ok().body(EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
+            return ResponseEntity.ok().body(EntityModel.of(genero,
+                    linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(),
+                    linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
         }
@@ -46,7 +46,10 @@ public class GeneroController {
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(HttpServletRequest request) {
         try {
-            List<EntityModel<Genero>> generos = generoService.findAll().stream().map(genero -> EntityModel.of(genero, linkTo(methodOn(GeneroController.class).findById(genero.getId(), request)).withSelfRel())).collect(Collectors.toList());
+            List<EntityModel<Genero>> generos = generoService.findAll().stream()
+                    .map(genero -> EntityModel.of(genero,
+                            linkTo(methodOn(GeneroController.class).findById(genero.getId(), request)).withSelfRel()))
+                    .collect(Collectors.toList());
             return ResponseEntity.ok().body(CollectionModel.of(generos, linkTo(methodOn(GeneroController.class).findAll(request)).withSelfRel()));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
@@ -67,7 +70,9 @@ public class GeneroController {
 
         try {
             Genero source = generoService.getGenero(genero, id);
-            return ResponseEntity.ok().body(EntityModel.of(generoService.save(source, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(), linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
+            return ResponseEntity.ok().body(EntityModel.of(generoService.save(source, id),
+                    linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel(),
+                    linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:")));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
 
@@ -89,7 +94,8 @@ public class GeneroController {
             });
             searchedGenero = mapper.convertValue(searchedGeneroMap, Genero.class);
 
-            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoService.save(searchedGenero, id), linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
+            return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoService.save(searchedGenero, id),
+                    linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel()));
 
         } catch (ExceptionBBDD ebd) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(ebd.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
@@ -100,7 +106,6 @@ public class GeneroController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable Integer id) throws Exception {
         return ResponseEntity.ok().body(generoService.softDelete(generoService.findById(id).getId()));
-
     }
 
 }
