@@ -33,6 +33,11 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
+    public SerieResponseDTO save(Serie entity) {
+        return mm.serieToResponseDTO(serieRepository.save(entity));
+    }
+
+    @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
         return null;
     }
@@ -47,5 +52,8 @@ public class SerieServiceImpl implements SerieService {
         return null;
     }
 
-
+    @Override
+    public SerieResponseDTO getEntity(Serie entity, Integer id) throws ExceptionBBDD {
+        return null;
+    }
 }

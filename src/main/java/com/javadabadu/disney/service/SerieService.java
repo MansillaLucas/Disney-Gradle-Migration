@@ -7,6 +7,5 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface SerieService extends BaseServiceRead<SerieResponseDTO, Integer>  {
-
+public interface SerieService extends BaseServiceRead<SerieResponseDTO, Integer>,BaseServiceWrite<Serie, SerieResponseDTO,Integer>  {
 }
