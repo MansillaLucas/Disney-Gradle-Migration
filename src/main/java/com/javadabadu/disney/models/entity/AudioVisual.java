@@ -1,5 +1,6 @@
 package com.javadabadu.disney.models.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,11 +11,13 @@ import java.util.Calendar;
 import java.util.List;
 
 @Entity
+@Data
+
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "audiovisual")
 @Getter
 @Setter
-public abstract class AudioVisual {
+public class AudioVisual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

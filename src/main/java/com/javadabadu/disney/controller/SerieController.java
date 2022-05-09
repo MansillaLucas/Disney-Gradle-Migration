@@ -29,3 +29,5 @@ public class SerieController {
         return ResponseEntity.ok().body(serieService.findById(id));
     }
 }
+
+

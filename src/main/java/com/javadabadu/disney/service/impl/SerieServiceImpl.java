@@ -9,11 +9,14 @@ import com.javadabadu.disney.repository.SerieRepository;
 import com.javadabadu.disney.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Service
 public class SerieServiceImpl implements SerieService {
@@ -33,10 +36,7 @@ public class SerieServiceImpl implements SerieService {
         return serieResponseDTO;
     }
 
-    @Override
-    public SerieResponseDTO save(Serie entity) {
-        return mm.serieToResponseDTO(serieRepository.save(entity));
-    }
+
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
@@ -54,13 +54,43 @@ public class SerieServiceImpl implements SerieService {
         return null;
     }
 
+    //TODO implementar metodo
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
         return null;
     }
 
+
+    //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
+
+
     @Override
-    public SerieResponseDTO getEntity(Serie entity, Integer id) throws ExceptionBBDD {
+    public Serie getEntitySave(Serie entity, Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public SerieResponseDTO save(Serie entity) {
+        return null;
+    }
+
+    @Override
+    public Link getSelfLink(Integer id, HttpServletRequest request)  {
+        return null;
+    }
+
+    @Override
+    public Link getCollectionLink(HttpServletRequest request)  {
+        return null;
+    }
+
+    @Override
+    public String softDelete(Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public Serie getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         return null;
     }
 }
