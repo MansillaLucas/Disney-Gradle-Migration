@@ -1,8 +1,7 @@
 package com.javadabadu.disney.service;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-
-import java.util.Map;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 
 public interface BaseServiceWrite<E, O, I> {
     O save(E entity);
@@ -11,6 +10,5 @@ public interface BaseServiceWrite<E, O, I> {
 
     String softDelete(I id) throws ExceptionBBDD;
 
-    E getEntity(I id, Map<String, Object> propiedades) throws ExceptionBBDD;
-
+    E getEntity(I id, PersonajeRequestDTO propiedades) throws ExceptionBBDD;
 }

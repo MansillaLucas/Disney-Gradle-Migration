@@ -1,6 +1,7 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Personaje;
@@ -66,8 +67,9 @@ public class PersonajeController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crear(@RequestBody Personaje personaje, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-
+    public ResponseEntity<?> crear(@RequestBody Personaje personaje,
+                                   @PathVariable Integer id,
+                                   HttpServletRequest request) throws ExceptionBBDD {
         try {
             Personaje source = personajeService.getEntity(personaje, id);
             PersonajeResponseDTO personajeDTO = personajeService.save(source);
@@ -79,7 +81,7 @@ public class PersonajeController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id,
-                                    @RequestBody Map<String, Object> propiedades,
+                                    @RequestBody PersonajeRequestDTO propiedades,
                                     HttpServletRequest request) {
         try {
             Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
