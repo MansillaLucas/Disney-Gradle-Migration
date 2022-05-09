@@ -5,9 +5,11 @@ import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
+import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
 import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
+import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
 import com.javadabadu.disney.service.BaseServiceRead;
 import com.javadabadu.disney.service.PeliculaService;
@@ -28,6 +30,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class PeliculaServiceImpl implements PeliculaService {
     @Autowired
     PeliculaRepository peliculaRepository;
+    @Autowired
+    GeneroRepository generoRepository;
     @Autowired
     private MessageSource message;
     @Autowired
@@ -70,6 +74,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     @Override
     public Pelicula getEntity(Pelicula entity, Integer id) throws ExceptionBBDD {
         Pelicula source = null;
+        setGenero(entity);
         if (existsById(id)) {
             source = mm.responseDtoToPelicula(findById(id));
             entity.setId(id);
@@ -78,6 +83,12 @@ public class PeliculaServiceImpl implements PeliculaService {
         } else {
             return entity;
         }
+    }
+
+    private void setGenero(Pelicula entity) throws ExceptionBBDD {
+        Integer idGenero = entity.getGenero().getId();
+        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US)));
+        entity.setGenero(genero);
     }
 
     @Override
