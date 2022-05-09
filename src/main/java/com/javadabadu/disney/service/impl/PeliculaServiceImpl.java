@@ -1,20 +1,28 @@
 package com.javadabadu.disney.service.impl;
 
+import com.javadabadu.disney.controller.PeliculaController;
+import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Pelicula;
+import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.PeliculaRepository;
 import com.javadabadu.disney.service.BaseServiceRead;
 import com.javadabadu.disney.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class PeliculaServiceImpl implements PeliculaService {
@@ -58,6 +66,35 @@ public class PeliculaServiceImpl implements PeliculaService {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US));
         }
     }
+
+    @Override
+    public Pelicula getEntity(Pelicula entity, Integer id) throws ExceptionBBDD {
+        Pelicula source = null;
+        if (existsById(id)) {
+            source = mm.responseDtoToPelicula(findById(id));
+            entity.setId(id);
+            source = entity;
+            return source;
+        } else {
+            return entity;
+        }
+    }
+
+    @Override
+    public PeliculaResponseDTO save(Pelicula entity) {
+        return mm.peliculaToResponseDTO(peliculaRepository.save(entity));
+    }
+
+    @Override
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        return linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel();
+    }
+
+    @Override
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+        return linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:");
+    }
+
     //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
 
 }

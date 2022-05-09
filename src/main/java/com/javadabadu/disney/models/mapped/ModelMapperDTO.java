@@ -7,5 +7,8 @@ import com.javadabadu.disney.models.entity.Serie;
 
 public interface ModelMapperDTO {
     PeliculaResponseDTO peliculaToResponseDTO(Pelicula pelicula);
+
     SerieResponseDTO serieToResponseDTO(Serie serie);
+
+    Pelicula responseDtoToPelicula(PeliculaResponseDTO peliculaResponseDTO);
 }
