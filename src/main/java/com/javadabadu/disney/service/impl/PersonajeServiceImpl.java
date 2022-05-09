@@ -92,7 +92,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntity(Personaje personaje, Integer id) throws ExceptionBBDD {
+    public Personaje getEntitySave(Personaje personaje, Integer id) throws ExceptionBBDD {
         if (!existsById(id)) {
             return personaje;
         }
@@ -103,7 +103,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntity(Integer id, PersonajeRequestDTO propiedades) throws ExceptionBBDD {
+    public Personaje getEntity(Integer id, Map<String,Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -122,11 +122,11 @@ public class PersonajeServiceImpl implements PersonajeService {
         return searchedPersonaje2;
     }
 
-    public Link getCollectionLink(HttpServletRequest request) {
+    public Link getCollectionLink(HttpServletRequest request)  {
         return linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Personajes:");
     }
 
-    public Link getSelfLink(Integer id, HttpServletRequest request) {
+    public Link getSelfLink(Integer id, HttpServletRequest request)  {
         return linkTo(methodOn(PersonajeController.class).findById(id, request)).withSelfRel();
     }
 }

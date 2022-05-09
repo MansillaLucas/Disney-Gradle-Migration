@@ -50,12 +50,13 @@ public class PersonajeController {
             List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
                     .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))
                     .collect(Collectors.toList());
-
             return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
     }
+
+
 
     @PostMapping("/")
     public ResponseEntity<?> lastId(HttpServletRequest request) {
@@ -71,7 +72,7 @@ public class PersonajeController {
                                    @PathVariable Integer id,
                                    HttpServletRequest request) throws ExceptionBBDD {
         try {
-            Personaje source = personajeService.getEntity(personaje, id);
+            Personaje source = personajeService.getEntitySave(personaje, id);
             PersonajeResponseDTO personajeDTO = personajeService.save(source);
             return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
         } catch (ExceptionBBDD e) {
@@ -81,7 +82,7 @@ public class PersonajeController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id,
-                                    @RequestBody PersonajeRequestDTO propiedades,
+                                    @RequestBody Map<String,Object> propiedades,
                                     HttpServletRequest request) {
         try {
             Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
@@ -113,7 +114,11 @@ public class PersonajeController {
             List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.filterCharacter(nombre, edad, idPelicula);
 
             List<EntityModel<PersonajeResponseDTO>> personajes = listPersonajeResponseDTO.stream()
-                    .map(personaje -> EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)))
+                    .map(personaje -> {
+
+                            return EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request));
+
+                    })
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));

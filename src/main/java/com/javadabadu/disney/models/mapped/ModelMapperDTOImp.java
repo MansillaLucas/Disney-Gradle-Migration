@@ -1,13 +1,7 @@
 package com.javadabadu.disney.models.mapped;
 
-import com.javadabadu.disney.models.dto.AudioVisualResponseDTO;
-import com.javadabadu.disney.models.dto.GeneroResponseDTO;
-import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
-import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
-import com.javadabadu.disney.models.entity.AudioVisual;
-import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
+import com.javadabadu.disney.models.dto.*;
+import com.javadabadu.disney.models.entity.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -57,8 +51,6 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
                 .collect(Collectors.toList());
     }
 
-    //
-
     @Override
     public GeneroResponseDTO generoToResponseDTO(Genero genero) {
         GeneroResponseDTO generoDTO = modelMapper.map(genero, GeneroResponseDTO.class);
@@ -98,5 +90,14 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public SerieResponseDTO serieToResponseDTO(Serie serie) {
+        SerieResponseDTO serieDTO = modelMapper.map(serie, SerieResponseDTO.class);
+        return serieDTO;
+    }
 
+    @Override
+    public Pelicula responseDtoToPelicula(PeliculaResponseDTO peliculaResponseDTO) {
+        return modelMapper.map(peliculaResponseDTO, Pelicula.class);
+    }
 }

@@ -15,7 +15,7 @@ public interface BaseServiceRead<O, I> {
 
     Integer lastValueId() throws ExceptionBBDD;
 
-    Link getSelfLink(I id, HttpServletRequest request);
+   // Link getSelfLink(I id, HttpServletRequest request);
 
-    Link getCollectionLink(HttpServletRequest request);
+   // Link getCollectionLink(HttpServletRequest request);
 }
