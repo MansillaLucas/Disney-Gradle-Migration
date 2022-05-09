@@ -1,8 +1,8 @@
 package com.javadabadu.disney.service.impl;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.SerieResponseDTO;
+import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Serie;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.SerieRepository;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SerieServiceImpl implements SerieService {
@@ -39,7 +40,13 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
-        return null;
+        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
+        if(av instanceof Serie){
+            Serie s = (Serie) av;
+            SerieResponseDTO serieResponseDTO = mm.serieToResponseDTO(s);
+            return serieResponseDTO;
+        }
+        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US));
     }
 
     @Override

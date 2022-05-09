@@ -16,13 +16,15 @@ import java.util.List;
 @Table(name = "serie")
 @Getter
 @Setter
-@NoArgsConstructor
+//@NoArgsConstructor
 public class Serie extends AudioVisual {
 
     @Column(nullable = false)
     private Byte temporadas;
     @Column(nullable = false)
     private Byte capitulos;
+
+    public Serie(){}
 
     public Serie(Integer id, String titulo, String imagen, Genero genero, List<Personaje> personajes, byte temporadas, byte capitulos) {
         super(id, titulo, imagen, genero, personajes);

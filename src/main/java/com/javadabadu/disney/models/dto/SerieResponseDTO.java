@@ -17,6 +17,6 @@ public class SerieResponseDTO {
     private Calendar fechaCreacion;
     private Byte temporadas;
     private Byte capitulos;
-   // @JsonProperty(value = "genero")
-    //private String generoNombre;
+    @JsonProperty(value = "genero")
+    private String generoNombre;
 }
