@@ -1,18 +1,12 @@
 package com.javadabadu.disney.service;
 
+import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
+import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.Serie;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface SerieService {
-    ResponseEntity<?> findById(Integer id, HttpServletRequest request);
+public interface SerieService extends BaseServiceRead<SerieResponseDTO, Integer>  {
 
-    ResponseEntity<?> save(Serie serie, HttpServletRequest resquest);
-
-    ResponseEntity<?> findAll(HttpServletRequest request);
-
-    ResponseEntity<?> update(Integer id, HttpServletRequest request);
-
-    ResponseEntity<?> softDelete(Serie serie, Integer id, HttpServletRequest request);
 }
