@@ -24,5 +24,5 @@ public class AudioVisualResponseDTO {
     private Calendar fechaCreacion;
 
     @JsonProperty(value="genero")
-    private GeneroResponseDTO generoNombre;
+    private GeneroResponseDTO genero;
 }

@@ -21,5 +21,5 @@ public class GeneroResponseDTO {
 
     private Boolean alta;
 
-    private List<AudioVisualResponseDTO> audioVisuals;
+    //private List<AudioVisualResponseDTO> audioVisualNombre;
 }
