@@ -8,8 +8,10 @@ import com.javadabadu.disney.repository.SerieRepository;
 import com.javadabadu.disney.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +51,24 @@ public class SerieServiceImpl implements SerieService {
         return null;
     }
 
+    @Override
     //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
-    public SerieResponseDTO getEntity(Serie entity, Integer id) throws ExceptionBBDD {
+    public Serie getEntity(Serie entity, Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public SerieResponseDTO save(Serie entity) {
+        return null;
+    }
+
+    @Override
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
         return null;
     }
 }
