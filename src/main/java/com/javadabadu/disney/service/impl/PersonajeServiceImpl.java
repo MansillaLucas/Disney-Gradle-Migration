@@ -116,6 +116,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         });
 
         Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
+        //Personaje personaje2 =mapperDTO.personajeResponseDTOtoPersonaje(searchedPersonaje2);
 
         return searchedPersonaje2;
     }

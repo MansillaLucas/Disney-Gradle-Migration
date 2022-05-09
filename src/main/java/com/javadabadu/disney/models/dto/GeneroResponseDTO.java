@@ -13,6 +13,8 @@ import java.util.List;
 @Setter
 public class GeneroResponseDTO {
 
+    private Integer id;
+
     private String nombre;
 
     private String imagen;

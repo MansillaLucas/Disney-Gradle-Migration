@@ -1,5 +1,6 @@
 package com.javadabadu.disney.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Personaje;
 import lombok.Getter;
@@ -14,11 +15,14 @@ import java.util.List;
 @Getter
 @Setter
 public class AudioVisualResponseDTO {
+    private Integer id;
+
     private String titulo;
 
     private String imagen;
 
     private Calendar fechaCreacion;
 
-    private String generoNombre;
+    @JsonProperty(value="genero")
+    private GeneroResponseDTO generoNombre;
 }
