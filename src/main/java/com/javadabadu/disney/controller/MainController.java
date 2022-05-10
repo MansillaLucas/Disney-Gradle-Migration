@@ -21,14 +21,9 @@ public class MainController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> mainMethod(HttpServletRequest request) throws ExceptionBBDD {
-        try {
             Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel(),
                     generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:"),
                     characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:");
             return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink));
-
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM");
-        }
     }
 }
