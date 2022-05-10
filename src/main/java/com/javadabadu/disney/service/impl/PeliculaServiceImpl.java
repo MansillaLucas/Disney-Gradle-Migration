@@ -67,20 +67,24 @@ public class PeliculaServiceImpl implements PeliculaService {
         if (peliculaRepository.lastValueId() >= 1) {
             return peliculaRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US));
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     public Pelicula getEntitySave(Pelicula entity, Integer id) throws ExceptionBBDD {
-        Pelicula source = null;
-        setGenero(entity);
-        if (existsById(id)) {
-            source = mm.responseDtoToPelicula(findById(id));
-            entity.setId(id);
-            source = entity;
-            return source;
-        } else {
-            return entity;
+        try {
+            Pelicula source = null;
+            setGenero(entity);
+            if (existsById(id)) {
+                source = mm.responseDtoToPelicula(findById(id));
+                entity.setId(id);
+                source = entity;
+                return source;
+            } else {
+                return entity;
+            }
+        }  catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
