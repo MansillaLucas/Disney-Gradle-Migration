@@ -41,8 +41,6 @@ public class SerieServiceImpl implements SerieService {
         return serieResponseDTO;
     }
 
-
-
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
         AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
