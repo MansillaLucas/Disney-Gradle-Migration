@@ -30,9 +30,14 @@ public class SerieServiceImpl implements SerieService {
        @Override
     public List<SerieResponseDTO> findAll() throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTO = new ArrayList<>();
-        serieRepository.findAll().stream()
-                .filter(audioVisual -> audioVisual instanceof Serie)
-                .forEach(audioVisual -> serieResponseDTO.add(mm.serieToResponseDTO((Serie) audioVisual)));
+           try {
+               serieRepository.findAll().stream()
+                       .filter(audioVisual -> audioVisual instanceof Serie)
+                       .forEach(audioVisual -> serieResponseDTO.add(mm.serieToResponseDTO((Serie) audioVisual)));
+           } catch (Exception e) {
+               throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+           }
+
         return serieResponseDTO;
     }
 
