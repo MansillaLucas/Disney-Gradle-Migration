@@ -1,5 +1,6 @@
 package com.javadabadu.disney.service.impl;
 
+import com.javadabadu.disney.controller.SerieController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
@@ -10,6 +11,7 @@ import com.javadabadu.disney.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,38 +20,41 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Service
 public class SerieServiceImpl implements SerieService {
     @Autowired
-   SerieRepository serieRepository;
+    SerieRepository serieRepository;
     @Autowired
     private MessageSource message;
     @Autowired
     private ModelMapperDTOImp mm;
 
-       @Override
+    @Override
     public List<SerieResponseDTO> findAll() throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTO = new ArrayList<>();
-           try {
-               serieRepository.findAll().stream()
-                       .filter(audioVisual -> audioVisual instanceof Serie)
-                       .forEach(audioVisual -> serieResponseDTO.add(mm.serieToResponseDTO((Serie) audioVisual)));
-           } catch (Exception e) {
-               throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
-           }
+        try {
+            serieRepository.findAll().stream()
+                    .filter(audioVisual -> audioVisual instanceof Serie)
+                    .forEach(audioVisual -> serieResponseDTO.add(mm.serieToResponseDTO((Serie) audioVisual)));
+        } catch (Exception e) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+        }
 
         return serieResponseDTO;
     }
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
-        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
-        if(av instanceof Serie){
+        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND));
+        if (av instanceof Serie) {
             Serie s = (Serie) av;
             SerieResponseDTO serieResponseDTO = mm.serieToResponseDTO(s);
             return serieResponseDTO;
         }
-        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US));
+        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -78,13 +83,23 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public Link getSelfLink(Integer id, HttpServletRequest request)  {
-        return null;
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+
+        try{
+            return linkTo(methodOn(SerieController.class).findById(id,request)).withSelfRel();
+        }catch(ExceptionBBDD e){
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
-    public Link getCollectionLink(HttpServletRequest request)  {
-        return null;
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+        try{
+            return linkTo(methodOn(SerieController.class).findAll(request)).withRel("Series");
+        }catch(ExceptionBBDD e){
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @Override
