@@ -1,19 +1,28 @@
 package com.javadabadu.disney.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javadabadu.disney.controller.GeneroController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.GeneroResponseDTO;
 import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.entity.Personaje;
+import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+//new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US))
 @Service
 public class GeneroServiceImpl implements GeneroService {
 
@@ -23,80 +32,125 @@ public class GeneroServiceImpl implements GeneroService {
     @Autowired
     private MessageSource message;
 
+    @Autowired
+    ModelMapperDTOImp mapperDTO;
+
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Genero findById(Integer id) throws ExceptionBBDD {
-        return generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
+    public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
+        try {
+            return mapperDTO.generoToResponseDTO(generoRepository.save(genero));
+        } catch (Exception ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Genero> findAll() throws ExceptionBBDD{
+    public List<GeneroResponseDTO> findAll() throws ExceptionBBDD {
         try {
-            return generoRepository.findAll();
+            return mapperDTO.listGeneroToResponseDTO(generoRepository.findAll());
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+            throw new ExceptionBBDD("Error en la transacción, contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    @Transactional
-    public Genero save(Genero genero, Integer id) throws ExceptionBBDD {
-        responseBBDD(generoRepository.create(id, genero.getNombre(), genero.getImagen()), id);
-        return findById(id);
+    public GeneroResponseDTO findById(Integer id) throws ExceptionBBDD {
+        Genero genero = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        return mapperDTO.generoToResponseDTO(genero);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Integer lastValueId()throws ExceptionBBDD {
+    public Boolean existsById(Integer id) throws ExceptionBBDD {
+        try {
+            if (generoRepository.existsById(id)) {
+                return generoRepository.existsById(id);
+            } else {
+                return false;
+            }
+
+        } catch (Exception e) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public Integer lastValueId() throws ExceptionBBDD {
         if (generoRepository.lastValueId() >= 1) {
             return generoRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
-        }    }
-
-    @Override
-    @Transactional
-    public Genero update(Genero genero) throws ExceptionBBDD {
-        String response = generoRepository.update(genero.getId(), genero.getNombre(), genero.getImagen());
-        responseBBDD(response, genero.getId());
-        return genero;
-    }
-
-    @Override
-    @Transactional
-    public String softDelete(Integer id) {
-        return generoRepository.softDelete(id) ? "Se elimino el genero seleccionado" : "Error en la transaccion contacte con su ADMI";
-    }
-
-    @Override
-    public Boolean existsById(Integer id) {
-        return generoRepository.existsById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void responseBBDD(String response, Integer id) throws ExceptionBBDD {
-        responseBBDDOk(response);
-
-    }
-
-    private void responseBBDDOk(String response) throws ExceptionBBDD {
-        if (!response.contains("Se creo correctamente") && !response.contains("Se modifico correctamente")) {
-            throw new ExceptionBBDD(response);
+            throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
         }
     }
+
     @Override
-    @Transactional(readOnly = true)
-    public Genero getGenero(Genero genero, Integer id) throws ExceptionBBDD {
-        Genero source = null;
-        if (existsById(id)) {
-            source = findById(id);
+    public Genero getEntitySave(Genero genero, Integer id) throws ExceptionBBDD {
+        try {
+            if (!existsById(id)) {
+                return genero;
+            }
+            Genero source = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.BAD_REQUEST));
             genero.setId(id);
             source = genero;
             return source;
-        } else {
-            return genero  ;
+
+
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel();
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:");
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public String softDelete(Integer id) throws ExceptionBBDD {
+        try {
+            if (generoRepository.softDelete(id)) {
+                return "Se elimino el genero seleccionado";
+            } else {
+                throw new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
+            }
+
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public Genero getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            GeneroResponseDTO searchedGeneroDTO = findById(id);
+
+            Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGeneroDTO, Map.class);
+            propiedades.forEach((k, v) -> {
+                if (searchedGeneroMap.containsKey(k)) {
+                    searchedGeneroMap.replace(k, searchedGeneroMap.get(k), v);
+                }
+            });
+
+            Genero searchedGenero2 = mapper.convertValue(searchedGeneroMap, Genero.class);
+
+            return searchedGenero2;
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
 }
