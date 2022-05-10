@@ -1,6 +1,7 @@
 package com.javadabadu.disney.service.impl;
 
 import com.javadabadu.disney.controller.PeliculaController;
+import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
@@ -13,6 +14,7 @@ import com.javadabadu.disney.service.PeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,13 +48,13 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public PeliculaResponseDTO findById(Integer id) throws ExceptionBBDD {
-        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US)));
-        if (av instanceof Pelicula) {
+       AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND));
+               if (av instanceof Pelicula) {
             Pelicula p = (Pelicula) av;
             PeliculaResponseDTO peliculaResponseDTO = mm.peliculaToResponseDTO(p);
             return peliculaResponseDTO;
         }
-        throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US));
+        throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -94,13 +96,21 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public Link getSelfLink(Integer id, HttpServletRequest request)  {
-        return null /*linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel()*/;
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel();
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
-    public Link getCollectionLink(HttpServletRequest request) {
-        return null/* linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:")*/;
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:");
+        } catch (ExceptionBBDD ebd2) {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = Uri.PELICULAS)
@@ -25,12 +28,20 @@ public class PeliculaController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        return ResponseEntity.ok().body(peliculaService.findById(id));
+        PeliculaResponseDTO peliculaResponseDTO = peliculaService.findById(id);
+        return ResponseEntity.ok().body(EntityModel.of(peliculaResponseDTO, peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
     }
 
     @GetMapping("/")
     public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
-        return ResponseEntity.ok().body(peliculaService.findAll());
+        List<PeliculaResponseDTO> listPeliculaResponseDTO = peliculaService.findAll();
+        List<EntityModel<PeliculaResponseDTO>> peliculas = new ArrayList<>();
+
+        for (PeliculaResponseDTO pelicula : listPeliculaResponseDTO) {
+            peliculas.add(EntityModel.of(pelicula, peliculaService.getSelfLink(pelicula.getId(), request)));
+        }
+
+        return ResponseEntity.ok().body(CollectionModel.of(peliculas, peliculaService.getCollectionLink(request)));
     }
 
     @PostMapping("/")
