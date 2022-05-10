@@ -9,7 +9,9 @@ import java.util.Map;
 
 public interface BaseServiceWrite<E, O, I>{
     E getEntitySave(E entity, I id) throws ExceptionBBDD;
+
     O save(E entity) throws ExceptionBBDD ;
+
     Link getSelfLink(I id, HttpServletRequest request) throws ExceptionBBDD;
 
     Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD;

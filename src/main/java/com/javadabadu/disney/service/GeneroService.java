@@ -6,7 +6,7 @@ import com.javadabadu.disney.models.entity.Personaje;
 
 import java.util.List;
 
-public interface GeneroService {
+public interface GeneroService  {
     Genero findById(Integer id) throws ExceptionBBDD;
     List<Genero> findAll() throws ExceptionBBDD;
     Genero save(Genero genero,Integer id) throws ExceptionBBDD;
