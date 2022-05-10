@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ExceptionBBDD.class})
     public ResponseEntity<?> BBDDException(HttpServletRequest request, ExceptionBBDD e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+                .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), e.getStatusCode().value()));
     }
 
 

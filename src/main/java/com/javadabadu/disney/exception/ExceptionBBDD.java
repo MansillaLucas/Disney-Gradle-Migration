@@ -1,8 +1,13 @@
 package com.javadabadu.disney.exception;
 
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
-public class ExceptionBBDD extends Exception  {
+@Getter
+public class ExceptionBBDD extends Exception {
+
+    private String message;
+    private HttpStatus statusCode;
 
     public ExceptionBBDD() {
     }
@@ -10,4 +15,10 @@ public class ExceptionBBDD extends Exception  {
     public ExceptionBBDD(String message) {
         super(message);
     }
+
+    public ExceptionBBDD(String message, HttpStatus statusCode) {
+        this.message = message;
+        this.statusCode = statusCode;
+    }
+
 }
