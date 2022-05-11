@@ -38,6 +38,7 @@ public class GeneroController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
+
         List<GeneroResponseDTO> listGeneroResponseDTO = generoService.findAll();
         List<EntityModel<GeneroResponseDTO>> generosEntity = new ArrayList<>();
 
@@ -50,7 +51,7 @@ public class GeneroController {
 
     @PostMapping("/")
     public ResponseEntity<?> lastId(HttpServletRequest request) throws ExceptionBBDD {
-        return ResponseEntity.created(URI.create(request.getRequestURI() + generoService.lastValueId())).body("Se creo un registro");
+        return ResponseEntity.created(URI.create(request.getRequestURI() + generoService.lastValueId())).body("Se creó un registro");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,6 +65,7 @@ public class GeneroController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) throws ExceptionBBDD {
+
         Genero searchedGenero = generoService.getEntity(id, propiedades);
         GeneroResponseDTO generoDTO = generoService.save(searchedGenero);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(generoDTO, generoService.getSelfLink(id, request)));
@@ -71,6 +73,7 @@ public class GeneroController {
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+
         String body = generoService.softDelete(generoService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
         return ResponseEntity.ok().body(EntityModel.of(response, generoService.getCollectionLink(request)));
