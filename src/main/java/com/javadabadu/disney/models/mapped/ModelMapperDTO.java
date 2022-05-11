@@ -30,4 +30,6 @@ public interface ModelMapperDTO {
 
     Pelicula responseDtoToPelicula(PeliculaResponseDTO peliculaResponseDTO);
 
+    Serie responseDtoToSerie(SerieResponseDTO serieResponseDTO);
+
 }
