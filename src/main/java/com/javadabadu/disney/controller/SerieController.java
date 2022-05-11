@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = Uri.SERIES)
@@ -65,5 +66,15 @@ public class SerieController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
         }
+    }
+
+    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@PathVariable Integer id,
+                                    @RequestBody Map<String, Object> propiedades,
+                                    HttpServletRequest request) throws ExceptionBBDD {
+        Serie searchedSerie = serieService.getEntity(id,propiedades);
+        SerieResponseDTO serieResponseDTO = serieService.save(searchedSerie);
+        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieResponseDTO, serieService.getSelfLink(id,request)));
+
     }
 }

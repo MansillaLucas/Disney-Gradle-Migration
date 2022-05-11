@@ -1,4 +1,4 @@
-package com.javadabadu.disney.service.impl;
+package com.javadabadu.disney.models.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;

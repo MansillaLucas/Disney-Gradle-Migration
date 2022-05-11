@@ -1,4 +1,4 @@
-package com.javadabadu.disney.service.impl;
+package com.javadabadu.disney.models.impl;
 
 import com.javadabadu.disney.controller.PeliculaController;
 import com.javadabadu.disney.exception.ExceptionBBDD;

@@ -1,11 +1,12 @@
-package com.javadabadu.disney.service.impl;
+package com.javadabadu.disney.models.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.SerieController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.entity.Pelicula;
 import com.javadabadu.disney.models.entity.Serie;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.GeneroRepository;
@@ -53,13 +54,13 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
-        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND));
+        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
         if (av instanceof Serie) {
             Serie s = (Serie) av;
             SerieResponseDTO serieResponseDTO = mm.serieToResponseDTO(s);
             return serieResponseDTO;
         }
-        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
+        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
-        if (serieRepository.lastValueId()>=1){
+        if (serieRepository.lastValueId() >= 1) {
             return serieRepository.lastValueId();
         }
         throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
@@ -86,35 +87,35 @@ public class SerieServiceImpl implements SerieService {
     public Serie getEntitySave(Serie entity, Integer id) throws ExceptionBBDD {
         Serie source = null;
         setGenero(entity);
-        if (existsById(id)){
+        if (existsById(id)) {
             source = mm.responseDtoToSerie(findById(id));
             entity.setId(id);
             source = entity;
-            return  source;
+            return source;
         }
         return entity;
     }
 
     @Override
     public SerieResponseDTO save(Serie entity) {
-       return mm.serieToResponseDTO(serieRepository.save(entity));
+        return mm.serieToResponseDTO(serieRepository.save(entity));
     }
 
     @Override
     public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
 
-        try{
-            return linkTo(methodOn(SerieController.class).findById(id,request)).withSelfRel();
-        }catch(ExceptionBBDD e){
+        try {
+            return linkTo(methodOn(SerieController.class).findById(id, request)).withSelfRel();
+        } catch (ExceptionBBDD e) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
-        try{
+        try {
             return linkTo(methodOn(SerieController.class).findAll(request)).withRel("Series");
-        }catch(ExceptionBBDD e){
+        } catch (ExceptionBBDD e) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
@@ -126,7 +127,18 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public Serie getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        Serie serie = (Serie) serieRepository.findById(id).get();
+        SerieDtoPatch serieDtoP = mm.seriePatchDto(serie);
+        Map<String, Object> searchedSerieMap = mapper.convertValue(serieDtoP, Map.class);
+        propiedades.forEach((k, v) -> {
+            if (searchedSerieMap.containsKey(k)) {
+                searchedSerieMap.replace(k, searchedSerieMap.get(k), v);
+            }
+        });
+        Serie searchedSerieMap2 = mapper.convertValue(searchedSerieMap, Serie.class);
+        return searchedSerieMap2;
+
     }
 
     private void setGenero(Serie entity) throws ExceptionBBDD {
