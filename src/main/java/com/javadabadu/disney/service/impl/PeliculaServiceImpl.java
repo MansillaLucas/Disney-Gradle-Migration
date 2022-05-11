@@ -1,8 +1,9 @@
 package com.javadabadu.disney.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PeliculaController;
-import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -18,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -124,10 +122,27 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public Pelicula getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+
+            Pelicula pelicula = (Pelicula) peliculaRepository.findById(id).get();
+
+        PeliculaPatchDTO peliculaDTO = mm.peliculaPatchDTO(pelicula);
+
+       // peliculaDTO.setGenero(mm.generoToResponseDTO(pelicula.getGenero()));
+
+        peliculaDTO.setCalificacion(peliculaDTO.getCalificacion()-1);
+
+             Map<String, Object> searchedPeliculaMap = mapper.convertValue(peliculaDTO, Map.class);
+            propiedades.forEach((k, v) -> {
+                if (searchedPeliculaMap.containsKey(k)) {
+                    searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
+                }
+            });
+
+            Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
+
+            return toPersist;
+
     }
-
-
-    //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
 
 }
