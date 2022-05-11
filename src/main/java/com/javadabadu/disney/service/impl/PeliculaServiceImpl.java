@@ -46,13 +46,7 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public PeliculaResponseDTO findById(Integer id) throws ExceptionBBDD {
-       AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND));
-               if (av instanceof Pelicula) {
-            Pelicula p = (Pelicula) av;
-            PeliculaResponseDTO peliculaResponseDTO = mm.peliculaToResponseDTO(p);
-            return peliculaResponseDTO;
-        }
-        throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
+        return mm.peliculaToResponseDTO(findPelicula(id));
     }
 
     @Override
@@ -70,9 +64,9 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     public Pelicula getEntitySave(Pelicula entity, Integer id) throws ExceptionBBDD {
+        Pelicula source = null;
+        setGenero(entity, entity.getGenero().getId());
         try {
-            Pelicula source = null;
-            setGenero(entity);
             if (existsById(id)) {
                 source = mm.responseDtoToPelicula(findById(id));
                 entity.setId(id);
@@ -86,9 +80,10 @@ public class PeliculaServiceImpl implements PeliculaService {
         }
     }
 
-    private void setGenero(Pelicula entity) throws ExceptionBBDD {
-        Integer idGenero = entity.getGenero().getId();
-        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US)));
+    private void setGenero(Pelicula entity, Integer idGenero) throws ExceptionBBDD {
+        Genero genero = generoRepository.findById(idGenero).
+                orElseThrow(() -> new ExceptionBBDD
+                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US),HttpStatus.NOT_FOUND));
         entity.setGenero(genero);
     }
 
@@ -124,25 +119,40 @@ public class PeliculaServiceImpl implements PeliculaService {
     public Pelicula getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
 
-            Pelicula pelicula = (Pelicula) peliculaRepository.findById(id).get();
+        PeliculaPatchDTO peliculaDTO = getPeliculaDtoToModify(id, propiedades);
+        Map<String, Object> searchedPeliculaMap = mapper.convertValue(peliculaDTO, Map.class);
+        propiedades.forEach((k, v) -> {
+            if (searchedPeliculaMap.containsKey(k)) {
+                searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
+            }
+        });
+
+        Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
+
+        return toPersist;
+    }
+
+    private PeliculaPatchDTO getPeliculaDtoToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+        Pelicula pelicula = findPelicula(id);
+
+        if(propiedades.containsKey("genero")){
+            Map<String, Object> propID = (Map<String, Object>) propiedades.get("genero");
+            Integer idGenero = (Integer) propID.get("id");
+            setGenero(pelicula,idGenero);
+        }
 
         PeliculaPatchDTO peliculaDTO = mm.peliculaPatchDTO(pelicula);
 
-       // peliculaDTO.setGenero(mm.generoToResponseDTO(pelicula.getGenero()));
-
         peliculaDTO.setCalificacion(peliculaDTO.getCalificacion()-1);
 
-             Map<String, Object> searchedPeliculaMap = mapper.convertValue(peliculaDTO, Map.class);
-            propiedades.forEach((k, v) -> {
-                if (searchedPeliculaMap.containsKey(k)) {
-                    searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
-                }
-            });
-
-            Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
-
-            return toPersist;
-
+        return peliculaDTO;
     }
 
+    public Pelicula findPelicula(Integer id) throws ExceptionBBDD{
+        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND));
+        if (av instanceof Pelicula) {
+            return (Pelicula) av;
+        }
+        throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
+    }
 }
