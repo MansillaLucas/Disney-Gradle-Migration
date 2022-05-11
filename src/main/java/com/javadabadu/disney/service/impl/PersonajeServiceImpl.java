@@ -74,7 +74,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             if (personajeRepository.existsById(id)) {
                 return personajeRepository.existsById(id);
             } else {
-                throw new ExceptionBBDD("Id no existente", HttpStatus.NOT_FOUND);
+                return false;
             }
 
         } catch (Exception e) {
