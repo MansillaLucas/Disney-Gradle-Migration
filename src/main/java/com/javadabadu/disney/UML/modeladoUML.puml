@@ -10,11 +10,13 @@ Serie     --|> AudioVisual
     - String imagen
     - float peso
     - TipoPersonaje tipo
+    - Boolean estado
 }
 
  class Genero {
      - String  nombre
      - String imagen
+     - Boolean estado
 }
 
  class Pelicula {
@@ -31,6 +33,7 @@ class AudioVisual {
     - String titulo
     - String imagen
     - LocalDate fechaCreacion
+    - Boolean estado
 }
 
 
