@@ -37,6 +37,8 @@ public class AudioVisual {
     @JoinColumn(name = "fk_genero" ,nullable = false)
     private Genero genero;
 
+    @Column(nullable = false)
+    private boolean estado = true;
 
     @ManyToMany
     @JoinTable(name = "personajes_por_audiovisual",
@@ -45,10 +47,7 @@ public class AudioVisual {
             inverseJoinColumns = {
                     @JoinColumn(name = "id_personaje")})
     private List<Personaje> personajes = new ArrayList<>();
-
-    @Column(nullable = false)
-    private boolean estado =true;
-
+    
     public AudioVisual() {
     }
 

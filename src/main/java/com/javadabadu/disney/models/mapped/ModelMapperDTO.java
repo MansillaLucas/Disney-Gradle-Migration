@@ -33,4 +33,7 @@ public interface ModelMapperDTO {
     Serie responseDtoToSerie(SerieResponseDTO serieResponseDTO);
 
     SerieDtoPatch seriePatchDto(Serie serie);
+
+    PeliculaPatchDTO peliculaPatchDTO(Pelicula pelicula);
+
 }

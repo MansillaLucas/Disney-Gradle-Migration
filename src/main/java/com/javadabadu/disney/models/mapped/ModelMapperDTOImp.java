@@ -110,4 +110,9 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     public Pelicula responseDtoToPelicula(PeliculaResponseDTO peliculaResponseDTO) {
         return modelMapper.map(peliculaResponseDTO, Pelicula.class);
     }
+
+    @Override
+    public PeliculaPatchDTO peliculaPatchDTO(Pelicula pelicula) {
+        return modelMapper.map(pelicula, PeliculaPatchDTO.class);
+    }
 }

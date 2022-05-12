@@ -28,9 +28,6 @@ public class PersonajeController {
     @Autowired
     PersonajeService personajeService;
 
-    @Autowired
-    ModelMapperDTOImp mapperDTO;
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
 
@@ -54,9 +51,7 @@ public class PersonajeController {
 
     @PostMapping("/")
     public ResponseEntity<?> lastId(HttpServletRequest request) throws ExceptionBBDD {
-
         return ResponseEntity.created(URI.create(request.getRequestURI() + personajeService.lastValueId())).body("Se creo un registro");
-
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
