@@ -86,7 +86,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public Serie getEntitySave(Serie entity, Integer id) throws ExceptionBBDD {
         Serie source = null;
-        setGenero(entity);
+        setGenero(entity, entity.getGenero().getId());
         if (existsById(id)) {
             source = mm.responseDtoToSerie(findById(id));
             entity.setId(id);
@@ -147,12 +147,13 @@ public class SerieServiceImpl implements SerieService {
         });
         Serie searchedSerieMap2 = mapper.convertValue(searchedSerieMap, Serie.class);
         return searchedSerieMap2;
-
     }
 
-    private void setGenero(Serie entity) throws ExceptionBBDD {
-        Integer idGenero = entity.getGenero().getId();
-        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US)));
+    private void setGenero(Serie entity, Integer idGenero) throws ExceptionBBDD {
+        Genero genero = generoRepository.findById(idGenero).
+                orElseThrow(() -> new ExceptionBBDD
+                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US),HttpStatus.NOT_FOUND));
         entity.setGenero(genero);
     }
-}
+
+    }
