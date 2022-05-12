@@ -2,13 +2,16 @@ package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
+import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Pelicula;
+import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = Uri.PELICULAS)
@@ -58,6 +62,14 @@ public class PeliculaController {
         return ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
     }
 
+    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@PathVariable Integer id,
+                                    @RequestBody Map<String, Object> propiedades,
+                                    HttpServletRequest request) throws ExceptionBBDD {
+
+        Pelicula searchedPelicula = peliculaService.getEntity(id, propiedades);
+        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
+    }
 
 
 }
