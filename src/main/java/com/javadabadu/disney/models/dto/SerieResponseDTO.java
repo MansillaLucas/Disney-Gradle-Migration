@@ -19,4 +19,5 @@ public class SerieResponseDTO {
     private String generoNombre;
     private Byte temporadas;
     private Byte capitulos;
+    private boolean estado =true;
 }

@@ -17,4 +17,5 @@ public class SerieDtoPatch {
     private GeneroResponseDTO genero;
     private Byte temporadas;
     private Byte capitulos;
+    private boolean estado =true;
 }
