@@ -9,4 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 public interface AudioVisualRepository extends JpaRepository<AudioVisual, Integer> {
     @Query(value = "select * from fn_last_value_idaudiovisual()", nativeQuery = true)
     Integer lastValueId();
+
+    @Query(value = "select * from fn_soft_delete_audiovisual(:id) ", nativeQuery = true)
+    boolean softDelete(Integer id);
 }
