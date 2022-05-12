@@ -77,4 +77,11 @@ public class SerieController {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieResponseDTO, serieService.getSelfLink(id,request)));
 
     }
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        String body = serieService.softDelete(serieService.findById(id).getId());
+        ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
+        return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
 }

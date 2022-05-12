@@ -122,7 +122,16 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public String softDelete(Integer id) throws ExceptionBBDD {
-        return null;
+        try {
+            if (serieRepository.softDelete(id)) {
+                return "Se elimino la serie seleccionada";
+            } else {
+                throw new ExceptionBBDD("Id no encontrado", HttpStatus.NOT_FOUND);
+            }
+
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

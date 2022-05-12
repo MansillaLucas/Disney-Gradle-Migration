@@ -46,6 +46,9 @@ public class AudioVisual {
                     @JoinColumn(name = "id_personaje")})
     private List<Personaje> personajes = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean estado =true;
+
     public AudioVisual() {
     }
 
