@@ -54,13 +54,7 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
-        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
-        if (av instanceof Serie) {
-            Serie s = (Serie) av;
-            SerieResponseDTO serieResponseDTO = mm.serieToResponseDTO(s);
-            return serieResponseDTO;
-        }
-        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
+      return mm.serieToResponseDTO(findSerie(id));
     }
 
     @Override
@@ -137,9 +131,10 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public Serie getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
-        Serie serie = (Serie) serieRepository.findById(id).get();
-        SerieDtoPatch serieDtoP = mm.seriePatchDto(serie);
+
+        SerieDtoPatch serieDtoP = getSerieToModify(id,propiedades);
         Map<String, Object> searchedSerieMap = mapper.convertValue(serieDtoP, Map.class);
+
         propiedades.forEach((k, v) -> {
             if (searchedSerieMap.containsKey(k)) {
                 searchedSerieMap.replace(k, searchedSerieMap.get(k), v);
@@ -152,8 +147,26 @@ public class SerieServiceImpl implements SerieService {
     private void setGenero(Serie entity, Integer idGenero) throws ExceptionBBDD {
         Genero genero = generoRepository.findById(idGenero).
                 orElseThrow(() -> new ExceptionBBDD
-                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US),HttpStatus.NOT_FOUND));
+                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
         entity.setGenero(genero);
     }
 
+    public Serie findSerie(Integer id) throws ExceptionBBDD {
+        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        if (av instanceof Serie) {
+            return (Serie) av;
+        }
+        throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
     }
+
+    private SerieDtoPatch getSerieToModify(Integer id, Map<String, Object> propiedades)throws ExceptionBBDD{
+        Serie serie = findSerie(id);
+        if(propiedades.containsKey("genero")){
+            Map<String,Object> propGenId = (Map<String, Object>) propiedades.get("genero");
+            Integer idGenero = (Integer)  propGenId.get("id");
+            setGenero(serie,idGenero);
+        }
+        SerieDtoPatch serieDtoP= mm.seriePatchDto(serie);
+        return serieDtoP;
+    }
+}
