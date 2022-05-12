@@ -66,6 +66,10 @@ public class PeliculaController {
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        String body = peliculaService.softDelete(peliculaService.findById(id).getId());
+        ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
+    }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id,
@@ -74,11 +78,6 @@ public class PeliculaController {
 
         Pelicula searchedPelicula = peliculaService.getEntity(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
-    }
-
-        String body = peliculaService.softDelete(peliculaService.findById(id).getId());
-        ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
-        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
 }
