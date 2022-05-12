@@ -2,6 +2,7 @@ package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
+import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Pelicula;
 import com.javadabadu.disney.models.entity.Personaje;
@@ -62,6 +63,10 @@ public class PeliculaController {
         return ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
     }
 
+
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id,
                                     @RequestBody Map<String, Object> propiedades,
@@ -71,5 +76,9 @@ public class PeliculaController {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
     }
 
+        String body = peliculaService.softDelete(peliculaService.findById(id).getId());
+        ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
+    }
 
 }

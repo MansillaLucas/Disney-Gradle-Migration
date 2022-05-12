@@ -111,8 +111,16 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public String softDelete(Integer id)  {
-        return null;
+    public String softDelete(Integer id) throws ExceptionBBDD {
+          try {
+                if (peliculaRepository.softDelete(id)) {
+                    return message.getMessage("delete.success", null, Locale.US);
+                } else {
+                    throw new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
+                }
+            } catch (ExceptionBBDD ebd) {
+                throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            }
     }
 
     @Override
