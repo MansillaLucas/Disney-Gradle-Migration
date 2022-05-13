@@ -2,6 +2,7 @@ package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
+import com.javadabadu.disney.models.dto.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.Serie;
 import com.javadabadu.disney.service.SerieService;
@@ -28,7 +29,7 @@ public class SerieController {
     SerieService serieService;
 
     @GetMapping("/")
-    public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTOList = serieService.findAll();
         List<EntityModel<SerieResponseDTO>> entityModelList = new ArrayList<>();
         for (SerieResponseDTO serieResponseDTO1 : serieResponseDTOList) {
@@ -38,48 +39,39 @@ public class SerieController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<SerieResponseDTO>> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.findById(id);
         return ResponseEntity.ok().body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request),
                 serieService.getCollectionLink(request)));
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> lastId(HttpServletRequest request) {
-        try {
-            return ResponseEntity.created(URI.create(request.getRequestURI()
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
+
+       return ResponseEntity.created(URI.create(request.getRequestURI()
                     + serieService.lastValueId())).body("Se creo un registro");
-        } catch (ExceptionBBDD e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
-        }
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crear(@RequestBody Serie serie, @PathVariable Integer id, HttpServletRequest request) {
-        try {
-            Serie source = serieService.getEntitySave(serie, id);
-            return ResponseEntity.ok().body(EntityModel.of(serieService.save(source)
-                    , serieService.getSelfLink(id, request)
-                    , serieService.getCollectionLink(request)));
-        } catch (ExceptionBBDD e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), HttpStatus.BAD_REQUEST.value()));
-        }
+    public ResponseEntity<EntityModel<SerieResponseDTO>> crear(@RequestBody SerieRequestDTO serieRequestDTO, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        Serie source = serieService.getEntitySave(serieRequestDTO,id);
+        return  ResponseEntity.ok().body(EntityModel.of(serieService.save(source)
+                , serieService.getSelfLink(id, request)
+                , serieService.getCollectionLink(request)));
     }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable Integer id,
+    public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
                                     @RequestBody Map<String, Object> propiedades,
                                     HttpServletRequest request) throws ExceptionBBDD {
-        Serie searchedSerie = serieService.getEntity(id,propiedades);
+        Serie searchedSerie = serieService.getEntity(id, propiedades);
         SerieResponseDTO serieResponseDTO = serieService.save(searchedSerie);
-        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieResponseDTO, serieService.getSelfLink(id,request)));
+        return  ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieResponseDTO, serieService.getSelfLink(id, request)));
 
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         String body = serieService.softDelete(serieService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));

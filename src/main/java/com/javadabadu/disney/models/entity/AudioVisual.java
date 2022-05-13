@@ -47,7 +47,7 @@ public class AudioVisual {
             inverseJoinColumns = {
                     @JoinColumn(name = "id_personaje")})
     private List<Personaje> personajes = new ArrayList<>();
-    
+
     public AudioVisual() {
     }
 

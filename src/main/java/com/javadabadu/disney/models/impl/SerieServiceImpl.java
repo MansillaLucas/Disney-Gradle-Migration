@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.SerieController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.SerieDtoPatch;
+import com.javadabadu.disney.models.dto.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -19,10 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -54,7 +52,7 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO findById(Integer id) throws ExceptionBBDD {
-      return mm.serieToResponseDTO(findSerie(id));
+        return mm.serieToResponseDTO(findSerie(id));
     }
 
     @Override
@@ -132,7 +130,7 @@ public class SerieServiceImpl implements SerieService {
     public Serie getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
 
-        SerieDtoPatch serieDtoP = getSerieToModify(id,propiedades);
+        SerieDtoPatch serieDtoP = getSerieToModify(id, propiedades);
         Map<String, Object> searchedSerieMap = mapper.convertValue(serieDtoP, Map.class);
 
         propiedades.forEach((k, v) -> {
@@ -153,20 +151,40 @@ public class SerieServiceImpl implements SerieService {
 
     public Serie findSerie(Integer id) throws ExceptionBBDD {
         AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+
         if (av instanceof Serie) {
             return (Serie) av;
         }
         throw new ExceptionBBDD(message.getMessage("id.not.serie", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
     }
 
-    private SerieDtoPatch getSerieToModify(Integer id, Map<String, Object> propiedades)throws ExceptionBBDD{
+
+    private SerieDtoPatch getSerieToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         Serie serie = findSerie(id);
-        if(propiedades.containsKey("genero")){
-            Map<String,Object> propGenId = (Map<String, Object>) propiedades.get("genero");
-            Integer idGenero = (Integer)  propGenId.get("id");
-            setGenero(serie,idGenero);
+        if (propiedades.containsKey("genero")) {
+            Map<String, Object> propGenId = (Map<String, Object>) propiedades.get("genero");
+            Integer idGenero = (Integer) propGenId.get("id");
+            setGenero(serie, idGenero);
         }
-        SerieDtoPatch serieDtoP= mm.seriePatchDto(serie);
+        SerieDtoPatch serieDtoP = mm.seriePatchDto(serie);
         return serieDtoP;
+    }
+
+    @Override
+    public Serie getEntitySave(SerieRequestDTO, Integer id) throws ExceptionBBDD {
+        Serie source = null;
+        setGenero(entity, entity.getGenero().getId());
+        if (existsById(id)) {
+            source = mm.responseDtoToSerie(findById(id));
+            entity.setId(id);
+            source = entity;
+            return source;
+        }
+        return null;
+    }
+    @Override
+    public Serie getSaveEntity(SerieRequestDTO requestDto, Integer id) throws ExceptionBBDD {
+
+        return null;
     }
 }
