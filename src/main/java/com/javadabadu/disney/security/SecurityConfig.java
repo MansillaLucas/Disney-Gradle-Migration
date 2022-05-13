@@ -41,11 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter(authenticationManagerBean());
         userAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
 
-   /*     http.csrf().disable();
-        http.formLogin();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/v1/login/**", "api/v1/auth/token/refresh/**").permitAll()
-                .anyRequest().authenticated();*/
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .cors().and()
                 .csrf().disable()
@@ -53,10 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated().and()
                 .addFilter(userAuthenticationFilter)
                 .addFilterBefore(new UserAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
-        /*http.authorizeRequests().antMatchers("/api/v1/auth/**").hasAnyAuthority("USER");
-        http.authorizeRequests().antMatchers("/api/v1/auth/user/save/**").hasAnyAuthority("ADMIN");*/
     }
 
     @Bean
