@@ -54,7 +54,7 @@ public class SerieController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<SerieResponseDTO>> crear(@RequestBody SerieRequestDTO serieRequestDTO, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        Serie source = serieService.getEntitySave(serieRequestDTO,id);
+        Serie source = serieService.getSaveEntity(serieRequestDTO,id);
         return  ResponseEntity.ok().body(EntityModel.of(serieService.save(source)
                 , serieService.getSelfLink(id, request)
                 , serieService.getCollectionLink(request)));

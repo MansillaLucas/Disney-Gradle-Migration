@@ -6,11 +6,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SerieRequestDTO {
+public class SerieRequestDTO extends AudioVisualRequestDTO{
 
     private Byte temporadas;
     private Byte capitulos;
-    @JsonProperty(value="genero")
-    private GeneroResponseDTO genero;
-    private String titulo;
+
 }

@@ -61,9 +61,6 @@ public class SerieServiceImpl implements SerieService {
         return serieRepository.existsById(id);
     }
 
-    //TODO implementar metodo
-
-
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
         if (serieRepository.lastValueId() >= 1) {
@@ -71,9 +68,6 @@ public class SerieServiceImpl implements SerieService {
         }
         throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
     }
-
-
-    //TODO restan metodos de guardar y actualizar (agregar tambien in interfaz correspondiente)
 
     @Override
     public Serie getEntitySave(Serie entity, Integer id) throws ExceptionBBDD {
@@ -171,20 +165,22 @@ public class SerieServiceImpl implements SerieService {
     }
 
     @Override
-    public Serie getEntitySave(SerieRequestDTO, Integer id) throws ExceptionBBDD {
+    public Serie getSaveEntity(SerieRequestDTO serieRequestDTO, Integer id) throws ExceptionBBDD {
         Serie source = null;
-        setGenero(entity, entity.getGenero().getId());
+        setGeneroForRequest(serieRequestDTO, serieRequestDTO.getGenero().getId());
         if (existsById(id)) {
-            source = mm.responseDtoToSerie(findById(id));
-            entity.setId(id);
-            source = entity;
+            source = mm.requestDtoToSerie(serieRequestDTO);
+            source.setId(id);
             return source;
         }
-        return null;
+        return mm.requestDtoToSerie(serieRequestDTO);
     }
-    @Override
-    public Serie getSaveEntity(SerieRequestDTO requestDto, Integer id) throws ExceptionBBDD {
 
-        return null;
+    private void setGeneroForRequest(SerieRequestDTO serieRequestDTO, Integer idGenero) throws ExceptionBBDD {
+        Genero genero = generoRepository.findById(idGenero).
+                orElseThrow(() -> new ExceptionBBDD
+                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
+        serieRequestDTO.setGenero(mm.generoToResponseDTO(genero));
     }
+
 }
