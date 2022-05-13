@@ -44,20 +44,20 @@ public class UsuarioController {
 
 
     @PostMapping(value = "/user/save")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+   @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario user) {
         return ResponseEntity.ok().body(usuarioService.saveUser(user));
     }
 
 
     @PostMapping(value = "/role/save")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> crearRol(@RequestBody Rol rol) {
         return ResponseEntity.ok().body(usuarioService.saveRole(rol));
     }
 
     @PostMapping(value = "/role/add_to_user")
-    @PreAuthorize("ROLE_ADMIN")
+    @PreAuthorize("ADMIN")
     public ResponseEntity<?> addRoleToUser(@RequestBody String username, String roleDescription) {
         usuarioService.addRoleToUser(username, roleDescription);
         return ResponseEntity.ok().build();

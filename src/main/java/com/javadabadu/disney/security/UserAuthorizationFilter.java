@@ -45,10 +45,11 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
 
                     String username = decodedJWT.getSubject();
                     String rol = decodedJWT.getClaim("role").toString();
-/*
+
                     rol = rol.replaceAll("\"", "");
                     rol = rol.replace("]", "");
-                    rol = rol.replace("[", "");*/
+                    rol = rol.replace("[", "");
+
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority(rol));
 
