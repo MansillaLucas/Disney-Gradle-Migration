@@ -18,4 +18,5 @@ public interface BaseServiceWrite<E, O, I> {
     String softDelete(I id) throws ExceptionBBDD;
 
     E getEntity(I id, Map<String, Object> propiedades) throws ExceptionBBDD;
+
 }
