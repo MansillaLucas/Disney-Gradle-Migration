@@ -14,12 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)//(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -44,21 +41,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UserAuthenticationFilter userAuthenticationFilter = new UserAuthenticationFilter(authenticationManagerBean());
         userAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
 
-        http.csrf().disable();
+   /*     http.csrf().disable();
         http.formLogin();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/v1/login/**", "api/v1/auth/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET,"api/v1/auth/**").hasAnyAuthority("USER");
-        http.authorizeRequests().antMatchers(POST,"api/v1/auth/user/save/**").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(userAuthenticationFilter);
-        http.addFilterBefore(new UserAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().antMatchers("/api/v1/login/**", "api/v1/auth/token/refresh/**").permitAll()
+                .anyRequest().authenticated();*/
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .cors().and()
+                .csrf().disable()
+                .authorizeRequests().antMatchers("/api/v1/login/**", "api/v1/auth/token/refresh/**").permitAll()
+                .anyRequest().authenticated().and()
+                .addFilter(userAuthenticationFilter)
+                .addFilterBefore(new UserAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+
+        /*http.authorizeRequests().antMatchers("/api/v1/auth/**").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers("/api/v1/auth/user/save/**").hasAnyAuthority("ADMIN");*/
     }
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 

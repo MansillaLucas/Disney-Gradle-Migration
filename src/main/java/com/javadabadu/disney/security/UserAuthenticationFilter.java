@@ -43,10 +43,9 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        User user = (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal(); //Clase User propia de Spring Security
 
         Algorithm algorithm = Algorithm.HMAC256("${SECRET_WORD}".getBytes()); //la palabra debe ir cifrada o como variable de entorno
-
 
         String accessToken = JWT.create()
                 .withSubject(user.getUsername()) //se debe poner algo unico de la entidad (falta hacer unico el username)
@@ -64,6 +63,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
 
         Map<String,String> tokens = new HashMap<>();
 
+
+        response.setHeader("acces_token",accessToken);
         tokens.put("acces_token",accessToken);
         tokens.put("refresh_token",refreshToken);
 

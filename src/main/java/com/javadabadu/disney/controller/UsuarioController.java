@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,22 +35,29 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
+
     @GetMapping(value = "/")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(usuarioService.findAll());
     }
 
+
     @PostMapping(value = "/user/save")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario user) {
         return ResponseEntity.ok().body(usuarioService.saveUser(user));
     }
 
+
     @PostMapping(value = "/role/save")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> crearRol(@RequestBody Rol rol) {
         return ResponseEntity.ok().body(usuarioService.saveRole(rol));
     }
 
     @PostMapping(value = "/role/add_to_user")
+    @PreAuthorize("ROLE_ADMIN")
     public ResponseEntity<?> addRoleToUser(@RequestBody String username, String roleDescription) {
         usuarioService.addRoleToUser(username, roleDescription);
         return ResponseEntity.ok().build();
@@ -64,7 +73,6 @@ public class UsuarioController {
                 Algorithm algorithm = Algorithm.HMAC256("${SECRET_WORD}".getBytes());
 
                 JWTVerifier verifier = JWT.require(algorithm).build();
-
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
 
                 String username = decodedJWT.getSubject();

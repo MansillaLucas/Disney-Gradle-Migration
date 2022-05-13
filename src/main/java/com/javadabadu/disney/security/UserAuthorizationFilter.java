@@ -1,5 +1,6 @@
 package com.javadabadu.disney.security;
 
+import antlr.StringUtils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -25,6 +26,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class UserAuthorizationFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals("/api/v1/login") || request.getServletPath().equals("api/v1/auth/token/refresh/**")) {
@@ -43,7 +45,10 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
 
                     String username = decodedJWT.getSubject();
                     String rol = decodedJWT.getClaim("role").toString();
-
+/*
+                    rol = rol.replaceAll("\"", "");
+                    rol = rol.replace("]", "");
+                    rol = rol.replace("[", "");*/
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority(rol));
 
