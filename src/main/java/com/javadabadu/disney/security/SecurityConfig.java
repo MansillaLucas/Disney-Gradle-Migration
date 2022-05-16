@@ -27,8 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -44,7 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .cors().and()
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/api/v1/login/**", "api/v1/auth/token/refresh/**").permitAll()
+                .authorizeRequests().antMatchers("/api/v1/login/**",
+                        "api/v1/auth/token/refresh/**",
+                        "/api/v1/auth/register").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(userAuthenticationFilter)
                 .addFilterBefore(new UserAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

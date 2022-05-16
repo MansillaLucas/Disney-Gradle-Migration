@@ -28,7 +28,7 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/v1/login") || request.getServletPath().equals("api/v1/auth/token/refresh/**")) {
+        if (request.getServletPath().equals("/api/v1/login") || request.getServletPath().equals("api/v1/auth/token/refresh/")) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -45,9 +45,7 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
                     String username = decodedJWT.getSubject();
                     String rol = decodedJWT.getClaim("role").toString();
 
-                    rol = rol.replaceAll("\"", "");
-                    rol = rol.replace("]", "");
-                    rol = rol.replace("[", "");
+                    rol = cleanRolString(rol);
 
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority(rol));
@@ -71,5 +69,13 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             }
         }
+    }
+
+    private String cleanRolString(String rol) {
+        rol = rol.replaceAll("\"", "");
+        rol = rol.replace("]", "");
+        rol = rol.replace("[", "");
+
+        return rol;
     }
 }

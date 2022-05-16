@@ -2,8 +2,6 @@ package com.javadabadu.disney.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,11 +15,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -61,15 +56,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
-        Map<String,String> tokens = new HashMap<>();
-
-
-        response.setHeader("acces_token",accessToken);
-        tokens.put("acces_token",accessToken);
-        tokens.put("refresh_token",refreshToken);
-
+        response.setHeader("acces_token", accessToken);
+        response.setHeader("refresh_token", refreshToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 }
