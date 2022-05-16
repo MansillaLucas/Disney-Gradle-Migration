@@ -50,6 +50,15 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
                 .map(this::personajeToResponseDTO)
                 .collect(Collectors.toList());
     }
+    @Override
+    public PersonajeRequestDTO personajeToRequestDTO(Personaje personaje) {
+        PersonajeRequestDTO personajeRequestDTO = modelMapper.map(personaje, PersonajeRequestDTO.class);
+        return personajeRequestDTO;
+    }
+    @Override
+    public Personaje personajeRequestDtoToPersonaje(PersonajeRequestDTO personajeRequestDTO) {
+        return modelMapper.map(personajeRequestDTO, Personaje.class);
+    }
 
     @Override
     public GeneroResponseDTO generoToResponseDTO(Genero genero) {

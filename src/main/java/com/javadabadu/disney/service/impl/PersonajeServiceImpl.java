@@ -1,8 +1,9 @@
-package com.javadabadu.disney.models.impl;
+package com.javadabadu.disney.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
@@ -28,6 +29,11 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Autowired
     private ModelMapperDTOImp mapperDTO;
+
+    @Override
+    public Personaje getEntitySave(Personaje entity, Integer id) throws ExceptionBBDD {
+        return null;
+    }
 
     @Override
     public PersonajeResponseDTO save(Personaje personaje) throws ExceptionBBDD {
@@ -114,16 +120,16 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntitySave(Personaje personaje, Integer id) throws ExceptionBBDD {
-
+    public PersonajeResponseDTO getSaveUpdateEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
+        Personaje personaje = mapperDTO.personajeRequestDtoToPersonaje(personajeRequest);
         try {
             if (!existsById(id)) {
-                return personaje;
+                return save(personaje);
             }
-            Personaje source = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
+            Personaje personajePorActualizar = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
             personaje.setId(id);
-            source = personaje;
-            return source;
+            personajePorActualizar = personaje;
+            return save(personajePorActualizar);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
@@ -153,6 +159,29 @@ public class PersonajeServiceImpl implements PersonajeService {
         }
     }
 
+    @Override
+    public PersonajeResponseDTO updatePartiel(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            PersonajeResponseDTO searchedPersonajeDTO = findById(id);
+
+            Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonajeDTO, Map.class);
+            propiedades.forEach((k, v) -> {
+                if (searchedPersonajeMap.containsKey(k)) {
+                    searchedPersonajeMap.replace(k, searchedPersonajeMap.get(k), v);
+                }
+            });
+
+            Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
+
+            return save(searchedPersonaje2);
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
         try {
             return linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Personajes:");
@@ -169,4 +198,5 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
+
 }

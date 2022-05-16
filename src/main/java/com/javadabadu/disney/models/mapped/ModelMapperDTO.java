@@ -14,6 +14,10 @@ public interface ModelMapperDTO {
 
     Personaje personajeResponseDTOtoPersonaje(PersonajeResponseDTO personajeDTO);
 
+    PersonajeRequestDTO personajeToRequestDTO(Personaje personaje);
+
+    Personaje personajeRequestDtoToPersonaje(PersonajeRequestDTO personajeRequestDTO);
+
     GeneroResponseDTO generoToResponseDTO(Genero genero);
 
     List<GeneroResponseDTO> listGeneroToResponseDTO(List<Genero> listGenero);

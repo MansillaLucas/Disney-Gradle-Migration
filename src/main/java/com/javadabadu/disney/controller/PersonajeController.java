@@ -1,10 +1,9 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
-import com.javadabadu.disney.models.entity.Personaje;
-import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.service.PersonajeService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ public class PersonajeController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-
         PersonajeResponseDTO personajeDTO = personajeService.findById(id);
         return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
 
@@ -38,14 +36,11 @@ public class PersonajeController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
-
         List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.findAll();
         List<EntityModel<PersonajeResponseDTO>> personajes = new ArrayList<>();
-
         for (PersonajeResponseDTO personaje : listPersonajeResponseDTO) {
             personajes.add(EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)));
         }
-
         return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
     }
 
@@ -55,12 +50,10 @@ public class PersonajeController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crear(@RequestBody Personaje personaje,
+    public ResponseEntity<?> crear(@RequestBody PersonajeRequestDTO personaje,
                                    @PathVariable Integer id,
                                    HttpServletRequest request) throws ExceptionBBDD {
-
-        Personaje source = personajeService.getEntitySave(personaje, id);
-        PersonajeResponseDTO personajeDTO = personajeService.save(source);
+        PersonajeResponseDTO personajeDTO = personajeService.getSaveUpdateEntity(personaje, id);
         return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
 
     }
@@ -69,16 +62,13 @@ public class PersonajeController {
     public ResponseEntity<?> update(@PathVariable Integer id,
                                     @RequestBody Map<String, Object> propiedades,
                                     HttpServletRequest request) throws ExceptionBBDD {
-
-        Personaje searchedPersonaje = personajeService.getEntity(id, propiedades);
-        PersonajeResponseDTO personajeDTO = personajeService.save(searchedPersonaje);
+        PersonajeResponseDTO personajeDTO = personajeService.updatePartiel(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request)));
 
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-
         String body = personajeService.softDelete(personajeService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
         return ResponseEntity.ok().body(EntityModel.of(response, personajeService.getCollectionLink(request)));
@@ -92,7 +82,6 @@ public class PersonajeController {
                                            HttpServletRequest request) throws ExceptionBBDD {
 
         List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.filterCharacter(nombre, edad, idPelicula);
-
         List<EntityModel<PersonajeResponseDTO>> personajes = new ArrayList<>();
 
         for (PersonajeResponseDTO personaje : listPersonajeResponseDTO) {
