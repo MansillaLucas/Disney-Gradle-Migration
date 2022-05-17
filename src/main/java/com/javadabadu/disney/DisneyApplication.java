@@ -18,9 +18,9 @@ import java.util.ArrayList;
 @EnableWebMvc
 public class DisneyApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DisneyApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DisneyApplication.class, args);
+    }
 
 	@Bean
 	PasswordEncoder passwordEncoder() {

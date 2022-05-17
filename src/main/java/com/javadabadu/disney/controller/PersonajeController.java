@@ -28,9 +28,6 @@ public class PersonajeController {
     @Autowired
     PersonajeService personajeService;
 
-    @Autowired
-    ModelMapperDTOImp mapperDTO;
-
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         PersonajeResponseDTO personajeDTO = personajeService.findById(id);

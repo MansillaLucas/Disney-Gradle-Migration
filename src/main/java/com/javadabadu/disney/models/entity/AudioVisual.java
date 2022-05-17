@@ -37,6 +37,8 @@ public class AudioVisual {
     @JoinColumn(name = "fk_genero" ,nullable = false)
     private Genero genero;
 
+    @Column(nullable = false)
+    private boolean estado = true;
 
     @ManyToMany
     @JoinTable(name = "personajes_por_audiovisual",

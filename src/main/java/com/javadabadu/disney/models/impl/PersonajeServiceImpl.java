@@ -1,4 +1,4 @@
-package com.javadabadu.disney.service.impl;
+package com.javadabadu.disney.models.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;
@@ -74,7 +74,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             if (personajeRepository.existsById(id)) {
                 return personajeRepository.existsById(id);
             } else {
-                throw new ExceptionBBDD("Id no existente", HttpStatus.NOT_FOUND);
+                return false;
             }
 
         } catch (Exception e) {
