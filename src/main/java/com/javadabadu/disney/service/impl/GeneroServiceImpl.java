@@ -6,7 +6,6 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.GeneroRequestDTO;
 import com.javadabadu.disney.models.dto.GeneroResponseDTO;
 import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.service.GeneroService;
@@ -146,9 +145,7 @@ public class GeneroServiceImpl implements GeneroService {
                 }
             });
 
-            Genero searchedGenero2 = mapper.convertValue(searchedGeneroMap, Genero.class);
-
-            return searchedGenero2;
+            return mapper.convertValue(searchedGeneroMap, Genero.class);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
