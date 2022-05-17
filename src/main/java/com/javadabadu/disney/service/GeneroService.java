@@ -9,8 +9,8 @@ import com.javadabadu.disney.models.entity.Genero;
 
 import java.util.Map;
 
-public interface GeneroService extends BaseServiceRead<GeneroResponseDTO, Integer>, BaseServiceWrite<Genero, GeneroResponseDTO, Integer> {
-    GeneroResponseDTO getPersistenceEntity(GeneroRequestDTO generoRequestDTO, Integer id) throws ExceptionBBDD;
-    GeneroResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD ;
+public interface GeneroService extends BaseServiceRead<GeneroResponseDTO, Integer>, BaseServiceWrite<Genero, GeneroResponseDTO, Integer>,
+        BaseServiceRequest<GeneroRequestDTO, GeneroResponseDTO, Integer>{
+
 
 }

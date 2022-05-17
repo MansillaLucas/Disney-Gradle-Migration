@@ -31,11 +31,6 @@ public class PersonajeServiceImpl implements PersonajeService {
     private ModelMapperDTOImp mapperDTO;
 
     @Override
-    public Personaje getEntitySave(Personaje entity, Integer id) throws ExceptionBBDD {
-        return null;
-    }
-
-    @Override
     public PersonajeResponseDTO save(Personaje personaje) throws ExceptionBBDD {
         try {
             return mapperDTO.personajeToResponseDTO(personajeRepository.save(personaje));
@@ -134,29 +129,6 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
 
-    }
-
-    @Override
-    public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            PersonajeResponseDTO searchedPersonajeDTO = findById(id);
-
-            Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonajeDTO, Map.class);
-            propiedades.forEach((k, v) -> {
-                if (searchedPersonajeMap.containsKey(k)) {
-                    searchedPersonajeMap.replace(k, searchedPersonajeMap.get(k), v);
-                }
-            });
-
-            Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
-
-            return searchedPersonaje2;
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
-        }
     }
 
     @Override

@@ -84,22 +84,6 @@ public class GeneroServiceImpl implements GeneroService {
     }
 
     @Override
-    public Genero getEntitySave(Genero genero, Integer id) throws ExceptionBBDD {
-        try {
-            if (!existsById(id)) {
-                return genero;
-            }
-            Genero source = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.BAD_REQUEST));
-            genero.setId(id);
-            source = genero;
-            return source;
-
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Override
     public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
         try {
             return linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel();
@@ -128,26 +112,6 @@ public class GeneroServiceImpl implements GeneroService {
 
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Override
-    public Genero getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            GeneroResponseDTO searchedGeneroDTO = findById(id);
-
-            Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGeneroDTO, Map.class);
-            propiedades.forEach((k, v) -> {
-                if (searchedGeneroMap.containsKey(k)) {
-                    searchedGeneroMap.replace(k, searchedGeneroMap.get(k), v);
-                }
-            });
-
-            return mapper.convertValue(searchedGeneroMap, Genero.class);
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
 
