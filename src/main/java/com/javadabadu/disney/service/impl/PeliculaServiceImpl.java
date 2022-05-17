@@ -1,9 +1,10 @@
-package com.javadabadu.disney.models.impl;
+package com.javadabadu.disney.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PeliculaController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PeliculaPatchDTO;
+import com.javadabadu.disney.models.dto.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -63,23 +64,6 @@ public class PeliculaServiceImpl implements PeliculaService {
         }
     }
 
-    public Pelicula getEntitySave(Pelicula entity, Integer id) throws ExceptionBBDD {
-        Pelicula source = null;
-        setGenero(entity, entity.getGenero().getId());
-        try {
-            if (existsById(id)) {
-                source = mm.responseDtoToPelicula(findById(id));
-                entity.setId(id);
-                source = entity;
-                return source;
-            } else {
-                return entity;
-            }
-        }  catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     private void setGenero(Pelicula entity, Integer idGenero) throws ExceptionBBDD {
         Genero genero = generoRepository.findById(idGenero).
                 orElseThrow(() -> new ExceptionBBDD
@@ -123,24 +107,7 @@ public class PeliculaServiceImpl implements PeliculaService {
             }
     }
 
-    @Override
-    public Pelicula getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-        ObjectMapper mapper = new ObjectMapper();
-
-        PeliculaPatchDTO peliculaDTO = getPeliculaDtoToModify(id, propiedades);
-        Map<String, Object> searchedPeliculaMap = mapper.convertValue(peliculaDTO, Map.class);
-        propiedades.forEach((k, v) -> {
-            if (searchedPeliculaMap.containsKey(k)) {
-                searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
-            }
-        });
-
-        Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
-
-        return toPersist;
-    }
-
-    private PeliculaPatchDTO getPeliculaDtoToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+      private PeliculaPatchDTO getPeliculaDtoToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(id);
 
         if(propiedades.containsKey("genero")){
@@ -162,5 +129,15 @@ public class PeliculaServiceImpl implements PeliculaService {
             return (Pelicula) av;
         }
         throw new ExceptionBBDD(message.getMessage("id.not.movie", new String[]{Integer.toString(id)}, Locale.US),HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    public PeliculaResponseDTO getPersistenceEntity(PeliculaRequestDTO entityRequest, Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public PeliculaResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+        return null;
     }
 }

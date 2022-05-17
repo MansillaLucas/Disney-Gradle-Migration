@@ -1,8 +1,9 @@
-package com.javadabadu.disney.models.impl;
+package com.javadabadu.disney.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.GeneroController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.GeneroRequestDTO;
 import com.javadabadu.disney.models.dto.GeneroResponseDTO;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
@@ -83,22 +84,6 @@ public class GeneroServiceImpl implements GeneroService {
     }
 
     @Override
-    public Genero getEntitySave(Genero genero, Integer id) throws ExceptionBBDD {
-        try {
-            if (!existsById(id)) {
-                return genero;
-            }
-            Genero source = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.BAD_REQUEST));
-            genero.setId(id);
-            source = genero;
-            return source;
-
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Override
     public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
         try {
             return linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel();
@@ -131,7 +116,25 @@ public class GeneroServiceImpl implements GeneroService {
     }
 
     @Override
-    public Genero getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    public GeneroResponseDTO getPersistenceEntity(GeneroRequestDTO generoRequestDTO, Integer id) throws ExceptionBBDD {
+        Genero genero = mapperDTO.generoRequestDtoToPersonaje(generoRequestDTO);
+
+        try {
+            if (!existsById(id)) {
+                return save(genero);
+            }
+            Genero source = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.BAD_REQUEST));
+            genero.setId(id);
+            source = genero;
+            return save(source);
+
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public GeneroResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -146,7 +149,7 @@ public class GeneroServiceImpl implements GeneroService {
 
             Genero searchedGenero2 = mapper.convertValue(searchedGeneroMap, Genero.class);
 
-            return searchedGenero2;
+            return save(searchedGenero2);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
