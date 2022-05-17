@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class SerieController {
     SerieService serieService;
 
     @GetMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTOList = serieService.findAll();
         List<EntityModel<SerieResponseDTO>> entityModelList = new ArrayList<>();
@@ -39,6 +41,7 @@ public class SerieController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.findById(id);
         return ResponseEntity.ok().body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request),
@@ -46,6 +49,7 @@ public class SerieController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
 
        return ResponseEntity.created(URI.create(request.getRequestURI()
@@ -53,6 +57,7 @@ public class SerieController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> crear(@RequestBody SerieRequestDTO serieRequestDTO, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         Serie source = serieService.getSaveEntity(serieRequestDTO,id);
         return  ResponseEntity.ok().body(EntityModel.of(serieService.save(source)
@@ -61,6 +66,7 @@ public class SerieController {
     }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
                                     @RequestBody Map<String, Object> propiedades,
                                     HttpServletRequest request) throws ExceptionBBDD {
@@ -71,6 +77,7 @@ public class SerieController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         String body = serieService.softDelete(serieService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
