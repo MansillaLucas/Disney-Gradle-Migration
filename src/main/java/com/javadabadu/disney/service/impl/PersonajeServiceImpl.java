@@ -120,7 +120,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public PersonajeResponseDTO getSaveUpdateEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
+    public PersonajeResponseDTO getPersistenceEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
         Personaje personaje = mapperDTO.personajeRequestDtoToPersonaje(personajeRequest);
         try {
             if (!existsById(id)) {
@@ -160,7 +160,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public PersonajeResponseDTO updatePartiel(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    public PersonajeResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
 

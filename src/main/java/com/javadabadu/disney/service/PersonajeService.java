@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface PersonajeService extends BaseServiceRead<PersonajeResponseDTO, Integer>, BaseServiceWrite<Personaje, PersonajeResponseDTO, Integer>{
     List<PersonajeResponseDTO> filterCharacter(String name, Integer edad, Integer idMovie) throws ExceptionBBDD;
-    PersonajeResponseDTO getSaveUpdateEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD;
-    PersonajeResponseDTO updatePartiel(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD ;
+    PersonajeResponseDTO getPersistenceEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD;
+    PersonajeResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD ;
 
 }

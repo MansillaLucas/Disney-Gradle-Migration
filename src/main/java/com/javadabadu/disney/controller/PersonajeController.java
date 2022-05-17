@@ -53,7 +53,7 @@ public class PersonajeController {
     public ResponseEntity<?> crear(@RequestBody PersonajeRequestDTO personaje,
                                    @PathVariable Integer id,
                                    HttpServletRequest request) throws ExceptionBBDD {
-        PersonajeResponseDTO personajeDTO = personajeService.getSaveUpdateEntity(personaje, id);
+        PersonajeResponseDTO personajeDTO = personajeService.getPersistenceEntity(personaje, id);
         return ResponseEntity.ok().body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request), personajeService.getCollectionLink(request)));
 
     }
@@ -62,7 +62,7 @@ public class PersonajeController {
     public ResponseEntity<?> update(@PathVariable Integer id,
                                     @RequestBody Map<String, Object> propiedades,
                                     HttpServletRequest request) throws ExceptionBBDD {
-        PersonajeResponseDTO personajeDTO = personajeService.updatePartiel(id, propiedades);
+        PersonajeResponseDTO personajeDTO = personajeService.updatePartial(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(personajeDTO, personajeService.getSelfLink(id, request)));
 
     }
