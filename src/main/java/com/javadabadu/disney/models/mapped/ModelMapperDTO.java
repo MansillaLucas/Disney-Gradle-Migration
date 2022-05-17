@@ -38,4 +38,16 @@ public interface ModelMapperDTO {
 
     Serie requestDtoToSerie(SerieRequestDTO serieRequestDTO);
 
+    List<UsuarioResponseDTO> listUsuarioToUsuarioDTO(List<Usuario> usuarioList);
+
+    UsuarioResponseDTO usuarioToUsuarioDTO(Usuario usuario);
+
+    Usuario usuarioDTOToUsuario(UsuarioResponseDTO usuarioResponseDTO);
+
+    RolResponseDTO rolToRolDTO(Rol rol);
+
+    Rol rolDTOtoRol(RolResponseDTO rolResponseDTO);
+
+    List<RolResponseDTO> listRolToRolDTO(List<Rol> rolList);
+
 }

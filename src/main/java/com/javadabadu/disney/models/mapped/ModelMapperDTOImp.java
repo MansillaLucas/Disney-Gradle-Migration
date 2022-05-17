@@ -27,19 +27,7 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     @Override
     public Personaje personajeResponseDTOtoPersonaje(PersonajeResponseDTO personajeDTO) {
 
-      /*  Personaje personaje = new Personaje();
-        personaje.setEdad(personajeDTO.getEdad());
-        personaje.setNombre(personajeDTO.getNombre());
-        personaje.setImagen(personajeDTO.getImagen());
-        personaje.setHistoria(personajeDTO.getHistoria());
-        personaje.setPeso(personajeDTO.getPeso());
-        personaje.setTipo(personajeDTO.getTipo());
-        personaje.setEstado(personajeDTO.getEstado());
-        personaje.setId(personajeDTO.getId());
-        personaje.setAudioVisual(listAudiovisualResponseToAudiovisual(personajeDTO.getAudioVisual()));*/
-
         Personaje personaje = modelMapper.map(personajeDTO, Personaje.class);
-
 
         return personaje;
     }
@@ -95,9 +83,10 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
         SerieResponseDTO serieDTO = modelMapper.map(serie, SerieResponseDTO.class);
         return serieDTO;
     }
+
     @Override
     public Serie responseDtoToSerie(SerieResponseDTO serieResponseDTO) {
-       return modelMapper.map(serieResponseDTO, Serie.class);
+        return modelMapper.map(serieResponseDTO, Serie.class);
     }
 
     @Override
@@ -119,6 +108,34 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     @Override
     public Serie requestDtoToSerie(SerieRequestDTO serieRequestDTO) {
         return modelMapper.map(serieRequestDTO, Serie.class);
+    }
+
+    public Usuario usuarioDTOToUsuario(UsuarioResponseDTO usuarioResponseDTO) {
+        return modelMapper.map(usuarioResponseDTO, Usuario.class);
+    }
+
+    public UsuarioResponseDTO usuarioToUsuarioDTO(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+    }
+
+    public List<UsuarioResponseDTO> listUsuarioToUsuarioDTO(List<Usuario> usuarioList) {
+        return usuarioList.stream()
+                .map(this::usuarioToUsuarioDTO)
+                .collect(Collectors.toList());
+    }
+
+    public RolResponseDTO rolToRolDTO(Rol rol) {
+        return modelMapper.map(rol, RolResponseDTO.class);
+    }
+
+    public Rol rolDTOtoRol(RolResponseDTO rolResponseDTO) {
+        return modelMapper.map(rolResponseDTO, Rol.class);
+    }
+
+    public List<RolResponseDTO> listRolToRolDTO(List<Rol> rolList) {
+        return rolList.stream()
+                .map(this::rolToRolDTO)
+                .collect(Collectors.toList());
     }
 
 }

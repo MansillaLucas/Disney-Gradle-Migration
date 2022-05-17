@@ -6,8 +6,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.RolResponseDTO;
+import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
+import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.RolRepository;
 import com.javadabadu.disney.repository.UsuarioRepository;
 import com.javadabadu.disney.service.UsuarioService;
@@ -44,6 +47,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapperDTOImp mapperDTO;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario searchedUsuario = usuarioRepository.findByUsername(username);
@@ -61,7 +67,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
                 authorities);
     }
 
-    public Usuario saveUser(Usuario user, HttpServletRequest request) throws AuthenticationException {
+    public UsuarioResponseDTO saveUser(Usuario user, HttpServletRequest request) throws AuthenticationException, ExceptionBBDD {
 
         if (request.getHeader(AUTHORIZATION) == null) {
             if (user.getRol().getId() == 1) {
@@ -74,10 +80,14 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             }
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return usuarioRepository.save(user);
-    }
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return mapperDTO.usuarioToUsuarioDTO(usuarioRepository.save(user));
+        } catch (Exception ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
 
+    }
 
     private String getUserRol(HttpServletRequest request) {
         Algorithm algorithm = Algorithm.HMAC256("${SECRET_WORD}".getBytes());
@@ -98,26 +108,28 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> findAll() throws ExceptionBBDD {
+        try {
+            return mapperDTO.listUsuarioToUsuarioDTO(usuarioRepository.findAll());
+        } catch (Exception e) {
+            throw new ExceptionBBDD("Error en la transacción, contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
-    public Usuario findById(Integer id) throws ExceptionBBDD {
-        return usuarioRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido", HttpStatus.NOT_FOUND));
+    public UsuarioResponseDTO findById(Integer id) throws ExceptionBBDD {
+        Usuario searchedUsuario = usuarioRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido", HttpStatus.NOT_FOUND));
+
+        return mapperDTO.usuarioToUsuarioDTO(searchedUsuario);
     }
 
     @Override
-    public Rol saveRole(Rol role) {
-        return rolRepository.save(role);
-    }
-
-    @Override
-    public void addRoleToUser(String username, String description) {
-        Usuario searchedUsuario = getUser(username);
-        Rol searchedRole = rolRepository.findByDescripcion(description);
-
-        searchedUsuario.setRol(searchedRole);
+    public RolResponseDTO saveRole(Rol role) throws ExceptionBBDD {
+        try {
+            return mapperDTO.rolToRolDTO(rolRepository.save(role));
+        } catch (Exception ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
 
     }
 

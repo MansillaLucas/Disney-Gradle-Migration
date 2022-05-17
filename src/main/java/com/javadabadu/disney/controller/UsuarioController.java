@@ -2,6 +2,8 @@ package com.javadabadu.disney.controller;
 
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.RolResponseDTO;
+import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
 import com.javadabadu.disney.service.UsuarioService;
@@ -25,27 +27,26 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario user, HttpServletRequest request) throws AuthenticationException {
+    public ResponseEntity<UsuarioResponseDTO> crearUsuario(@RequestBody Usuario user, HttpServletRequest request) throws AuthenticationException, ExceptionBBDD {
         return ResponseEntity.ok().body(usuarioService.saveUser(user, request));
     }
 
-
     @GetMapping(value = "/users")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<List<Usuario>> findAll() {
+    public ResponseEntity<List<UsuarioResponseDTO>> findAll() throws ExceptionBBDD {
         return ResponseEntity.ok().body(usuarioService.findAll());
     }
 
     @GetMapping(value = "/users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Usuario> findById(@PathVariable Integer id) throws ExceptionBBDD {
+    public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Integer id) throws ExceptionBBDD {
         return ResponseEntity.ok().body(usuarioService.findById(id));
     }
 
 
     @PostMapping(value = "/roles/save")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Rol> crearRol(@RequestBody Rol rol) {
+    public ResponseEntity<RolResponseDTO> crearRol(@RequestBody Rol rol) throws ExceptionBBDD {
         return ResponseEntity.ok().body(usuarioService.saveRole(rol));
     }
 
