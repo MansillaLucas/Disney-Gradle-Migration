@@ -4,6 +4,7 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,5 +44,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(authException.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
     }
 
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ResponseInfoDTO> AccessDeniedException(HttpServletRequest request, AccessDeniedException accesExc) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(accesExc.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
+    }
 
 }

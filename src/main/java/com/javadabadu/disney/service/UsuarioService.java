@@ -1,5 +1,6 @@
 package com.javadabadu.disney.service;
 
+import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
 
@@ -19,6 +20,8 @@ public interface UsuarioService {
     Usuario getUser(String username);
 
     List<Usuario> findAll();
+
+    Usuario findById(Integer id) throws ExceptionBBDD;
 
     void generateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, AuthenticationException;
 }

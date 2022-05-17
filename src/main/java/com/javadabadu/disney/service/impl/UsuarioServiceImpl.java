@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
 import com.javadabadu.disney.repository.RolRepository;
@@ -68,7 +69,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             }
         } else {
             String rol = cleanRolString(getUserRol(request));
-            if (rol.equals("ROLE_USER")) {
+            if (!rol.equals("ROLE_ADMIN")) {
                 throw new AuthenticationException("No tienes permisos para crear usuarios");
             }
         }
@@ -91,6 +92,20 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return decodedJWT.getClaim("role").toString();
     }
 
+    @Override
+    public Usuario getUser(String username) {
+        return usuarioRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
+
+    @Override
+    public Usuario findById(Integer id) throws ExceptionBBDD {
+        return usuarioRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido", HttpStatus.NOT_FOUND));
+    }
 
     @Override
     public Rol saveRole(Rol role) {
@@ -144,23 +159,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
+
     private String cleanRolString(String rol) {
         rol = rol.replaceAll("\"", "");
         rol = rol.replace("]", "");
         rol = rol.replace("[", "");
 
         return rol;
-    }
-
-
-    @Override
-    public Usuario getUser(String username) {
-        return usuarioRepository.findByUsername(username);
-    }
-
-    @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
     }
 
 
