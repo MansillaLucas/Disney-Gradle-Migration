@@ -4,7 +4,6 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Personaje;
-import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.service.PersonajeService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;

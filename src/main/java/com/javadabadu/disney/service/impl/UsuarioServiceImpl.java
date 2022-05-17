@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javadabadu.disney.controller.UsuarioController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.RolResponseDTO;
 import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
@@ -15,6 +16,7 @@ import com.javadabadu.disney.repository.RolRepository;
 import com.javadabadu.disney.repository.UsuarioRepository;
 import com.javadabadu.disney.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -171,6 +175,22 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
+    public Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(UsuarioController.class).findAll(request)).withRel("Usuarios:");
+        } catch (ExceptionBBDD ebd2) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        try {
+            return linkTo(methodOn(UsuarioController.class).findById(id, request)).withSelfRel();
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     private String cleanRolString(String rol) {
         rol = rol.replaceAll("\"", "");
@@ -179,6 +199,5 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         return rol;
     }
-
 
 }

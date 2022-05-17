@@ -5,6 +5,7 @@ import com.javadabadu.disney.models.dto.RolResponseDTO;
 import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
+import org.springframework.hateoas.Link;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,4 +25,8 @@ public interface UsuarioService {
     UsuarioResponseDTO findById(Integer id) throws ExceptionBBDD;
 
     void generateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, AuthenticationException;
+
+    Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD;
+
+    Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD;
 }
