@@ -9,7 +9,7 @@ import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
+import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
 import com.javadabadu.disney.service.PeliculaService;
@@ -20,10 +20,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -37,15 +37,18 @@ public class PeliculaServiceImpl implements PeliculaService {
     @Autowired
     private MessageSource message;
     @Autowired
-    private ModelMapperDTOImp mm;
+    private ModelMapperDTO mm;
 
     @Override
     public List<PeliculaResponseDTO> findAll() throws ExceptionBBDD {
-        List<PeliculaResponseDTO> peliculaResponseDTO = new ArrayList<>();
-        peliculaRepository.findAll().stream()
-                .filter(Pelicula.class::isInstance)
-                .forEach(audioVisual -> peliculaResponseDTO.add(mm.peliculaToResponseDTO((Pelicula) audioVisual)));
-        return peliculaResponseDTO;
+        try {
+            return peliculaRepository.findAll().stream()
+                    .filter(audioVisual -> audioVisual instanceof Pelicula)
+                    .map(audioVisual -> mm.peliculaToResponseDTO((Pelicula) audioVisual))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+        }
     }
 
     @Override

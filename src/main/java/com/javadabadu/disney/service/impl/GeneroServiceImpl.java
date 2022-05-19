@@ -6,7 +6,7 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
 import com.javadabadu.disney.models.dto.response.GeneroResponseDTO;
 import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
+import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class GeneroServiceImpl implements GeneroService {
     private MessageSource message;
 
     @Autowired
-    ModelMapperDTOImp mapperDTO;
+    ModelMapperDTO mapperDTO;
 
     @Override
     public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
