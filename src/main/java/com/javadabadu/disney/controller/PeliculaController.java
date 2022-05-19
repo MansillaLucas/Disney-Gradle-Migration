@@ -64,8 +64,8 @@ public class PeliculaController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> crear(@RequestBody Pelicula pelicula, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        Pelicula source = peliculaService.getEntitySave(pelicula, id);
-        return ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
+        //Pelicula source = peliculaService.getEntitySave(pelicula, id);
+        return null;//ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
     }
 
 
@@ -83,8 +83,8 @@ public class PeliculaController {
                                     @RequestBody Map<String, Object> propiedades,
                                     HttpServletRequest request) throws ExceptionBBDD {
 
-        Pelicula searchedPelicula = peliculaService.getEntity(id, propiedades);
-        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
+      //  Pelicula searchedPelicula = peliculaService.getEntity(id, propiedades);
+        return null;//ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
     }
 
 }

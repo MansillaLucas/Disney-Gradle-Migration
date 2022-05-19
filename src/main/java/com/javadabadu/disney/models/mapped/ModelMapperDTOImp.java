@@ -40,9 +40,19 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     }
 
     @Override
+    public Personaje personajeRequestDtoToPersonaje(PersonajeRequestDTO personajeRequestDTO) {
+        return modelMapper.map(personajeRequestDTO, Personaje.class);
+    }
+
+    @Override
     public GeneroResponseDTO generoToResponseDTO(Genero genero) {
         GeneroResponseDTO generoDTO = modelMapper.map(genero, GeneroResponseDTO.class);
         return generoDTO;
+    }
+
+    @Override
+    public Genero generoRequestDtoToPersonaje(GeneroRequestDTO generoRequestDTO) {
+        return modelMapper.map(generoRequestDTO, Genero.class);
     }
 
     @Override
@@ -69,13 +79,6 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     public AudioVisual audioVisualResponseToAudiovisual(AudioVisualResponseDTO audiovisualDTO) {
         AudioVisual audiovisual = modelMapper.map(audiovisualDTO, AudioVisual.class);
         return audiovisual;
-    }
-
-    @Override
-    public List<AudioVisual> listAudiovisualResponseToAudiovisual(List<AudioVisualResponseDTO> listAudiovisual) {
-        return listAudiovisual.stream()
-                .map(this::audioVisualResponseToAudiovisual)
-                .collect(Collectors.toList());
     }
 
     @Override

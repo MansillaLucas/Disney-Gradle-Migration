@@ -22,7 +22,7 @@ public class Genero {
     private String imagen;
 
     @Column(nullable = false)
-    private Boolean alta;
+    private Boolean alta = true;
 
     @OneToMany(mappedBy = "genero")
     private List<AudioVisual> audioVisuals = new ArrayList<>();

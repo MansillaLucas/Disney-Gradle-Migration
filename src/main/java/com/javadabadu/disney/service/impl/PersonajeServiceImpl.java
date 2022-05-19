@@ -3,6 +3,7 @@ package com.javadabadu.disney.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PersonajeController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
 import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
@@ -114,16 +115,16 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntitySave(Personaje personaje, Integer id) throws ExceptionBBDD {
-
+    public PersonajeResponseDTO getPersistenceEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
+        Personaje personaje = mapperDTO.personajeRequestDtoToPersonaje(personajeRequest);
         try {
             if (!existsById(id)) {
-                return personaje;
+                return save(personaje);
             }
-            Personaje source = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
+            Personaje personajePorActualizar = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
             personaje.setId(id);
-            source = personaje;
-            return source;
+            personajePorActualizar = personaje;
+            return save(personajePorActualizar);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
@@ -131,7 +132,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     }
 
     @Override
-    public Personaje getEntity(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    public PersonajeResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -147,7 +148,7 @@ public class PersonajeServiceImpl implements PersonajeService {
 
             Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
 
-            return searchedPersonaje2;
+            return save(searchedPersonaje2);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
@@ -169,4 +170,5 @@ public class PersonajeServiceImpl implements PersonajeService {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }
     }
+
 }

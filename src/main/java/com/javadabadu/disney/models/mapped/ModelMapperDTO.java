@@ -12,9 +12,11 @@ public interface ModelMapperDTO {
 
     List<PersonajeResponseDTO> listPersonajeToResponseDTO(List<Personaje> listPersonaje);
 
-    Personaje personajeResponseDTOtoPersonaje(PersonajeResponseDTO personajeDTO);
+    Personaje personajeRequestDtoToPersonaje(PersonajeRequestDTO personajeRequestDTO);
 
     GeneroResponseDTO generoToResponseDTO(Genero genero);
+
+    Genero generoRequestDtoToPersonaje(GeneroRequestDTO generoRequestDTO);
 
     List<GeneroResponseDTO> listGeneroToResponseDTO(List<Genero> listGenero);
 
@@ -23,8 +25,6 @@ public interface ModelMapperDTO {
     AudioVisualResponseDTO audioVisualToResponseDTO(AudioVisual audiovisual);
 
     AudioVisual audioVisualResponseToAudiovisual(AudioVisualResponseDTO audiovisualDTO);
-
-    List<AudioVisual> listAudiovisualResponseToAudiovisual(List<AudioVisualResponseDTO> listAudiovisual);
 
     SerieResponseDTO serieToResponseDTO(Serie serie);
 
