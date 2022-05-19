@@ -1,7 +1,7 @@
 package com.javadabadu.disney.exception.global;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;

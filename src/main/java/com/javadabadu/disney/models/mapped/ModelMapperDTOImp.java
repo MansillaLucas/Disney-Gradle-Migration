@@ -1,6 +1,11 @@
 package com.javadabadu.disney.models.mapped;
 
-import com.javadabadu.disney.models.dto.*;
+import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
+import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
+import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
+import com.javadabadu.disney.models.dto.request.PersonajeRequestDTO;
+import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
+import com.javadabadu.disney.models.dto.response.*;
 import com.javadabadu.disney.models.entity.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
