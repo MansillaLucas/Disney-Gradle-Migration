@@ -1,6 +1,12 @@
 package com.javadabadu.disney.models.mapped;
 
-import com.javadabadu.disney.models.dto.*;
+import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
+import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
+import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
+import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.request.PersonajeRequestDTO;
+import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
+import com.javadabadu.disney.models.dto.response.*;
 import com.javadabadu.disney.models.entity.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -102,6 +108,11 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     @Override
     public Serie requestDtoToSerie(SerieRequestDTO serieRequestDTO) {
         return modelMapper.map(serieRequestDTO, Serie.class);
+    }
+
+    @Override
+    public Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO) {
+        return modelMapper.map(peliculaRequestDTO, Pelicula.class);
     }
 
 }

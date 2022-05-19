@@ -3,9 +3,9 @@ package com.javadabadu.disney.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.PeliculaController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.PeliculaPatchDTO;
-import com.javadabadu.disney.models.dto.PeliculaRequestDTO;
-import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
+import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
+import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
@@ -20,7 +20,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -40,7 +43,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     public List<PeliculaResponseDTO> findAll() throws ExceptionBBDD {
         List<PeliculaResponseDTO> peliculaResponseDTO = new ArrayList<>();
         peliculaRepository.findAll().stream()
-                .filter(audioVisual -> audioVisual instanceof Pelicula)
+                .filter(Pelicula.class::isInstance)
                 .forEach(audioVisual -> peliculaResponseDTO.add(mm.peliculaToResponseDTO((Pelicula) audioVisual)));
         return peliculaResponseDTO;
     }
@@ -107,13 +110,13 @@ public class PeliculaServiceImpl implements PeliculaService {
             }
     }
 
-      private PeliculaPatchDTO getPeliculaDtoToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+    private PeliculaPatchDTO getPeliculaDtoToModify(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(id);
 
         if(propiedades.containsKey("genero")){
             Map<String, Object> propID = (Map<String, Object>) propiedades.get("genero");
-            Integer idGenero = (Integer) propID.get("id");
-            setGenero(pelicula,idGenero);
+                Integer idGenero = (Integer) propID.get("id");
+                setGenero(pelicula,idGenero);
         }
 
         PeliculaPatchDTO peliculaDTO = mm.peliculaPatchDTO(pelicula);
@@ -133,11 +136,29 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public PeliculaResponseDTO getPersistenceEntity(PeliculaRequestDTO entityRequest, Integer id) throws ExceptionBBDD {
-        return null;
+        Pelicula pelicula = mm.requestDtoToPelicula(entityRequest);
+
+        if(peliculaRepository.existsById(id)) pelicula.setId(id);
+
+        setGenero(pelicula, entityRequest.getGenero().getId());
+
+        return save(pelicula);
     }
 
     @Override
     public PeliculaResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        PeliculaPatchDTO peliculaDTO = getPeliculaDtoToModify(id, propiedades);
+        Map<String, Object> searchedPeliculaMap = mapper.convertValue(peliculaDTO, Map.class);
+        propiedades.forEach((k, v) -> {
+            if (searchedPeliculaMap.containsKey(k)) {
+                searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
+            }
+        });
+
+        Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
+
+        return save(toPersist);
     }
 }

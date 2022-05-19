@@ -1,4 +1,4 @@
-package com.javadabadu.disney.models.dto;
+package com.javadabadu.disney.models.dto.request;
 
 import com.javadabadu.disney.models.entity.TipoPersonaje;
 

@@ -1,9 +1,9 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.PersonajeRequestDTO;
-import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
+import com.javadabadu.disney.models.dto.request.PersonajeRequestDTO;
+import com.javadabadu.disney.models.dto.response.PersonajeResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.service.PersonajeService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;

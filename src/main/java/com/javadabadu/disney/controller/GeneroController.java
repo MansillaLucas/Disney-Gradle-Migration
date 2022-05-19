@@ -1,9 +1,9 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.GeneroRequestDTO;
-import com.javadabadu.disney.models.dto.GeneroResponseDTO;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
+import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
+import com.javadabadu.disney.models.dto.response.GeneroResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.service.GeneroService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;

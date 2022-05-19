@@ -1,4 +1,4 @@
-package com.javadabadu.disney.models.dto;
+package com.javadabadu.disney.models.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
