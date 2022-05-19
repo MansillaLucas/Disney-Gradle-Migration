@@ -25,14 +25,6 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     }
 
     @Override
-    public Personaje personajeResponseDTOtoPersonaje(PersonajeResponseDTO personajeDTO) {
-
-        Personaje personaje = modelMapper.map(personajeDTO, Personaje.class);
-
-        return personaje;
-    }
-
-    @Override
     public List<PersonajeResponseDTO> listPersonajeToResponseDTO(List<Personaje> listPersonaje) {
         return listPersonaje.stream()
                 .map(this::personajeToResponseDTO)

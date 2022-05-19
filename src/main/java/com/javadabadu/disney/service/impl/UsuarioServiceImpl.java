@@ -26,6 +26,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +73,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
                 authorities);
     }
 
-    public UsuarioResponseDTO saveUser(Usuario user, HttpServletRequest request) throws AuthenticationException, ExceptionBBDD {
+    public UsuarioResponseDTO save(Usuario user) throws AuthenticationException, ExceptionBBDD {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         if (request.getHeader(AUTHORIZATION) == null) {
             if (user.getRol().getId() == 1) {
@@ -113,6 +116,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public List<UsuarioResponseDTO> findAll() throws ExceptionBBDD {
+
         try {
             return mapperDTO.listUsuarioToUsuarioDTO(usuarioRepository.findAll());
         } catch (Exception e) {
@@ -128,7 +132,59 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public RolResponseDTO saveRole(Rol role) throws ExceptionBBDD {
+    public Boolean existsById(Integer id) throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public Integer lastValueId() throws ExceptionBBDD {
+        return null;
+    }
+
+    @Override
+    public UsuarioResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            UsuarioResponseDTO usuarioResponseDTO = findById(id);
+
+            Map<String, Object> searchedUsuarioMap = mapper.convertValue(usuarioResponseDTO, Map.class);
+            propiedades.forEach((k, v) -> {
+                if (searchedUsuarioMap.containsKey(k) && !k.equals("username")) {
+                    searchedUsuarioMap.replace(k, searchedUsuarioMap.get(k), v);
+                }
+            });
+
+            Usuario searchedUsuario2 = mapper.convertValue(searchedUsuarioMap, Usuario.class);
+
+            return mapperDTO.usuarioToUsuarioDTO(usuarioRepository.save(searchedUsuario2));
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public Integer getUserIdByUsername(String username) {
+        Usuario user = usuarioRepository.findByUsername(username);
+        return user.getId();
+    }
+
+    @Override
+    public String softDelete(Integer id) throws ExceptionBBDD {
+        try {
+            if (usuarioRepository.softDelete(id)) {
+                return "Se elimino el usuario seleccionado";
+            } else {
+                throw new ExceptionBBDD("Id no encontrado", HttpStatus.NOT_FOUND);
+            }
+
+        } catch (ExceptionBBDD ebd) {
+            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public RolResponseDTO save(Rol role) throws ExceptionBBDD {
         try {
             return mapperDTO.rolToRolDTO(rolRepository.save(role));
         } catch (Exception ebd) {

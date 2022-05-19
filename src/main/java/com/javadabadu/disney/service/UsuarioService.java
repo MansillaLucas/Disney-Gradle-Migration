@@ -11,22 +11,25 @@ import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
-public interface UsuarioService {
-    UsuarioResponseDTO saveUser(Usuario user, HttpServletRequest request) throws AuthenticationException, ExceptionBBDD;
+public interface UsuarioService extends BaseServiceRead<UsuarioResponseDTO, Integer> {
 
-    RolResponseDTO saveRole(Rol role) throws ExceptionBBDD;
+    UsuarioResponseDTO save(Usuario user) throws AuthenticationException, ExceptionBBDD;
+
+    RolResponseDTO save(Rol role) throws ExceptionBBDD;
 
     Usuario getUser(String username);
 
-    List<UsuarioResponseDTO> findAll() throws ExceptionBBDD;
-
-    UsuarioResponseDTO findById(Integer id) throws ExceptionBBDD;
+    Integer getUserIdByUsername(String username);
 
     void generateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, AuthenticationException;
 
     Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD;
 
     Link getCollectionLink(HttpServletRequest request) throws ExceptionBBDD;
+
+    UsuarioResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD;
+
+    String softDelete(Integer id) throws ExceptionBBDD;
 }
