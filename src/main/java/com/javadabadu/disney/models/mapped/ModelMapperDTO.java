@@ -3,6 +3,7 @@ package com.javadabadu.disney.models.mapped;
 import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
+import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.request.PersonajeRequestDTO;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.*;
@@ -42,5 +43,7 @@ public interface ModelMapperDTO {
     PeliculaPatchDTO peliculaPatchDTO(Pelicula pelicula);
 
     Serie requestDtoToSerie(SerieRequestDTO serieRequestDTO);
+
+    Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO);
 
 }
