@@ -1,11 +1,8 @@
 package com.javadabadu.disney.models.dto.request;
 
-import com.javadabadu.disney.models.dto.request.AudioVisualRequestDTO;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class SerieRequestDTO extends AudioVisualRequestDTO {
 
     private Byte temporadas;
