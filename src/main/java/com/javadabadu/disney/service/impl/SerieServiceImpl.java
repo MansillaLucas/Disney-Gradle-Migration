@@ -43,11 +43,11 @@ public class SerieServiceImpl implements SerieService {
     public List<SerieResponseDTO> findAll() throws ExceptionBBDD {
         try {
             return serieRepository.findAll().stream()
-                    .filter(audioVisual -> audioVisual instanceof Serie)
+                    .filter(Serie.class::isInstance)
                     .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM");
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -133,8 +133,8 @@ public class SerieServiceImpl implements SerieService {
             Integer idGenero = (Integer) propGenId.get("id");
             setGenero(serie, idGenero);
         }
-        SerieDtoPatch serieDtoP = mm.seriePatchDto(serie);
-        return serieDtoP;
+        SerieDtoPatch serieDtoPatch = mm.seriePatchDto(serie);
+        return serieDtoPatch;
     }
 
     private void setGeneroForRequest(SerieRequestDTO serieRequestDTO, Integer idGenero) throws ExceptionBBDD {
@@ -143,6 +143,7 @@ public class SerieServiceImpl implements SerieService {
                         (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
         serieRequestDTO.setGenero(mm.generoToResponseDTO(genero));
     }
+
 
     @Override
     public SerieResponseDTO getPersistenceEntity(SerieRequestDTO serieRequestDTO, Integer id) throws ExceptionBBDD {
@@ -154,10 +155,8 @@ public class SerieServiceImpl implements SerieService {
                 setGenero(serie, serie.getGenero().getId());
                 return save(serie);
             }
-            Serie seriePorActualizar = findSerie(id);
             serie.setId(id);
-            seriePorActualizar = serie;
-            return save(seriePorActualizar);
+            return save(serie);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
         }

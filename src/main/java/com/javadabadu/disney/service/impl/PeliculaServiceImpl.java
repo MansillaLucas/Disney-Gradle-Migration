@@ -43,7 +43,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     public List<PeliculaResponseDTO> findAll() throws ExceptionBBDD {
         try {
             return peliculaRepository.findAll().stream()
-                    .filter(audioVisual -> audioVisual instanceof Pelicula)
+                    .filter(Pelicula.class::isInstance)
                     .map(audioVisual -> mm.peliculaToResponseDTO((Pelicula) audioVisual))
                     .collect(Collectors.toList());
         } catch (Exception e) {

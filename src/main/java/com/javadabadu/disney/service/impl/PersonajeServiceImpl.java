@@ -10,12 +10,14 @@ import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.PersonajeRepository;
 import com.javadabadu.disney.service.PersonajeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -29,13 +31,15 @@ public class PersonajeServiceImpl implements PersonajeService {
 
     @Autowired
     private ModelMapperDTO mapperDTO;
+    @Autowired
+    private MessageSource message;
 
     @Override
     public PersonajeResponseDTO save(Personaje personaje) throws ExceptionBBDD {
         try {
             return mapperDTO.personajeToResponseDTO(personajeRepository.save(personaje));
         } catch (Exception ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -45,7 +49,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transacción, contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -65,7 +69,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             }
 
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -79,7 +83,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             }
 
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -90,7 +94,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         if (personajeRepository.lastValueId() >= 1) {
             return personajeRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -110,9 +114,10 @@ public class PersonajeServiceImpl implements PersonajeService {
                 return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
             }
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @Override
     public PersonajeResponseDTO getPersistenceEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
@@ -121,36 +126,28 @@ public class PersonajeServiceImpl implements PersonajeService {
             if (!existsById(id)) {
                 return save(personaje);
             }
-            Personaje personajePorActualizar = personajeRepository.findById(id).orElseThrow(() -> new ExceptionBBDD("Id no válido"));
             personaje.setId(id);
-            personajePorActualizar = personaje;
-            return save(personajePorActualizar);
+            return save(personaje);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Override
     public PersonajeResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
-
         ObjectMapper mapper = new ObjectMapper();
-
         try {
             PersonajeResponseDTO searchedPersonajeDTO = findById(id);
-
             Map<String, Object> searchedPersonajeMap = mapper.convertValue(searchedPersonajeDTO, Map.class);
             propiedades.forEach((k, v) -> {
                 if (searchedPersonajeMap.containsKey(k)) {
                     searchedPersonajeMap.replace(k, searchedPersonajeMap.get(k), v);
                 }
             });
-
             Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
-
             return save(searchedPersonaje2);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -158,7 +155,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Personajes:");
         } catch (ExceptionBBDD ebd2) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -167,7 +164,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return linkTo(methodOn(PersonajeController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 

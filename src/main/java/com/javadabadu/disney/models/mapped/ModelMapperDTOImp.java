@@ -20,14 +20,12 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     @Override
     public PeliculaResponseDTO peliculaToResponseDTO(Pelicula pelicula) {
-        PeliculaResponseDTO peliculaDTO = modelMapper.map(pelicula, PeliculaResponseDTO.class);
-        return peliculaDTO;
+        return modelMapper.map(pelicula, PeliculaResponseDTO.class);
     }
 
     @Override
     public PersonajeResponseDTO personajeToResponseDTO(Personaje personaje) {
-        PersonajeResponseDTO personajeDTO = modelMapper.map(personaje, PersonajeResponseDTO.class);
-        return personajeDTO;
+        return modelMapper.map(personaje, PersonajeResponseDTO.class);
     }
 
     @Override
@@ -44,8 +42,7 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     @Override
     public GeneroResponseDTO generoToResponseDTO(Genero genero) {
-        GeneroResponseDTO generoDTO = modelMapper.map(genero, GeneroResponseDTO.class);
-        return generoDTO;
+        return modelMapper.map(genero, GeneroResponseDTO.class);
     }
 
     @Override
@@ -62,8 +59,7 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     @Override
     public AudioVisualResponseDTO audioVisualToResponseDTO(AudioVisual audiovisual) {
-        AudioVisualResponseDTO audioVisualRespondeDTO = modelMapper.map(audiovisual, AudioVisualResponseDTO.class);
-        return audioVisualRespondeDTO;
+        return modelMapper.map(audiovisual, AudioVisualResponseDTO.class);
     }
 
     @Override
@@ -75,14 +71,12 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     @Override
     public AudioVisual audioVisualResponseToAudiovisual(AudioVisualResponseDTO audiovisualDTO) {
-        AudioVisual audiovisual = modelMapper.map(audiovisualDTO, AudioVisual.class);
-        return audiovisual;
+        return modelMapper.map(audiovisualDTO, AudioVisual.class);
     }
 
      @Override
     public SerieResponseDTO serieToResponseDTO(Serie serie) {
-        SerieResponseDTO serieDTO = modelMapper.map(serie, SerieResponseDTO.class);
-        return serieDTO;
+         return modelMapper.map(serie, SerieResponseDTO.class);
     }
     @Override
     public Serie responseDtoToSerie(SerieResponseDTO serieResponseDTO) {
@@ -91,8 +85,7 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     @Override
     public SerieDtoPatch seriePatchDto(Serie serie) {
-        SerieDtoPatch serieDTO = modelMapper.map(serie, SerieDtoPatch.class);
-        return serieDTO;
+        return modelMapper.map(serie, SerieDtoPatch.class);
     }
 
     @Override
