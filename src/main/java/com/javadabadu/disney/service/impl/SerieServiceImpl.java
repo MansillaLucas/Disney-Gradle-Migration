@@ -42,10 +42,7 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public List<SerieResponseDTO> findAll() throws ExceptionBBDD {
         try {
-            return serieRepository.findAll().stream()
-                    .filter(Serie.class::isInstance)
-                    .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
-                    .collect(Collectors.toList());
+            return serieRepository.findAll().stream().filter(Serie.class::isInstance).map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual)).collect(Collectors.toList());
         } catch (Exception e) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
@@ -68,7 +65,7 @@ public class SerieServiceImpl implements SerieService {
         if (serieRepository.lastValueId() >= 1) {
             return serieRepository.lastValueId();
         }
-        throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
+        throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -82,7 +79,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return linkTo(methodOn(SerieController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -91,7 +88,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return linkTo(methodOn(SerieController.class).findAll(request)).withRel("Series");
         } catch (ExceptionBBDD e) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -105,14 +102,12 @@ public class SerieServiceImpl implements SerieService {
             }
 
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     private void setGenero(Serie entity, Integer idGenero) throws ExceptionBBDD {
-        Genero genero = generoRepository.findById(idGenero).
-                orElseThrow(() -> new ExceptionBBDD
-                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
+        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
         entity.setGenero(genero);
     }
 
@@ -133,23 +128,18 @@ public class SerieServiceImpl implements SerieService {
             Integer idGenero = (Integer) propGenId.get("id");
             setGenero(serie, idGenero);
         }
-        SerieDtoPatch serieDtoPatch = mm.seriePatchDto(serie);
-        return serieDtoPatch;
+        return mm.seriePatchDto(serie);
     }
 
     private void setGeneroForRequest(SerieRequestDTO serieRequestDTO, Integer idGenero) throws ExceptionBBDD {
-        Genero genero = generoRepository.findById(idGenero).
-                orElseThrow(() -> new ExceptionBBDD
-                        (message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
+        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
         serieRequestDTO.setGenero(mm.generoToResponseDTO(genero));
     }
 
 
     @Override
     public SerieResponseDTO getPersistenceEntity(SerieRequestDTO serieRequestDTO, Integer id) throws ExceptionBBDD {
-
         Serie serie = mm.requestDtoToSerie(serieRequestDTO);
-
         try {
             if (!existsById(id)) {
                 setGenero(serie, serie.getGenero().getId());
@@ -158,7 +148,7 @@ public class SerieServiceImpl implements SerieService {
             serie.setId(id);
             return save(serie);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
