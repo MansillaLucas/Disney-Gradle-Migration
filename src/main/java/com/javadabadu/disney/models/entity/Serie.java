@@ -1,7 +1,6 @@
 package com.javadabadu.disney.models.entity;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -16,7 +15,6 @@ import java.util.List;
 @Table(name = "serie")
 @Getter
 @Setter
-//@NoArgsConstructor
 public class Serie extends AudioVisual {
 
     @Column(nullable = false)
@@ -24,7 +22,8 @@ public class Serie extends AudioVisual {
     @Column(nullable = false)
     private Byte capitulos;
 
-    public Serie(){}
+    public Serie() {
+    }
 
     public Serie(Integer id, String titulo, String imagen, Genero genero, List<Personaje> personajes, byte temporadas, byte capitulos) {
         super(id, titulo, imagen, genero, personajes);

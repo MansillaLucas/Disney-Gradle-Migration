@@ -1,12 +1,14 @@
 package com.javadabadu.disney.models.dto.request;
 
 import com.javadabadu.disney.models.entity.TipoPersonaje;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
-import java.util.List;
 
+@Getter
+@Setter
 public class PersonajeRequestDTO extends HashMap<String, Object> {
-
     private String nombre;
     private int edad;
     private String historia;
