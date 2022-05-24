@@ -69,8 +69,14 @@ public class PeliculaController {
     }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<PeliculaResponseDTO>> update(@PathVariable Integer id,@RequestBody Map<String, Object> propiedades, HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<PeliculaResponseDTO>> update(@PathVariable Integer id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) throws ExceptionBBDD {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.updatePartial(id, propiedades), peliculaService.getSelfLink(id, request)));
+    }
+
+    @PatchMapping(path = "/join/{id}")
+    public ResponseEntity<EntityModel<PeliculaResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
+        PeliculaResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
 }

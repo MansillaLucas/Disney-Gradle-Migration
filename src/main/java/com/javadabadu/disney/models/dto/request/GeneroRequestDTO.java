@@ -6,8 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GeneroRequestDTO {
-
     private String nombre;
-
     private String imagen;
 }
