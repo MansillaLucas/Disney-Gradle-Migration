@@ -37,8 +37,8 @@ public class AudioVisual {
     @JoinColumn(name = "fk_genero" ,nullable = false)
     private Genero genero;
 
-    @Column(nullable = false)
-    private boolean estado = true;
+    //@Column(nullable = false)
+    //private boolean estado = true;
 
     @ManyToMany
     @JoinTable(name = "personajes_por_audiovisual",
@@ -56,12 +56,9 @@ public class AudioVisual {
             this.personajes = personajes;
         } else {
             for (Personaje personaje : personajes) {
-                if (this.personajes.contains(personaje)) {
-
-                } else {
-
+                if (!this.personajes.contains(personaje)) {
+                    this.personajes.add(personaje);
                 }
-
             }
         }
     }

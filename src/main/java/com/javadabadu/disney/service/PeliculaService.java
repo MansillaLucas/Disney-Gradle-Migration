@@ -11,5 +11,6 @@ import java.util.List;
 public interface PeliculaService extends BaseServiceRead<PeliculaResponseDTO, Integer>, BaseServiceWrite<Pelicula, PeliculaResponseDTO, Integer>,
         BaseServicePatch<PeliculaRequestDTO, PeliculaResponseDTO, Integer> {
     PeliculaResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD;
+    PeliculaResponseDTO removePersonaje(Integer idPelicula, Integer idPersonaje) throws ExceptionBBDD;
 
 }

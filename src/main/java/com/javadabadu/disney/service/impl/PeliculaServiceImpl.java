@@ -9,6 +9,7 @@ import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
+import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
@@ -171,12 +172,26 @@ public class PeliculaServiceImpl implements PeliculaService {
     @Override
     public PeliculaResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
-        /*List<Personaje> personajes = new ArrayList<>();
-        for (Integer idPersonaje : idPersonajes) {
-            personajes.add(personajeRepository.findById(idPersonaje).get());
-        }*/
+
         pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
 
+    }
+
+    @Override
+    public PeliculaResponseDTO removePersonaje(Integer idPelicula, Integer idPersonaje) throws ExceptionBBDD {
+        Pelicula pelicula = findPelicula(idPelicula);
+
+        List<Personaje> personajeList = pelicula.getPersonajes();
+        Personaje deletedPersonaje = personajeRepository.findById(idPersonaje).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(idPersonaje)}, Locale.US), HttpStatus.NOT_FOUND));
+
+        if (personajeList.contains(deletedPersonaje)) {
+            personajeList.remove(deletedPersonaje);
+        } else {
+            throw new ExceptionBBDD("No se encontró el personaje dentro de dicha pelicula", HttpStatus.NOT_FOUND);
+        }
+
+        pelicula.setPersonajes(personajeList);
+        return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
     }
 }
