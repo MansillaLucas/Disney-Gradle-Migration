@@ -5,6 +5,7 @@ import com.javadabadu.disney.controller.PeliculaController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.response.PeliculaResponseCharacDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -171,14 +172,15 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public PeliculaResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
+    public PeliculaResponseCharacDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
         Pelicula pelicula = this.findPelicula(idPelicula);
         List<Personaje> personajes = new ArrayList<>();
+
         for (Integer idPersonaje : idPersonajes) {
             personajes.add(personajeRepository.findById(idPersonaje).get());
         }
         pelicula.setPersonajes(personajes);
-        return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
 
+        return mm.peliculaToResponseCharacDTO(peliculaRepository.save(pelicula));
     }
 }
