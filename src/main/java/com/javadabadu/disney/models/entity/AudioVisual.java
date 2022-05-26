@@ -51,6 +51,21 @@ public class AudioVisual {
     public AudioVisual() {
     }
 
+    public void setPersonajes(List<Personaje> personajes) {
+        if (this.personajes.size() == 0) {
+            this.personajes = personajes;
+        } else {
+            for (Personaje personaje : personajes) {
+                if (this.personajes.contains(personaje)) {
+
+                } else {
+
+                }
+
+            }
+        }
+    }
+
     public AudioVisual(Integer id, String titulo, String imagen, Genero genero, List<Personaje> personajes) {
         this.id = id;
         this.titulo = titulo;

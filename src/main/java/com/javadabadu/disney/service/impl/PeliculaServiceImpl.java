@@ -9,7 +9,6 @@ import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
@@ -22,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -172,12 +170,12 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public PeliculaResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
-        Pelicula pelicula = this.findPelicula(idPelicula);
-        List<Personaje> personajes = new ArrayList<>();
+        Pelicula pelicula = findPelicula(idPelicula);
+        /*List<Personaje> personajes = new ArrayList<>();
         for (Integer idPersonaje : idPersonajes) {
             personajes.add(personajeRepository.findById(idPersonaje).get());
-        }
-        pelicula.setPersonajes(personajes);
+        }*/
+        pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
 
     }
