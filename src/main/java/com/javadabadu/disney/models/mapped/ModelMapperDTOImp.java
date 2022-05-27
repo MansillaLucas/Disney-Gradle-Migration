@@ -24,11 +24,6 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
     }
 
     @Override
-    public PeliculaResponseCharacDTO peliculaToResponseCharacDTO(Pelicula pelicula) {
-        return modelMapper.map(pelicula, PeliculaResponseCharacDTO.class);
-    }
-
-    @Override
     public PersonajeResponseDTO personajeToResponseDTO(Personaje personaje) {
         return modelMapper.map(personaje, PersonajeResponseDTO.class);
     }

@@ -37,6 +37,7 @@ public class PersonajeServiceImpl implements PersonajeService {
     @Override
     public PersonajeResponseDTO save(Personaje personaje) throws ExceptionBBDD {
         try {
+            var l = personajeRepository.save(personaje);
             return mapperDTO.personajeToResponseDTO(personajeRepository.save(personaje));
         } catch (Exception ebd) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
@@ -123,9 +124,6 @@ public class PersonajeServiceImpl implements PersonajeService {
     public PersonajeResponseDTO getPersistenceEntity(PersonajeRequestDTO personajeRequest, Integer id) throws ExceptionBBDD {
         Personaje personaje = mapperDTO.personajeRequestDtoToPersonaje(personajeRequest);
         try {
-            if (!existsById(id)) {
-                return save(personaje);
-            }
             personaje.setId(id);
             return save(personaje);
         } catch (ExceptionBBDD ebd) {

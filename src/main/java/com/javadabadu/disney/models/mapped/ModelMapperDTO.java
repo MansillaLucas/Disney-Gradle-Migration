@@ -46,5 +46,4 @@ public interface ModelMapperDTO {
 
     Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO);
 
-    PeliculaResponseCharacDTO peliculaToResponseCharacDTO(Pelicula pelicula);
 }

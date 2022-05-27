@@ -2,7 +2,7 @@ package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
-import com.javadabadu.disney.models.dto.response.PeliculaResponseCharacDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.service.PeliculaService;
@@ -74,9 +74,9 @@ public class PeliculaController {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.updatePartial(id, propiedades), peliculaService.getSelfLink(id, request)));
     }
 
-    @PatchMapping(path = "/join/{idMovie}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<PeliculaResponseCharacDTO>> joinPersonajes(@PathVariable Integer idMovie, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
-        PeliculaResponseCharacDTO response = peliculaService.joinPersonajes(idMovie, idPersonajes);
+    @PatchMapping(path = "/join/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PersonajeResponseCharacDTO {
+public class PersonajeResponseCharacDTO  {
     private Integer id;
     private String nombre;
     private int edad;

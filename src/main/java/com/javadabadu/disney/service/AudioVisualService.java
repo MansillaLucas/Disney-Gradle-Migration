@@ -1,0 +1,11 @@
+package com.javadabadu.disney.service;
+
+import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
+
+import java.util.List;
+
+public interface AudioVisualService {
+    AudioVisualResponseDTO joinPersonajes(Integer idAudioVisual, List<Integer> idPersonajes) throws ExceptionBBDD;
+
+}
