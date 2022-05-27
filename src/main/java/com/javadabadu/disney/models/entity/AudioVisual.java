@@ -55,12 +55,9 @@ public class AudioVisual {
             this.personajes = personajes;
         } else {
             for (Personaje personaje : personajes) {
-                if (this.personajes.contains(personaje)) {
-
-                } else {
-
+                if (!this.personajes.contains(personaje)) {
+                    this.personajes.add(personaje);
                 }
-
             }
         }
     }

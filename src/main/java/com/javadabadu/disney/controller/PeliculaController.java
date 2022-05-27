@@ -5,6 +5,7 @@ import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
+import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class PeliculaController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
         return ResponseEntity.created(URI.create(request.getRequestURI() + peliculaService.lastValueId())).body(message.getMessage("new.register", null, Locale.US));
     }
 
@@ -77,6 +78,12 @@ public class PeliculaController {
     @PatchMapping(path = "/join/{id}")
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
+    }
+
+    @PatchMapping(path = "/remove/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 

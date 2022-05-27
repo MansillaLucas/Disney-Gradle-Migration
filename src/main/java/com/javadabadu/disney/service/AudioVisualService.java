@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AudioVisualService {
     AudioVisualResponseDTO joinPersonajes(Integer idAudioVisual, List<Integer> idPersonajes) throws ExceptionBBDD;
+    AudioVisualResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD;
 
 }

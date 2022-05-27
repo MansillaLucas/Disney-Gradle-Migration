@@ -10,6 +10,7 @@ import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Pelicula;
+import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
@@ -163,10 +164,35 @@ public class PeliculaServiceImpl implements PeliculaService {
         return save(toPersist);
     }
 
-    @Override
     public AudioVisualResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
+        if (!personajeRepository.getByIdIn(idPersonajes).isEmpty()) {
         pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
+        } else {
+            throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public AudioVisualResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
+        Pelicula pelicula = findPelicula(idPelicula);
+
+        List<Personaje> personajeList = pelicula.getPersonajes(),
+                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
+
+        if (!personajesDeleted.isEmpty()) {
+
+            if (personajeList.removeAll(personajesDeleted)){ ;
+
+            pelicula.setPersonajes(personajeList);
+
+            return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
+        }else{
+                throw new ExceptionBBDD("El personaje seleccionado no pertenece a esta pelicula", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
+        }
     }
 }
