@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,10 +16,14 @@ public class AudioVisualResponseDTO {
     private String imagen;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Calendar fechaCreacion;
-    /* @JsonProperty(value="genero")
-     private GeneroResponseDTO genero;*/
     @JsonProperty(value = "genero")
     private String generoNombre;
     private boolean estado;
+    @JsonProperty(value = "personajes")
+    private List<PersonajeResponseAVDTO> personajes;
 
+
+    public void setPersonajes(List<PersonajeResponseAVDTO> personajes) {
+        this.personajes = personajes;
+    }
 }

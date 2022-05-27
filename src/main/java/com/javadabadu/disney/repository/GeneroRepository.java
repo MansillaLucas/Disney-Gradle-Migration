@@ -13,4 +13,6 @@ public interface GeneroRepository extends JpaRepository<Genero, Integer> {
 
     @Query(value = "select * from fn_soft_delete_genero(:id)", nativeQuery = true)
     boolean softDelete(Integer id);
+
+
 }

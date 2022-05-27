@@ -36,7 +36,7 @@ public class GeneroServiceImpl implements GeneroService {
     @Override
     public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
         try {
-            return mapperDTO.generoToResponseDTO(generoRepository.save(genero));
+            return mapperDTO.generoToResponseDTO(genero);
         } catch (Exception ebd) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
@@ -110,8 +110,9 @@ public class GeneroServiceImpl implements GeneroService {
     public GeneroResponseDTO getPersistenceEntity(GeneroRequestDTO generoRequestDTO, Integer id) throws ExceptionBBDD {
         Genero genero = mapperDTO.generoRequestDtoToPersonaje(generoRequestDTO);
         try {
-            if (existsById(id))
-                genero.setId(id);
+            if (id == null)
+                id = generoRepository.lastValueId();
+            genero.setId(id);
             return save(genero);
         } catch (ExceptionBBDD ebd) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);

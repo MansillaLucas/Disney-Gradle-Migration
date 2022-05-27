@@ -2,6 +2,7 @@ package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.service.PeliculaService;
@@ -74,8 +75,8 @@ public class PeliculaController {
     }
 
     @PatchMapping(path = "/join/{id}")
-    public ResponseEntity<EntityModel<PeliculaResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
-        PeliculaResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 

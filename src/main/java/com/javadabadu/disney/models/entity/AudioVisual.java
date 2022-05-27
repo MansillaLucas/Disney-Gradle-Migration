@@ -19,7 +19,6 @@ import java.util.List;
 @Setter
 public class AudioVisual {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 128)

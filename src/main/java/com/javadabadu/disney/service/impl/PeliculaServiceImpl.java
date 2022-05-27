@@ -5,6 +5,7 @@ import com.javadabadu.disney.controller.PeliculaController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -32,9 +33,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class PeliculaServiceImpl implements PeliculaService {
     @Autowired
-    PeliculaRepository peliculaRepository;
+    private PeliculaRepository peliculaRepository;
     @Autowired
-    GeneroRepository generoRepository;
+    private GeneroRepository generoRepository;
     @Autowired
     private PersonajeRepository personajeRepository;
     @Autowired
@@ -141,13 +142,9 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public PeliculaResponseDTO getPersistenceEntity(PeliculaRequestDTO entityRequest, Integer id) throws ExceptionBBDD {
-        Pelicula pelicula = mm.requestDtoToPelicula(entityRequest);
-
-        if (peliculaRepository.existsById(id)) pelicula.setId(id);
-
-        setGenero(pelicula, entityRequest.getGenero().getId());
-
+    public PeliculaResponseDTO getPersistenceEntity(PeliculaRequestDTO peliculaRequestDTO, Integer id) throws ExceptionBBDD {
+        Pelicula pelicula = mm.requestDtoToPelicula(peliculaRequestDTO);
+        pelicula.setId(id);
         return save(pelicula);
     }
 
@@ -162,21 +159,14 @@ public class PeliculaServiceImpl implements PeliculaService {
                 searchedPeliculaMap.replace(k, searchedPeliculaMap.get(k), v);
             }
         });
-
         Pelicula toPersist = mapper.convertValue(searchedPeliculaMap, Pelicula.class);
-
         return save(toPersist);
     }
 
     @Override
-    public PeliculaResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
+    public AudioVisualResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
-        /*List<Personaje> personajes = new ArrayList<>();
-        for (Integer idPersonaje : idPersonajes) {
-            personajes.add(personajeRepository.findById(idPersonaje).get());
-        }*/
         pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
-
     }
 }

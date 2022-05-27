@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "genero")
 public class Genero {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 32, unique = true)
