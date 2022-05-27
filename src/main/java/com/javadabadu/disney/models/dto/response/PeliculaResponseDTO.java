@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PeliculaResponseDTO extends AudioVisualResponseDTO {
-   private String duracion;
-   private int calificacion;
+    private String duracion;
+    private int calificacion;
 }
