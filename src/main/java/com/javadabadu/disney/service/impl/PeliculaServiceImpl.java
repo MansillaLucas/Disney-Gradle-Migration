@@ -171,7 +171,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     @Override
-    public PeliculaResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
+    public AudioVisualResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
 
         List<Personaje> personajeList = pelicula.getPersonajes(),

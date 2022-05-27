@@ -9,6 +9,7 @@ import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
+import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.entity.Serie;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
@@ -163,5 +164,25 @@ public class SerieServiceImpl implements SerieService {
         Serie serie = findSerie(idAudioVisual);
         serie.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.serieToResponseDTO(serieRepository.save(serie));
+    }
+
+    @Override
+    public AudioVisualResponseDTO removePersonaje(Integer idSerie, List<Integer> personajesToDelete) throws ExceptionBBDD {
+        Serie serie = findSerie(idSerie);
+
+        List<Personaje> personajeList = serie.getPersonajes(),
+                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
+
+        if (!personajesDeleted.isEmpty()) {
+
+            personajeList.removeAll(personajesDeleted);
+
+            serie.setPersonajes(personajeList);
+
+            return mm.serieToResponseDTO(serieRepository.save(serie));
+
+        } else {
+            throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
+        }
     }
 }

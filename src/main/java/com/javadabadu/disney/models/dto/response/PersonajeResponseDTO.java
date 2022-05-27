@@ -17,7 +17,7 @@ public class PersonajeResponseDTO {
     private float peso;
     private TipoPersonaje tipo;
     private boolean estado;
-    private List<AudioVisualResponseDTO> audioVisual;
+    private List<AVResponseWithoutCharDTO> audioVisual;
 
     public boolean getEstado (){
         return this.estado;

@@ -78,4 +78,10 @@ public class SerieController {
         AudioVisualResponseDTO response = serieService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
+
+    @PatchMapping(path = "/remove/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
+        return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
 }

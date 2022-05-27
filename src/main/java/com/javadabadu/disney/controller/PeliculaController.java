@@ -81,8 +81,8 @@ public class PeliculaController {
     }
 
     @PatchMapping(path = "/remove/{id}")
-    public ResponseEntity<EntityModel<PeliculaResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
-        PeliculaResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
