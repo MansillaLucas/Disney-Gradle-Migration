@@ -175,23 +175,25 @@ public class PeliculaServiceImpl implements PeliculaService {
 
         pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
-
     }
 
     @Override
-    public PeliculaResponseDTO removePersonaje(Integer idPelicula, Integer idPersonaje) throws ExceptionBBDD {
+    public PeliculaResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
 
-        List<Personaje> personajeList = pelicula.getPersonajes();
-        Personaje deletedPersonaje = personajeRepository.findById(idPersonaje).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(idPersonaje)}, Locale.US), HttpStatus.NOT_FOUND));
+        List<Personaje> personajeList = pelicula.getPersonajes(),
+                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
 
-        if (personajeList.contains(deletedPersonaje)) {
-            personajeList.remove(deletedPersonaje);
+        if (!personajesDeleted.isEmpty()) {
+
+            personajeList.removeAll(personajesDeleted);
+
+            pelicula.setPersonajes(personajeList);
+
+            return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
+
         } else {
-            throw new ExceptionBBDD("No se encontró el personaje dentro de dicha pelicula", HttpStatus.NOT_FOUND);
+            throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
         }
-
-        pelicula.setPersonajes(personajeList);
-        return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
     }
 }
