@@ -5,6 +5,7 @@ import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
+import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;

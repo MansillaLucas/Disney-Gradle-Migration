@@ -5,6 +5,7 @@ import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
+import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.SerieService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class SerieController {
 
     @Autowired
     SerieService serieService;
+
 
     @GetMapping("/")
     public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
