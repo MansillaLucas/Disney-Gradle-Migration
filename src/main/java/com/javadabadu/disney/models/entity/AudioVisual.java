@@ -19,7 +19,6 @@ import java.util.List;
 @Setter
 public class AudioVisual {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 128)
@@ -49,6 +48,21 @@ public class AudioVisual {
     private List<Personaje> personajes = new ArrayList<>();
 
     public AudioVisual() {
+    }
+
+    public void setPersonajes(List<Personaje> personajes) {
+        if (this.personajes.size() == 0) {
+            this.personajes = personajes;
+        } else {
+            for (Personaje personaje : personajes) {
+                if (this.personajes.contains(personaje)) {
+
+                } else {
+
+                }
+
+            }
+        }
     }
 
     public AudioVisual(Integer id, String titulo, String imagen, Genero genero, List<Personaje> personajes) {

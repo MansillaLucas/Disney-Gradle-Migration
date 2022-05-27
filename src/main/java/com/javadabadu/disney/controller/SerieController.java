@@ -1,8 +1,9 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.service.SerieService;
 import com.javadabadu.disney.util.Uri;
@@ -46,7 +47,6 @@ public class SerieController {
 
     @PostMapping("/")
     public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
-
        return ResponseEntity.created(URI.create(request.getRequestURI()
                     + serieService.lastValueId())).body("Se creo un registro");
     }
@@ -70,6 +70,12 @@ public class SerieController {
     public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         String body = serieService.softDelete(serieService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
+        return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
+
+    @PatchMapping(path = "/join/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = serieService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
 }

@@ -5,12 +5,14 @@ import com.javadabadu.disney.controller.SerieController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
 import com.javadabadu.disney.models.entity.Serie;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
+import com.javadabadu.disney.repository.PersonajeRepository;
 import com.javadabadu.disney.repository.SerieRepository;
 import com.javadabadu.disney.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 public class SerieServiceImpl implements SerieService {
     @Autowired
-    SerieRepository serieRepository;
+    private SerieRepository serieRepository;
     @Autowired
-    GeneroRepository generoRepository;
+    private GeneroRepository generoRepository;
+    @Autowired
+    private PersonajeRepository personajeRepository;
+
     @Autowired
     private MessageSource message;
     @Autowired
@@ -70,7 +75,8 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO save(Serie entity) {
-        return mm.serieToResponseDTO(serieRepository.save(entity));
+        var l = serieRepository.save(entity);
+        return mm.serieToResponseDTO(l);
     }
 
     @Override
@@ -131,35 +137,18 @@ public class SerieServiceImpl implements SerieService {
         return mm.seriePatchDto(serie);
     }
 
-    private void setGeneroForRequest(SerieRequestDTO serieRequestDTO, Integer idGenero) throws ExceptionBBDD {
-        Genero genero = generoRepository.findById(idGenero).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.genero.not.exist", new String[]{Integer.toString(idGenero)}, Locale.US), HttpStatus.NOT_FOUND));
-        serieRequestDTO.setGenero(mm.generoToResponseDTO(genero));
-    }
-
-
     @Override
     public SerieResponseDTO getPersistenceEntity(SerieRequestDTO serieRequestDTO, Integer id) throws ExceptionBBDD {
         Serie serie = mm.requestDtoToSerie(serieRequestDTO);
-        try {
-            if (!existsById(id)) {
-                setGenero(serie, serie.getGenero().getId());
-                return save(serie);
-            }
-            serie.setId(id);
-            return save(serie);
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
-        }
+        serie.setId(id);
+        return save(serie);
     }
-
 
     @Override
     public SerieResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
-
         SerieDtoPatch serieDtoP = getSerieToModify(id, propiedades);
         Map<String, Object> searchedSerieMap = mapper.convertValue(serieDtoP, Map.class);
-
         propiedades.forEach((k, v) -> {
             if (searchedSerieMap.containsKey(k)) {
                 searchedSerieMap.replace(k, searchedSerieMap.get(k), v);
@@ -167,5 +156,12 @@ public class SerieServiceImpl implements SerieService {
         });
         Serie searchedSerieMap2 = mapper.convertValue(searchedSerieMap, Serie.class);
         return save(searchedSerieMap2);
+    }
+
+    @Override
+    public AudioVisualResponseDTO joinPersonajes(Integer idAudioVisual, List<Integer> idPersonajes) throws ExceptionBBDD {
+        Serie serie = findSerie(idAudioVisual);
+        serie.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
+        return mm.serieToResponseDTO(serieRepository.save(serie));
     }
 }
