@@ -162,8 +162,13 @@ public class SerieServiceImpl implements SerieService {
     @Override
     public AudioVisualResponseDTO joinPersonajes(Integer idAudioVisual, List<Integer> idPersonajes) throws ExceptionBBDD {
         Serie serie = findSerie(idAudioVisual);
-        serie.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
+        if (!personajeRepository.getByIdIn(idPersonajes).isEmpty()) {
+
+            serie.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.serieToResponseDTO(serieRepository.save(serie));
+    } else {
+        throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
+    }
     }
 
     @Override
@@ -175,12 +180,14 @@ public class SerieServiceImpl implements SerieService {
 
         if (!personajesDeleted.isEmpty()) {
 
-            personajeList.removeAll(personajesDeleted);
+            if ( personajeList.removeAll(personajesDeleted)){
 
             serie.setPersonajes(personajeList);
 
             return mm.serieToResponseDTO(serieRepository.save(serie));
-
+        }else{
+            throw new ExceptionBBDD("El personaje seleccionado no pertenece a esta pelicula", HttpStatus.NOT_FOUND);
+        }
         } else {
             throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
         }

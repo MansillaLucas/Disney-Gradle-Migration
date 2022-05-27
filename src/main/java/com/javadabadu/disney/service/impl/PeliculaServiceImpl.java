@@ -166,8 +166,12 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     public AudioVisualResponseDTO joinPersonajes(Integer idPelicula, List<Integer> idPersonajes) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
+        if (!personajeRepository.getByIdIn(idPersonajes).isEmpty()) {
         pelicula.setPersonajes(personajeRepository.getByIdIn(idPersonajes));
         return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
+        } else {
+            throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
@@ -179,12 +183,14 @@ public class PeliculaServiceImpl implements PeliculaService {
 
         if (!personajesDeleted.isEmpty()) {
 
-            personajeList.removeAll(personajesDeleted);
+            if (personajeList.removeAll(personajesDeleted)){ ;
 
             pelicula.setPersonajes(personajeList);
 
             return mm.peliculaToResponseDTO(peliculaRepository.save(pelicula));
-
+        }else{
+                throw new ExceptionBBDD("El personaje seleccionado no pertenece a esta pelicula", HttpStatus.NOT_FOUND);
+            }
         } else {
             throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
         }
