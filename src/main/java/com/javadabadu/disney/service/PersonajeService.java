@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface PersonajeService extends BaseServiceRead<PersonajeResponseDTO, Integer>, BaseServiceWrite<Personaje, PersonajeResponseDTO, Integer>,
         BaseServicePatch<PersonajeRequestDTO, PersonajeResponseDTO, Integer> {
-    List<PersonajeResponseDTO> filterCharacter(String name, Integer edad, Integer idMovie) throws ExceptionBBDD;
+    List<PersonajeResponseDTO> filterCharacter(String titulo, Integer edad, Integer idMovie) throws ExceptionBBDD;
 
 }
