@@ -5,7 +5,6 @@ import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
-import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,14 +75,14 @@ public class PeliculaController {
     }
 
     @PatchMapping(path = "/join/{id}")
-    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
-        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToJoin, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, personajesToJoin.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
     @PatchMapping(path = "/remove/{id}")
-    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
-        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
