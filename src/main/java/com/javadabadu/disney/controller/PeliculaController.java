@@ -1,11 +1,10 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.PeliculaResponseDTO;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
-import com.javadabadu.disney.models.dto.PersonajeResponseDTO;
-import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
+import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
+import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.service.PeliculaService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +36,15 @@ public class PeliculaController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<PeliculaResponseDTO>> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         PeliculaResponseDTO peliculaResponseDTO = peliculaService.findById(id);
         return ResponseEntity.ok().body(EntityModel.of(peliculaResponseDTO, peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
     }
 
     @GetMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity<?> findAll(HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<CollectionModel<EntityModel<PeliculaResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
+
         List<PeliculaResponseDTO> listPeliculaResponseDTO = peliculaService.findAll();
         List<EntityModel<PeliculaResponseDTO>> peliculas = new ArrayList<>();
 
@@ -57,21 +57,21 @@ public class PeliculaController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> lastId(HttpServletRequest request) throws ExceptionBBDD{
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
         return ResponseEntity.created(URI.create(request.getRequestURI() + peliculaService.lastValueId())).body(message.getMessage("new.register", null, Locale.US));
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> crear(@RequestBody Pelicula pelicula, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
-        //Pelicula source = peliculaService.getEntitySave(pelicula, id);
-        return null;//ResponseEntity.ok().body(EntityModel.of(peliculaService.save(source), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
-    }
+    public ResponseEntity<EntityModel<PeliculaResponseDTO>> crear(@RequestBody PeliculaRequestDTO pelicula, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+        return ResponseEntity.ok().body(EntityModel.of(peliculaService.getPersistenceEntity(pelicula, id), peliculaService.getSelfLink(id, request), peliculaService.getCollectionLink(request)));
 
+    }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws
+            ExceptionBBDD {
         String body = peliculaService.softDelete(peliculaService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
@@ -79,12 +79,27 @@ public class PeliculaController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> update(@PathVariable Integer id,
-                                    @RequestBody Map<String, Object> propiedades,
-                                    HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<PeliculaResponseDTO>> update(@PathVariable Integer
+                                                                           id, @RequestBody Map<String, Object> propiedades, HttpServletRequest request) throws ExceptionBBDD {
+        return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.updatePartial(id, propiedades), peliculaService.getSelfLink(id, request)));
+    }
 
-      //  Pelicula searchedPelicula = peliculaService.getEntity(id, propiedades);
-        return null;//ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.save(searchedPelicula), peliculaService.getSelfLink(id, request)));
+    @PatchMapping(path = "/join/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes
+            (@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws
+            ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
+    }
+
+    @PatchMapping(path = "/remove/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje
+            (@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws
+            ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
+        return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
 }

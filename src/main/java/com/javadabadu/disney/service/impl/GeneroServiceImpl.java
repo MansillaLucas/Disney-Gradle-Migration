@@ -3,10 +3,10 @@ package com.javadabadu.disney.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javadabadu.disney.controller.GeneroController;
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.GeneroRequestDTO;
-import com.javadabadu.disney.models.dto.GeneroResponseDTO;
+import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
+import com.javadabadu.disney.models.dto.response.GeneroResponseDTO;
 import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
+import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.service.GeneroService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +27,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class GeneroServiceImpl implements GeneroService {
 
     @Autowired
+    private ModelMapperDTO mapperDTO;
+    @Autowired
     private GeneroRepository generoRepository;
-
     @Autowired
     private MessageSource message;
-
-    @Autowired
-    ModelMapperDTOImp mapperDTO;
 
     @Override
     public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
         try {
-            return mapperDTO.generoToResponseDTO(generoRepository.save(genero));
+            return mapperDTO.generoToResponseDTO(genero);
         } catch (Exception ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Override
@@ -50,7 +47,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return mapperDTO.listGeneroToResponseDTO(generoRepository.findAll());
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transacción, contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -63,23 +60,18 @@ public class GeneroServiceImpl implements GeneroService {
     @Override
     public Boolean existsById(Integer id) throws ExceptionBBDD {
         try {
-            if (generoRepository.existsById(id)) {
-                return generoRepository.existsById(id);
-            } else {
-                return false;
-            }
-
+            return generoRepository.existsById(id);
         } catch (Exception e) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public Integer lastValueId() throws ExceptionBBDD {
-        if (generoRepository.lastValueId() >= 1) {
+        try {
             return generoRepository.lastValueId();
-        } else {
-            throw new ExceptionBBDD("Error en la transacción, contactese con el ADMIN", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -88,7 +80,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -97,7 +89,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:");
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -107,51 +99,40 @@ public class GeneroServiceImpl implements GeneroService {
             if (generoRepository.softDelete(id)) {
                 return "Se elimino el genero seleccionado";
             } else {
-                throw new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
+                throw new ExceptionBBDD("");
             }
-
-        } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
+        } catch (ExceptionBBDD e) {
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public GeneroResponseDTO getPersistenceEntity(GeneroRequestDTO generoRequestDTO, Integer id) throws ExceptionBBDD {
         Genero genero = mapperDTO.generoRequestDtoToPersonaje(generoRequestDTO);
-
         try {
-            if (!existsById(id)) {
-                return save(genero);
-            }
-            Genero source = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.BAD_REQUEST));
+            if (id == null)
+                id = generoRepository.lastValueId();
             genero.setId(id);
-            source = genero;
-            return save(source);
-
+            return save(genero);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public GeneroResponseDTO updatePartial(Integer id, Map<String, Object> propiedades) throws ExceptionBBDD {
         ObjectMapper mapper = new ObjectMapper();
-
         try {
             GeneroResponseDTO searchedGeneroDTO = findById(id);
-
             Map<String, Object> searchedGeneroMap = mapper.convertValue(searchedGeneroDTO, Map.class);
             propiedades.forEach((k, v) -> {
                 if (searchedGeneroMap.containsKey(k)) {
                     searchedGeneroMap.replace(k, searchedGeneroMap.get(k), v);
                 }
             });
-
-            Genero searchedGenero2 = mapper.convertValue(searchedGeneroMap, Genero.class);
-
-            return save(searchedGenero2);
+            return save(mapper.convertValue(searchedGeneroMap, Genero.class));
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD("Error en la transaccion contacte con su ADM", HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 }

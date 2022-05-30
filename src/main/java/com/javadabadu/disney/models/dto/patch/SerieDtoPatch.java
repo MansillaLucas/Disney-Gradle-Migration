@@ -1,5 +1,6 @@
-package com.javadabadu.disney.models.dto;
+package com.javadabadu.disney.models.dto.patch;
 
+import com.javadabadu.disney.models.dto.response.GeneroResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;

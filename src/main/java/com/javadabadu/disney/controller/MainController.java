@@ -19,13 +19,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class MainController {
 
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> mainMethod(HttpServletRequest request) throws ExceptionBBDD {
+    public ResponseEntity<EntityModel<Link>> mainMethod(HttpServletRequest request) throws ExceptionBBDD {
 
-        Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel(),
-                generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:"),
-                characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:"),
-                movieLink = linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Movie:"),
-                serieLink = linkTo(methodOn(SerieController.class).findAll(request)).withRel("Serie:");
+        Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel();
+        Link generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:");
+        Link characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:");
+        Link movieLink = linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Movie:");
+        Link serieLink = linkTo(methodOn(SerieController.class).findAll(request)).withRel("Serie:");
 
         return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink, movieLink, serieLink));
     }

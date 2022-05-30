@@ -26,6 +26,7 @@ public interface PersonajeRepository extends JpaRepository<Personaje, Integer> {
     @Query(value = "SELECT * from Personaje  " +
             "JOIN personajes_por_audiovisual  on Personaje.id = personajes_por_audiovisual.id_personaje " +
             "WHERE personajes_por_audiovisual.id_audiovisual = :idMovie", nativeQuery = true)
-    List<Personaje> findByMovieId(@Param("idMovie") Integer idMovie); //TODO Hay que agregar el model mapper para que no rompa
+    List<Personaje> findByMovieId(@Param("idMovie") Integer idMovie);
 
+    List<Personaje> getByIdIn(List<Integer> ids);
 }

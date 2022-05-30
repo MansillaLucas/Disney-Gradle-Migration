@@ -6,18 +6,16 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ExceptionBBDD extends Exception {
 
-    private String message;
-    private HttpStatus statusCode;
+    private final HttpStatus statusCode;
 
-    public ExceptionBBDD() {
-    }
 
     public ExceptionBBDD(String message) {
         super(message);
+        statusCode = null;
     }
 
     public ExceptionBBDD(String message, HttpStatus statusCode) {
-        this.message = message;
+        super(message);
         this.statusCode = statusCode;
     }
 

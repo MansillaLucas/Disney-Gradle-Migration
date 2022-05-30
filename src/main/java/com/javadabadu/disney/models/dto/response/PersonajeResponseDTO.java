@@ -1,4 +1,4 @@
-package com.javadabadu.disney.models.dto;
+package com.javadabadu.disney.models.dto.response;
 
 import com.javadabadu.disney.models.entity.TipoPersonaje;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public class PersonajeResponseDTO {
     private float peso;
     private TipoPersonaje tipo;
     private boolean estado;
-    private List<AudioVisualResponseDTO> audioVisual;
+    private List<AVResponseWithoutCharDTO> audioVisual;
 
     public boolean getEstado (){
         return this.estado;

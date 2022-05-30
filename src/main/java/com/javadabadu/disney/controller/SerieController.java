@@ -1,10 +1,11 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
-import com.javadabadu.disney.models.dto.SerieRequestDTO;
-import com.javadabadu.disney.models.dto.SerieResponseDTO;
-import com.javadabadu.disney.models.entity.Serie;
+import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
+import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
+import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
+import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.SerieService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class SerieController {
     @Autowired
     SerieService serieService;
 
+
     @GetMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
@@ -51,7 +53,6 @@ public class SerieController {
     @PostMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
-
        return ResponseEntity.created(URI.create(request.getRequestURI()
                     + serieService.lastValueId())).body("Se creo un registro");
     }
@@ -78,6 +79,18 @@ public class SerieController {
     public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         String body = serieService.softDelete(serieService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
+        return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
+
+    @PatchMapping(path = "/join/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = serieService.joinPersonajes(id, idPersonajes);
+        return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
+
+    @PatchMapping(path = "/remove/{id}")
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
 }

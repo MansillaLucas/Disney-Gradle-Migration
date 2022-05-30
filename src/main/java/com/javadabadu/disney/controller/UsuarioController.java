@@ -1,9 +1,9 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
-import com.javadabadu.disney.models.dto.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.RolResponseDTO;
 import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
+import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.entity.Rol;
 import com.javadabadu.disney.models.entity.Usuario;
 import com.javadabadu.disney.service.UsuarioService;
