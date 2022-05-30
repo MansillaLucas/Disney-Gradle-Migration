@@ -6,7 +6,6 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
-import com.javadabadu.disney.models.dto.response.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.models.entity.AudioVisual;
 import com.javadabadu.disney.models.entity.Genero;
@@ -192,12 +191,14 @@ public class SerieServiceImpl implements SerieService {
     public List<SerieResponseDTO> filterSerie(String titulo, Integer idGenero) throws ExceptionBBDD {
         try {
             if (titulo != null) {
-               return serieRepository.findByTitulo(titulo).stream().filter(Serie.class::isInstance).map(audioVisual ->mm.serieToResponseDTO((Serie) audioVisual)).collect(Collectors.toList());
-            }
+                return serieRepository.findByTitulo(titulo).stream().filter(Serie.class::isInstance)
+                        .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
+                        .collect(Collectors.toList());
+            } else if (idGenero != null) {
 
+            }
         } catch (Exception e) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
-        return null;
     }
 }

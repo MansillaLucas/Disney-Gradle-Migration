@@ -85,16 +85,19 @@ public class SerieController {
         AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
-    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAllFilter(@RequestParam(value = "titulo", required = false) String titulo,
-                                                                                            @RequestParam(value = "genero", required = false) Integer idGeneo,
-                                                                                            HttpServletRequest request) throws ExceptionBBDD {
 
-        List<PersonajeResponseDTO> listPersonajeResponseDTO = personajeService.filterCharacter(nombre, edad, idPelicula);
-        List<EntityModel<PersonajeResponseDTO>> personajes = new ArrayList<>();
-        for (PersonajeResponseDTO personaje : listPersonajeResponseDTO) {
-            personajes.add(EntityModel.of(personaje, personajeService.getSelfLink(personaje.getId(), request)));
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAllFilter
+    (@RequestParam(value = "titulo", required = false) String titulo,
+     @RequestParam(value = "genero", required = false) Integer idGeneo,
+     HttpServletRequest request) throws ExceptionBBDD {
+
+        List<SerieResponseDTO> listSerieResponseDTO = serieService.filterSerie(titulo,idGeneo);
+        List<EntityModel<SerieResponseDTO>> series = new ArrayList<>();
+        for (SerieResponseDTO serie : listSerieResponseDTO) {
+            series.add(EntityModel.of(serie, serieService.getSelfLink(serie.getId(), request)));
         }
-        return ResponseEntity.ok().body(CollectionModel.of(personajes, personajeService.getCollectionLink(request)));
+        return ResponseEntity.ok().body(CollectionModel.of(series, serieService.getCollectionLink(request)));
     }
 }
