@@ -191,11 +191,13 @@ public class SerieServiceImpl implements SerieService {
     public List<SerieResponseDTO> filterSerie(String titulo, Integer idGenero) throws ExceptionBBDD {
         try {
             if (titulo != null) {
-                return serieRepository.findByTitulo(titulo).stream().filter(Serie.class::isInstance)
+                return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
+            } else if (idGenero != null) {
+                return serieRepository.findByGeneroId(idGenero).stream().filter(Serie.class::isInstance)
                         .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
                         .collect(Collectors.toList());
-            } else if (idGenero != null) {
-
+            }else{
+                return  findAll();
             }
         } catch (Exception e) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);

@@ -1,6 +1,7 @@
 package com.javadabadu.disney.repository;
 
 import com.javadabadu.disney.models.entity.AudioVisual;
+import com.javadabadu.disney.models.entity.Serie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -15,6 +16,12 @@ public interface AudioVisualRepository extends JpaRepository<AudioVisual, Intege
     @Query(value = "select * from fn_soft_delete_audiovisual(:id) ", nativeQuery = true)
     boolean softDelete(Integer id);
 
-    @Query(value = "SELECT av FROM audiovisual WHERE av.titulo LIKE %:titulo%")
-    List<AudioVisual> findByTitulo(String titulo);
+    @Query(value ="SELECT *, 0 as clazz_ FROM audiovisual av JOIN serie s ON av.id = s.serie_id WHERE av.titulo LIKE %:titulo%", nativeQuery = true)
+    List<Serie> findByTituloSerie(String titulo);
+
+    @Query(value = "SELECT av.* FROM audiovisual av " +
+            "JOIN genero g ON av.fk_genero = g.id " +
+            "WHERE av.fk_genero= :idGenero", nativeQuery = true)
+    List<AudioVisual> findByGeneroId(Integer idGenero);
+
 }
