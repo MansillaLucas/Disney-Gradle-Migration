@@ -23,9 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -191,7 +189,10 @@ public class SerieServiceImpl implements SerieService {
     public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
         try {
             if (titulo != null) {
-                return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
+             List<AudioVisual> listaAv = serieRepository.findByTituloSerie(titulo);
+             return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+
+               // return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
             } else if (idGenero != null) {
                 return serieRepository.findByGeneroId(idGenero).stream().filter(Serie.class::isInstance)
                         .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
@@ -205,3 +206,5 @@ public class SerieServiceImpl implements SerieService {
     }
 }
 //return movieRepository.findAll(Sort.by(Sort.Direction.ASC, "releaseDate"));
+//List<Employee> employeesList = Arrays.asList(employees);
+//    employees.sort(Comparator.comparing(Employee::getAge));
