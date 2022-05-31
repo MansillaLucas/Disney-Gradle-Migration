@@ -88,14 +88,15 @@ public class SerieController {
 
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAllFilter
+    public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findAllFilter
     (@RequestParam(value = "titulo", required = false) String titulo,
-     @RequestParam(value = "genero", required = false) Integer idGeneo,
+     @RequestParam(value = "genero", required = false) Integer idGenero,
+     @RequestParam(value = "order", required = false) String order,
      HttpServletRequest request) throws ExceptionBBDD {
 
-        List<SerieResponseDTO> listSerieResponseDTO = serieService.filterSerie(titulo,idGeneo);
-        List<EntityModel<SerieResponseDTO>> series = new ArrayList<>();
-        for (SerieResponseDTO serie : listSerieResponseDTO) {
+        List<AudioVisualResponseDTO> listSerieResponseDTO = serieService.filterAudiovisual(titulo,idGenero, order);
+        List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
+        for (AudioVisualResponseDTO serie : listSerieResponseDTO) {
             series.add(EntityModel.of(serie, serieService.getSelfLink(serie.getId(), request)));
         }
         return ResponseEntity.ok().body(CollectionModel.of(series, serieService.getCollectionLink(request)));

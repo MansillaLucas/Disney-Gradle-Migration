@@ -188,7 +188,7 @@ public class SerieServiceImpl implements SerieService {
 
 
     @Override
-    public List<SerieResponseDTO> filterSerie(String titulo, Integer idGenero) throws ExceptionBBDD {
+    public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
         try {
             if (titulo != null) {
                 return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
@@ -197,10 +197,11 @@ public class SerieServiceImpl implements SerieService {
                         .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
                         .collect(Collectors.toList());
             }else{
-                return  findAll();
+                return null;
             }
         } catch (Exception e) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 }
+//return movieRepository.findAll(Sort.by(Sort.Direction.ASC, "releaseDate"));

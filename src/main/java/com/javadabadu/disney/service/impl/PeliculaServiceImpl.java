@@ -189,4 +189,9 @@ public class PeliculaServiceImpl implements PeliculaService {
             throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
+        return null;
+    }
 }

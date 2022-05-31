@@ -11,6 +11,6 @@ import java.util.List;
 public interface SerieService extends BaseServiceRead<SerieResponseDTO, Integer>,
         BaseServiceWrite<Serie, SerieResponseDTO, Integer>,
         BaseServicePatch<SerieRequestDTO, SerieResponseDTO, Integer>, AudioVisualService {
-    List<SerieResponseDTO> filterSerie (String titulo, Integer idGenero) throws ExceptionBBDD;
+
 
 }
