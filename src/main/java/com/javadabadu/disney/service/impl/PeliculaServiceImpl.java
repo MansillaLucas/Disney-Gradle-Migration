@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
+import static com.javadabadu.disney.util.MessageConstants.ID_NOT_FOUND;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -71,7 +73,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         if (peliculaRepository.lastValueId() >= 1) {
             return peliculaRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -92,7 +94,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         try {
             return linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -101,7 +103,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         try {
             return linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:");
         } catch (ExceptionBBDD ebd2) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -111,10 +113,10 @@ public class PeliculaServiceImpl implements PeliculaService {
             if (peliculaRepository.softDelete(id)) {
                 return message.getMessage("delete.success", null, Locale.US);
             } else {
-                throw new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
+                throw new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
             }
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -135,7 +137,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     public Pelicula findPelicula(Integer id) throws ExceptionBBDD {
-        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
         if (av instanceof Pelicula) {
             return (Pelicula) av;
         }
@@ -178,12 +180,12 @@ public class PeliculaServiceImpl implements PeliculaService {
     public AudioVisualResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
 
-        List<Personaje> personajeList = pelicula.getPersonajes(),
-                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
+        List<Personaje> personajeList = pelicula.getPersonajes();
+        List<Personaje> personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
 
         if (!personajesDeleted.isEmpty()) {
 
-            if (personajeList.removeAll(personajesDeleted)){ ;
+            if (personajeList.removeAll(personajesDeleted)){
 
             pelicula.setPersonajes(personajeList);
 

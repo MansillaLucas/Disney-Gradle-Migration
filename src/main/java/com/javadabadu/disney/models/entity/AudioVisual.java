@@ -51,7 +51,7 @@ public class AudioVisual {
     }
 
     public void setPersonajes(List<Personaje> personajes) {
-        if (this.personajes.size() == 0) {
+        if (this.personajes.isEmpty()) {
             this.personajes = personajes;
         } else {
             for (Personaje personaje : personajes) {

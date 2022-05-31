@@ -74,13 +74,13 @@ public class PeliculaController {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.updatePartial(id, propiedades), peliculaService.getSelfLink(id, request)));
     }
 
-    @PatchMapping(path = "/join/{id}")
+    @PatchMapping(path = "/join/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToJoin, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, personajesToJoin.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
-    @PatchMapping(path = "/remove/{id}")
+    @PatchMapping(path = "/remove/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
