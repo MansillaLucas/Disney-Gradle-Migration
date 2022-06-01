@@ -21,6 +21,6 @@ public interface AudioVisualRepository extends JpaRepository<AudioVisual, Intege
 
     @Query(value = "SELECT *, 0 as clazz_ FROM audiovisual av " +
             "JOIN serie s ON av.id =s.serie_id WHERE av.fk_genero= :idGenero ", nativeQuery = true)
-    List<AudioVisual> findByGeneroId(Integer idGenero);
+    List<AudioVisual> findByGeneroIdSerie(Integer idGenero);
 
 }
