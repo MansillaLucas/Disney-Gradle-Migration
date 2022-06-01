@@ -185,26 +185,48 @@ public class SerieServiceImpl implements SerieService {
     }
 
 
-    @Override
+ /*  @Override
+     public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
+         try {
+             if (titulo != null) {
+              List<AudioVisual> listaAv = serieRepository.findByTituloSerie(titulo);
+              return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+
+                // return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
+             } else if (idGenero != null) {
+                 return serieRepository.findByGeneroId(idGenero).stream().filter(Serie.class::isInstance)
+                         .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
+                         .collect(Collectors.toList());
+             }else{
+                 return null;
+             }
+         } catch (Exception e) {
+             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+         }
+     }*/
+     @Override
     public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
         try {
             if (titulo != null) {
-             List<AudioVisual> listaAv = serieRepository.findByTituloSerie(titulo);
-             return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+                List<AudioVisual> listaAv = serieRepository.findByTituloSerie(titulo);
+                if (order == null || order.equalsIgnoreCase("asc")) {
 
-               // return mm.listSerieToResponseDTO(serieRepository.findByTituloSerie(titulo));
+                    return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+
+                } else{
+
+                    return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion).reversed()).collect(Collectors.toList()));
+                }
             } else if (idGenero != null) {
-                return serieRepository.findByGeneroId(idGenero).stream().filter(Serie.class::isInstance)
-                        .map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual))
-                        .collect(Collectors.toList());
+
+                return mm.listSerieToResponseDTO(serieRepository.findByGeneroId(idGenero));
             }else{
-                return null;
+                return mm.listSerieToResponseDTO(serieRepository.findByGeneroId(idGenero));
+
             }
         } catch (Exception e) {
             throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
-}
-//return movieRepository.findAll(Sort.by(Sort.Direction.ASC, "releaseDate"));
-//List<Employee> employeesList = Arrays.asList(employees);
-//    employees.sort(Comparator.comparing(Employee::getAge));
+   }
+
