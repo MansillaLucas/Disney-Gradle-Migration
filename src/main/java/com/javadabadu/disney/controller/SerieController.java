@@ -5,7 +5,6 @@ import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
-import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.SerieService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +47,9 @@ public class SerieController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
-       return ResponseEntity.created(URI.create(request.getRequestURI()
-                    + serieService.lastValueId())).body("Se creo un registro");
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
+        return ResponseEntity.created(URI.create(request.getRequestURI()
+                + serieService.lastValueId())).body("Se creo un registro");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,8 +60,8 @@ public class SerieController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
-                                    @RequestBody Map<String, Object> propiedades,
-                                    HttpServletRequest request) throws ExceptionBBDD {
+                                                                @RequestBody Map<String, Object> propiedades,
+                                                                HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.updatePartial(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request)));
 

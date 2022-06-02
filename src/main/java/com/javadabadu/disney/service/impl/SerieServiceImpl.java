@@ -28,6 +28,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
+import static com.javadabadu.disney.util.MessageConstants.ID_NOT_FOUND;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -50,7 +52,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return serieRepository.findAll().stream().filter(Serie.class::isInstance).map(audioVisual -> mm.serieToResponseDTO((Serie) audioVisual)).collect(Collectors.toList());
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -71,7 +73,7 @@ public class SerieServiceImpl implements SerieService {
         if (serieRepository.lastValueId() >= 1) {
             return serieRepository.lastValueId();
         }
-        throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+        throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -86,7 +88,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return linkTo(methodOn(SerieController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -95,7 +97,7 @@ public class SerieServiceImpl implements SerieService {
         try {
             return linkTo(methodOn(SerieController.class).findAll(request)).withRel("Series");
         } catch (ExceptionBBDD e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -109,7 +111,7 @@ public class SerieServiceImpl implements SerieService {
             }
 
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -119,7 +121,7 @@ public class SerieServiceImpl implements SerieService {
     }
 
     public Serie findSerie(Integer id) throws ExceptionBBDD {
-        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        AudioVisual av = serieRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
 
         if (av instanceof Serie) {
             return (Serie) av;
@@ -175,8 +177,8 @@ public class SerieServiceImpl implements SerieService {
     public AudioVisualResponseDTO removePersonaje(Integer idSerie, List<Integer> personajesToDelete) throws ExceptionBBDD {
         Serie serie = findSerie(idSerie);
 
-        List<Personaje> personajeList = serie.getPersonajes(),
-                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
+        List<Personaje> personajeList = serie.getPersonajes();
+        List<Personaje> personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
 
         if (!personajesDeleted.isEmpty()) {
 
