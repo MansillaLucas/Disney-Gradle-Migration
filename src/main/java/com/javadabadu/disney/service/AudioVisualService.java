@@ -2,7 +2,6 @@ package com.javadabadu.disney.service;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
-import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 
 import java.util.List;
 
