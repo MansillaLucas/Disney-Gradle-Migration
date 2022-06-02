@@ -184,7 +184,7 @@ public class SerieServiceImpl implements SerieService {
         }
     }
 
-    @Override
+    /*@Override
     public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
 
         if (titulo != null) {
@@ -210,6 +210,29 @@ public class SerieServiceImpl implements SerieService {
             }
         }
         throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+    }*/
+    @Override
+    public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
+
+        if (titulo != null) {
+            List<AudioVisual> listaAv = serieRepository.findByTituloSerie(titulo);
+            return orderAudiovisual(listaAv,titulo,idGenero,order);
+
+        } else if (idGenero != null) {
+            List<AudioVisual> listaAv = serieRepository.findByGeneroIdSerie(idGenero);
+            return orderAudiovisual(listaAv,titulo,idGenero,order);
+        }
+        throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+    }
+    private  List<AudioVisualResponseDTO> orderAudiovisual(List<AudioVisual> listaAv, String titulo, Integer idGenero, String order) throws ExceptionBBDD{
+
+        if (listaAv.size() > 0 && (order == null || order.equalsIgnoreCase("asc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+        } else if (listaAv.size() > 0 && (order.equalsIgnoreCase("desc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion).reversed()).collect(Collectors.toList()));
+        } else {
+            throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+        }
     }
 }
 
