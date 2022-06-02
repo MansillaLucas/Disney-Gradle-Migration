@@ -36,8 +36,8 @@ public class AudioVisual {
     @JoinColumn(name = "fk_genero" ,nullable = false)
     private Genero genero;
 
-    //@Column(nullable = false)
-    //private boolean estado = true;
+    @Column(nullable = false)
+    private boolean estado = true;
 
     @ManyToMany
     @JoinTable(name = "personajes_por_audiovisual",
@@ -51,7 +51,7 @@ public class AudioVisual {
     }
 
     public void setPersonajes(List<Personaje> personajes) {
-        if (this.personajes.size() == 0) {
+        if (this.personajes.isEmpty()) {
             this.personajes = personajes;
         } else {
             for (Personaje personaje : personajes) {

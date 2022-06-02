@@ -9,6 +9,7 @@ import com.javadabadu.disney.models.entity.Personaje;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.PersonajeRepository;
 import com.javadabadu.disney.service.PersonajeService;
+import com.javadabadu.disney.util.MessageConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.Link;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -37,10 +39,9 @@ public class PersonajeServiceImpl implements PersonajeService {
     @Override
     public PersonajeResponseDTO save(Personaje personaje) throws ExceptionBBDD {
         try {
-            var l = personajeRepository.save(personaje);
             return mapperDTO.personajeToResponseDTO(personajeRepository.save(personaje));
         } catch (Exception ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -50,7 +51,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -70,7 +71,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             }
 
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -84,7 +85,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             }
 
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -95,7 +96,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         if (personajeRepository.lastValueId() >= 1) {
             return personajeRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -115,7 +116,7 @@ public class PersonajeServiceImpl implements PersonajeService {
                 return mapperDTO.listPersonajeToResponseDTO(personajeRepository.findAll());
             }
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -127,7 +128,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             personaje.setId(id);
             return save(personaje);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -145,7 +146,7 @@ public class PersonajeServiceImpl implements PersonajeService {
             Personaje searchedPersonaje2 = mapper.convertValue(searchedPersonajeMap, Personaje.class);
             return save(searchedPersonaje2);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -153,7 +154,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Personajes:");
         } catch (ExceptionBBDD ebd2) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -162,7 +163,7 @@ public class PersonajeServiceImpl implements PersonajeService {
         try {
             return linkTo(methodOn(PersonajeController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 

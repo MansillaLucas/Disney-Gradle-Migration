@@ -29,6 +29,7 @@ public class SerieController {
     @Autowired
     SerieService serieService;
 
+
     @GetMapping("/")
     public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTOList = serieService.findAll();
@@ -47,9 +48,9 @@ public class SerieController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
-       return ResponseEntity.created(URI.create(request.getRequestURI()
-                    + serieService.lastValueId())).body("Se creo un registro");
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
+        return ResponseEntity.created(URI.create(request.getRequestURI()
+                + serieService.lastValueId())).body("Se creo un registro");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,8 +61,8 @@ public class SerieController {
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
-                                    @RequestBody Map<String, Object> propiedades,
-                                    HttpServletRequest request) throws ExceptionBBDD {
+                                                                @RequestBody Map<String, Object> propiedades,
+                                                                HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.updatePartial(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request)));
 

@@ -4,8 +4,6 @@ import com.javadabadu.disney.models.entity.TipoPersonaje;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class PersonajeResponseCharacDTO  {
