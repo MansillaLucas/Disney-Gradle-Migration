@@ -23,9 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
@@ -195,4 +193,29 @@ public class SerieServiceImpl implements SerieService {
         }
     }
 
+    @Override
+    public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
+        List<AudioVisual> listaAv;
+
+        if (titulo != null) {
+            listaAv = serieRepository.findByTituloSerie(titulo);
+            return toOrderList(listaAv, order);
+
+        } else if (idGenero != null) {
+            listaAv = serieRepository.findByGeneroIdSerie(idGenero);
+            return toOrderList(listaAv, order);
+        }
+        throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+    }
+
+    private  List<AudioVisualResponseDTO> toOrderList(List<AudioVisual> listaAv, String order) throws ExceptionBBDD{
+
+        if (listaAv.size() > 0 && (order == null || order.equalsIgnoreCase("asc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+        } else if (listaAv.size() > 0 && (order.equalsIgnoreCase("desc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion).reversed()).collect(Collectors.toList()));
+        } else {
+            throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.javadabadu.disney.controller;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
+import com.javadabadu.disney.models.dto.response.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.service.SerieService;
@@ -84,5 +85,21 @@ public class SerieController {
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
+
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findAllFilter
+    (@RequestParam(value = "titulo", required = false) String titulo,
+     @RequestParam(value = "genero", required = false) Integer idGenero,
+     @RequestParam(value = "order", required = false) String order,
+     HttpServletRequest request) throws ExceptionBBDD {
+
+        List<AudioVisualResponseDTO> listSerieResponseDTO = serieService.filterAudiovisual(titulo,idGenero, order);
+        List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
+        for (AudioVisualResponseDTO serie : listSerieResponseDTO) {
+            series.add(EntityModel.of(serie, serieService.getSelfLink(serie.getId(), request)));
+        }
+        return ResponseEntity.ok().body(CollectionModel.of(series, serieService.getCollectionLink(request)));
     }
 }

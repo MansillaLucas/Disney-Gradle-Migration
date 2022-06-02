@@ -108,4 +108,11 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
         return modelMapper.map(peliculaRequestDTO, Pelicula.class);
     }
 
+    @Override
+    public List<AudioVisualResponseDTO> listSerieToResponseDTO(List<AudioVisual> listSerie) {
+         return listSerie.stream()
+                .map(this::audioVisualToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 }
