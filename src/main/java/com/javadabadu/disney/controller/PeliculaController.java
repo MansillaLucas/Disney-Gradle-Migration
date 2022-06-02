@@ -86,4 +86,19 @@ public class PeliculaController {
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findByFilter
+            (@RequestParam(value = "titulo", required = false) String titulo,
+             @RequestParam(value = "genero", required = false) Integer idGenero,
+             @RequestParam(value = "order", required = false) String order,
+             HttpServletRequest request) throws ExceptionBBDD {
+
+        List<AudioVisualResponseDTO> listPeliculaResponseDTO = peliculaService.filterAudiovisual(titulo, idGenero, order);
+        List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
+        for (AudioVisualResponseDTO serie : listPeliculaResponseDTO) {
+            series.add(EntityModel.of(serie, peliculaService.getSelfLink(serie.getId(), request)));
+        }
+        return ResponseEntity.ok().body(CollectionModel.of(series, peliculaService.getCollectionLink(request)));
+    }
+
 }
