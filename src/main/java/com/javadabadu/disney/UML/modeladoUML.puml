@@ -1,0 +1,54 @@
+@startuml
+Personaje "many" -- "many" AudioVisual
+Genero  "1" --> "many" AudioVisual
+Pelicula  --|> AudioVisual
+Serie     --|> AudioVisual
+ class Personaje {
+    - String nombre
+    - int edad
+    - String historia
+    - String imagen
+    - float peso
+    - TipoPersonaje tipo
+    - Boolean estado
+}
+
+ class Genero {
+     - String  nombre
+     - String imagen
+     - Boolean estado
+}
+
+ class Pelicula {
+    - String duracion
+    - CalificacionPelicula calificacion
+}
+class Serie{
+ - byte temporadas
+ - byte capitulos
+}
+
+
+class AudioVisual {
+    - String titulo
+    - String imagen
+    - LocalDate fechaCreacion
+    - Boolean estado
+}
+
+
+enum TipoPersonaje {
+    ANIMADO
+    REAL
+}
+
+enum CalificiacionPelicula {
+    UNO
+    DOS
+    TRES
+    CUATRO
+    CINCO
+}
+
+
+@enduml
