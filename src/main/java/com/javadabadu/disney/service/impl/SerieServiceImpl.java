@@ -23,7 +23,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
@@ -76,8 +79,8 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public SerieResponseDTO save(Serie entity) {
-        var l = serieRepository.save(entity);
-        return mm.serieToResponseDTO(l);
+        Serie save = serieRepository.save(entity);
+        return mm.serieToResponseDTO(save);
     }
 
     @Override
