@@ -4,12 +4,14 @@ import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
@@ -26,6 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+
     public ResponseEntity<ResponseInfoDTO> methodNotSupportedException(HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ResponseInfoDTO("Método no soportado para el path correspondiente", request.getRequestURI(), HttpStatus.METHOD_NOT_ALLOWED.value()));
     }
@@ -37,5 +40,14 @@ public class GlobalExceptionHandler {
                 .body(new ResponseInfoDTO(e.getMessage(), request.getRequestURI(), e.getStatusCode().value()));
     }
 
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<ResponseInfoDTO> AuthException(HttpServletRequest request, AuthenticationException authException) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(authException.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ResponseInfoDTO> AccessDeniedException(HttpServletRequest request, AccessDeniedException accesExc) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(accesExc.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
+    }
 
 }

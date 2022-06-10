@@ -38,7 +38,7 @@ public class GeneroServiceImpl implements GeneroService {
     @Override
     public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
         try {
-            return mapperDTO.generoToResponseDTO(genero);
+            return mapperDTO.generoToResponseDTO(generoRepository.save(genero));
         } catch (Exception ebd) {
             throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }

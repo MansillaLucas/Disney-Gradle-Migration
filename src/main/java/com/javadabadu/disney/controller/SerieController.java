@@ -3,7 +3,6 @@ package com.javadabadu.disney.controller;
 import com.javadabadu.disney.exception.ExceptionBBDD;
 import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
-import com.javadabadu.disney.models.dto.response.PersonajeResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
 import com.javadabadu.disney.service.SerieService;
@@ -14,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +31,7 @@ public class SerieController {
 
 
     @GetMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<CollectionModel<EntityModel<SerieResponseDTO>>> findAll(HttpServletRequest request) throws ExceptionBBDD {
         List<SerieResponseDTO> serieResponseDTOList = serieService.findAll();
         List<EntityModel<SerieResponseDTO>> entityModelList = new ArrayList<>();
@@ -41,6 +42,7 @@ public class SerieController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> findById(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.findById(id);
         return ResponseEntity.ok().body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request),
@@ -48,18 +50,21 @@ public class SerieController {
     }
 
     @PostMapping("/")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
         return ResponseEntity.created(URI.create(request.getRequestURI()
                 + serieService.lastValueId())).body("Se creo un registro");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> crear(@RequestBody SerieRequestDTO serieRequestDTO, @PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.getPersistenceEntity(serieRequestDTO, id);
         return ResponseEntity.ok().body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request), serieService.getCollectionLink(request)));
     }
 
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
                                                                 @RequestBody Map<String, Object> propiedades,
                                                                 HttpServletRequest request) throws ExceptionBBDD {
@@ -69,6 +74,7 @@ public class SerieController {
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<ResponseInfoDTO>> delete(@PathVariable Integer id, HttpServletRequest request) throws ExceptionBBDD {
         String body = serieService.softDelete(serieService.findById(id).getId());
         ResponseInfoDTO response = new ResponseInfoDTO(body, request.getRequestURI(), HttpStatus.OK.value());
@@ -76,12 +82,14 @@ public class SerieController {
     }
 
     @PatchMapping(path = "/join/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
 
     @PatchMapping(path = "/remove/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
@@ -89,13 +97,14 @@ public class SerieController {
 
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findAllFilter
-    (@RequestParam(value = "titulo", required = false) String titulo,
-     @RequestParam(value = "genero", required = false) Integer idGenero,
-     @RequestParam(value = "order", required = false) String order,
-     HttpServletRequest request) throws ExceptionBBDD {
+            (@RequestParam(value = "titulo", required = false) String titulo,
+             @RequestParam(value = "genero", required = false) Integer idGenero,
+             @RequestParam(value = "order", required = false) String order,
+             HttpServletRequest request) throws ExceptionBBDD {
 
-        List<AudioVisualResponseDTO> listSerieResponseDTO = serieService.filterAudiovisual(titulo,idGenero, order);
+        List<AudioVisualResponseDTO> listSerieResponseDTO = serieService.filterAudiovisual(titulo, idGenero, order);
         List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
         for (AudioVisualResponseDTO serie : listSerieResponseDTO) {
             series.add(EntityModel.of(serie, serieService.getSelfLink(serie.getId(), request)));
