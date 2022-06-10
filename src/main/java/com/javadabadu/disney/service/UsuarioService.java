@@ -23,6 +23,8 @@ public interface UsuarioService extends BaseServiceRead<UsuarioResponseDTO, Inte
 
     Integer getUserIdByUsername(String username);
 
+    Usuario findByUsername (String username);
+
     void generateRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, AuthenticationException;
 
     Link getSelfLink(Integer id, HttpServletRequest request) throws ExceptionBBDD;

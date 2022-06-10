@@ -23,11 +23,10 @@ public class Usuario {
     private String password;
 
     @Column(nullable = false)
-    private boolean estado;
+    private boolean estado = true;
 
     @ManyToOne
     @JoinColumn(name = "fk_rol", nullable = false)
     private Rol rol;
-
 
 }

@@ -82,12 +82,14 @@ public class SerieController {
     }
 
     @PatchMapping(path = "/join/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.joinPersonajes(id, idPersonajes);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
     }
 
     @PatchMapping(path = "/remove/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
@@ -95,6 +97,7 @@ public class SerieController {
 
 
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findAllFilter
             (@RequestParam(value = "titulo", required = false) String titulo,
              @RequestParam(value = "genero", required = false) Integer idGenero,

@@ -25,7 +25,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -41,7 +40,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
-@Transactional
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Autowired
@@ -150,9 +148,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             UsuarioResponseDTO usuarioResponseDTO = findById(id);
 
             Map<String, Object> searchedUsuarioMap = mapper.convertValue(usuarioResponseDTO, Map.class);
+
             propiedades.forEach((k, v) -> {
                 if (searchedUsuarioMap.containsKey(k) && !k.equals("username")) {
-                    searchedUsuarioMap.replace(k, searchedUsuarioMap.get(k), v);
+                    String newPassword = passwordEncoder.encode((String) v);
+                    searchedUsuarioMap.replace(k, searchedUsuarioMap.get(k), newPassword);
                 }
             });
 
@@ -167,6 +167,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public Integer getUserIdByUsername(String username) {
         Usuario user = usuarioRepository.findByUsername(username);
         return user.getId();
+    }
+
+    @Override
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUsername(username);
     }
 
     @Override

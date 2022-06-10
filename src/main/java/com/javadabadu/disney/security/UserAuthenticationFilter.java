@@ -2,6 +2,7 @@ package com.javadabadu.disney.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,8 +28,8 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
         this.authenticationManager = authenticationManager;
     }
 
+    @SneakyThrows
     @Override
-    //metodo que controla que la autenticacion sea correcta, si da ok, pasa al siguiente
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
