@@ -15,6 +15,7 @@ import com.javadabadu.disney.models.mapped.ModelMapperDTOImp;
 import com.javadabadu.disney.repository.RolRepository;
 import com.javadabadu.disney.repository.UsuarioRepository;
 import com.javadabadu.disney.service.UsuarioService;
+import com.javadabadu.disney.util.EnvioEmails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -54,12 +55,14 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Autowired
     private ModelMapperDTOImp mapperDTO;
 
+    @Autowired
+    private EnvioEmails emailBienvenida;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario searchedUsuario = usuarioRepository.findByUsername(username);
 
-        if (searchedUsuario == null) {
-            throw new UsernameNotFoundException("Usuario no encontrado en la base de datos");
+        if (searchedUsuario == null || !searchedUsuario.isEstado()) {
+            throw new UsernameNotFoundException("Usuario no encontrado o dado de baja en la base de datos");
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -74,7 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public UsuarioResponseDTO save(Usuario user) throws AuthenticationException, ExceptionBBDD {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        if (request.getHeader(AUTHORIZATION) == null) {
+     if (request.getHeader(AUTHORIZATION) == null) {
             if (user.getRol().getId() == 1) {
                 throw new AuthenticationException("No tienes permisos para crear un ADMIN");
             }
@@ -87,7 +90,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            return mapperDTO.usuarioToUsuarioDTO(usuarioRepository.save(user));
+            UsuarioResponseDTO usuarioDTO = mapperDTO.usuarioToUsuarioDTO(usuarioRepository.save(user));
+            emailBienvenida.send(usuarioDTO.getUsername(),"Usuario "+ usuarioDTO.getUsername());
+            return usuarioDTO;
         } catch (Exception ebd) {
             throw new ExceptionBBDD("Error en la transacción contacte con su ADM", HttpStatus.BAD_REQUEST);
         }

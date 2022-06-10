@@ -21,11 +21,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("api/v1")
 public class MainController {
 @Autowired
-    EnvioEmails emails;
+
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Link>> mainMethod(HttpServletRequest request) throws ExceptionBBDD {
-        emails.send("msgonzalez@gylgroup.com","Sofia");
-
         Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel();
         Link generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:");
         Link characterLink = linkTo(methodOn(PersonajeController.class).findAll(request)).withRel("Character:");

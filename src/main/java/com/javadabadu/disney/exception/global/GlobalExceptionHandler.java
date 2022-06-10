@@ -5,6 +5,7 @@ import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,13 +42,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<ResponseInfoDTO> AuthException(HttpServletRequest request, AuthenticationException authException) {
+    public ResponseEntity<ResponseInfoDTO> authException(HttpServletRequest request, AuthenticationException authException) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(authException.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
     }
 
     @ExceptionHandler({AccessDeniedException.class})
-    public ResponseEntity<ResponseInfoDTO> AccessDeniedException(HttpServletRequest request, AccessDeniedException accesExc) {
+    public ResponseEntity<ResponseInfoDTO> accessDeniedException(HttpServletRequest request, AccessDeniedException accesExc) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ResponseInfoDTO(accesExc.getMessage(), request.getRequestURI(), HttpStatus.FORBIDDEN.value()));
     }
 
+    @ExceptionHandler({UsernameNotFoundException.class})
+    public ResponseEntity<ResponseInfoDTO> usernameNotFoundException(HttpServletRequest request, UsernameNotFoundException userNotFoundExc) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseInfoDTO(userNotFoundExc.getMessage(), request.getRequestURI(), HttpStatus.NOT_FOUND.value()));
+    }
 }
