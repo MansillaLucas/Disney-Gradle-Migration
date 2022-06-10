@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
+import static com.javadabadu.disney.util.MessageConstants.ID_NOT_FOUND;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -36,9 +38,9 @@ public class GeneroServiceImpl implements GeneroService {
     @Override
     public GeneroResponseDTO save(Genero genero) throws ExceptionBBDD {
         try {
-            return mapperDTO.generoToResponseDTO(genero);
+            return mapperDTO.generoToResponseDTO(generoRepository.save(genero));
         } catch (Exception ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -47,13 +49,13 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return mapperDTO.listGeneroToResponseDTO(generoRepository.findAll());
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
     public GeneroResponseDTO findById(Integer id) throws ExceptionBBDD {
-        Genero genero = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        Genero genero = generoRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
         return mapperDTO.generoToResponseDTO(genero);
     }
 
@@ -62,7 +64,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return generoRepository.existsById(id);
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -71,7 +73,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return generoRepository.lastValueId();
         } catch (Exception e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -80,7 +82,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return linkTo(methodOn(GeneroController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -89,7 +91,7 @@ public class GeneroServiceImpl implements GeneroService {
         try {
             return linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Generos:");
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -102,7 +104,7 @@ public class GeneroServiceImpl implements GeneroService {
                 throw new ExceptionBBDD("");
             }
         } catch (ExceptionBBDD e) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -115,7 +117,7 @@ public class GeneroServiceImpl implements GeneroService {
             genero.setId(id);
             return save(genero);
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -132,7 +134,7 @@ public class GeneroServiceImpl implements GeneroService {
             });
             return save(mapper.convertValue(searchedGeneroMap, Genero.class));
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 }

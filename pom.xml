@@ -10,11 +10,11 @@
 	</parent>
 	<groupId>com.javadabadu</groupId>
 	<artifactId>disney</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>disney</name>
 	<description>api mundo disney</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

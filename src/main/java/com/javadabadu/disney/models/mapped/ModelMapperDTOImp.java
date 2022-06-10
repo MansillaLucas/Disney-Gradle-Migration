@@ -139,4 +139,11 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
 
     }
 
+    @Override
+    public List<AudioVisualResponseDTO> listSerieToResponseDTO(List<AudioVisual> listSerie) {
+         return listSerie.stream()
+                .map(this::audioVisualToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -60,4 +60,6 @@ public interface ModelMapperDTO {
 
     Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO);
 
+    List<AudioVisualResponseDTO> listSerieToResponseDTO(List<AudioVisual> listSerie);
+
 }

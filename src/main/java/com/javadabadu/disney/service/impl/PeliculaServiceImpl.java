@@ -7,10 +7,7 @@ import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.request.PeliculaRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.PeliculaResponseDTO;
-import com.javadabadu.disney.models.entity.AudioVisual;
-import com.javadabadu.disney.models.entity.Genero;
-import com.javadabadu.disney.models.entity.Pelicula;
-import com.javadabadu.disney.models.entity.Personaje;
+import com.javadabadu.disney.models.entity.*;
 import com.javadabadu.disney.models.mapped.ModelMapperDTO;
 import com.javadabadu.disney.repository.GeneroRepository;
 import com.javadabadu.disney.repository.PeliculaRepository;
@@ -23,11 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.javadabadu.disney.util.MessageConstants.ADMIN_ERROR;
+import static com.javadabadu.disney.util.MessageConstants.ID_NOT_FOUND;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -71,7 +68,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         if (peliculaRepository.lastValueId() >= 1) {
             return peliculaRepository.lastValueId();
         } else {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -92,7 +89,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         try {
             return linkTo(methodOn(PeliculaController.class).findById(id, request)).withSelfRel();
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -101,7 +98,7 @@ public class PeliculaServiceImpl implements PeliculaService {
         try {
             return linkTo(methodOn(PeliculaController.class).findAll(request)).withRel("Peliculas:");
         } catch (ExceptionBBDD ebd2) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -111,10 +108,10 @@ public class PeliculaServiceImpl implements PeliculaService {
             if (peliculaRepository.softDelete(id)) {
                 return message.getMessage("delete.success", null, Locale.US);
             } else {
-                throw new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
+                throw new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND);
             }
         } catch (ExceptionBBDD ebd) {
-            throw new ExceptionBBDD(message.getMessage("error.admin", null, Locale.US), HttpStatus.BAD_REQUEST);
+            throw new ExceptionBBDD(message.getMessage(ADMIN_ERROR, null, Locale.US), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -135,7 +132,7 @@ public class PeliculaServiceImpl implements PeliculaService {
     }
 
     public Pelicula findPelicula(Integer id) throws ExceptionBBDD {
-        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage("id.not.found", new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
+        AudioVisual av = peliculaRepository.findById(id).orElseThrow(() -> new ExceptionBBDD(message.getMessage(ID_NOT_FOUND, new String[]{Integer.toString(id)}, Locale.US), HttpStatus.NOT_FOUND));
         if (av instanceof Pelicula) {
             return (Pelicula) av;
         }
@@ -178,12 +175,12 @@ public class PeliculaServiceImpl implements PeliculaService {
     public AudioVisualResponseDTO removePersonaje(Integer idPelicula, List<Integer> personajesToDelete) throws ExceptionBBDD {
         Pelicula pelicula = findPelicula(idPelicula);
 
-        List<Personaje> personajeList = pelicula.getPersonajes(),
-                personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
+        List<Personaje> personajeList = pelicula.getPersonajes();
+        List<Personaje> personajesDeleted = personajeRepository.getByIdIn(personajesToDelete);
 
         if (!personajesDeleted.isEmpty()) {
 
-            if (personajeList.removeAll(personajesDeleted)){ ;
+            if (personajeList.removeAll(personajesDeleted)){
 
             pelicula.setPersonajes(personajeList);
 
@@ -195,4 +192,28 @@ public class PeliculaServiceImpl implements PeliculaService {
             throw new ExceptionBBDD("No se encontraron los personajes en la BBDD", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public List<AudioVisualResponseDTO> filterAudiovisual(String titulo, Integer idGenero, String order) throws ExceptionBBDD {
+        List<AudioVisual> listaAv;
+        if (titulo != null) {
+            listaAv = peliculaRepository.findByTituloPelicula(titulo);
+            return toOrderList(listaAv, order);
+        } else if (idGenero != null) {
+            listaAv = peliculaRepository.findByGeneroIdPelicula(idGenero);
+            return toOrderList(listaAv, order);
+        }
+        throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+    }
+
+    private List<AudioVisualResponseDTO> toOrderList(List<AudioVisual> listaAv, String order) throws ExceptionBBDD{
+        if (listaAv.size() > 0 && (order == null || order.equalsIgnoreCase("asc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion)).collect(Collectors.toList()));
+        } else if (listaAv.size() > 0 && (order.equalsIgnoreCase("desc"))) {
+            return mm.listSerieToResponseDTO(listaAv.stream().sorted(Comparator.comparing(AudioVisual::getFechaCreacion).reversed()).collect(Collectors.toList()));
+        } else {
+            throw new ExceptionBBDD(message.getMessage("filter.av.not.found", null, Locale.US), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

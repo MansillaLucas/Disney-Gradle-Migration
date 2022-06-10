@@ -5,7 +5,6 @@ import com.javadabadu.disney.models.dto.request.SerieRequestDTO;
 import com.javadabadu.disney.models.dto.response.AudioVisualResponseDTO;
 import com.javadabadu.disney.models.dto.response.ResponseInfoDTO;
 import com.javadabadu.disney.models.dto.response.SerieResponseDTO;
-import com.javadabadu.disney.service.AudioVisualService;
 import com.javadabadu.disney.service.SerieService;
 import com.javadabadu.disney.util.Uri;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +51,9 @@ public class SerieController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD{
-       return ResponseEntity.created(URI.create(request.getRequestURI()
-                    + serieService.lastValueId())).body("Se creo un registro");
+    public ResponseEntity<String> lastId(HttpServletRequest request) throws ExceptionBBDD {
+        return ResponseEntity.created(URI.create(request.getRequestURI()
+                + serieService.lastValueId())).body("Se creo un registro");
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,8 +66,8 @@ public class SerieController {
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EntityModel<SerieResponseDTO>> update(@PathVariable Integer id,
-                                    @RequestBody Map<String, Object> propiedades,
-                                    HttpServletRequest request) throws ExceptionBBDD {
+                                                                @RequestBody Map<String, Object> propiedades,
+                                                                HttpServletRequest request) throws ExceptionBBDD {
         SerieResponseDTO serieDTO = serieService.updatePartial(id, propiedades);
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(serieDTO, serieService.getSelfLink(id, request)));
 
@@ -92,5 +91,21 @@ public class SerieController {
     public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
         AudioVisualResponseDTO response = serieService.removePersonaje(id, personajesToDelete);
         return ResponseEntity.ok().body(EntityModel.of(response, serieService.getCollectionLink(request)));
+    }
+
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findAllFilter
+            (@RequestParam(value = "titulo", required = false) String titulo,
+             @RequestParam(value = "genero", required = false) Integer idGenero,
+             @RequestParam(value = "order", required = false) String order,
+             HttpServletRequest request) throws ExceptionBBDD {
+
+        List<AudioVisualResponseDTO> listSerieResponseDTO = serieService.filterAudiovisual(titulo, idGenero, order);
+        List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
+        for (AudioVisualResponseDTO serie : listSerieResponseDTO) {
+            series.add(EntityModel.of(serie, serieService.getSelfLink(serie.getId(), request)));
+        }
+        return ResponseEntity.ok().body(CollectionModel.of(series, serieService.getCollectionLink(request)));
     }
 }

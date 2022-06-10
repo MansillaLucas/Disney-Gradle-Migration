@@ -84,22 +84,34 @@ public class PeliculaController {
         return ResponseEntity.status(HttpStatus.OK).body(EntityModel.of(peliculaService.updatePartial(id, propiedades), peliculaService.getSelfLink(id, request)));
     }
 
-    @PatchMapping(path = "/join/{id}")
+    @PatchMapping(path = "/join/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes
-            (@PathVariable Integer id, @RequestBody List<Integer> idPersonajes, HttpServletRequest request) throws
-            ExceptionBBDD {
-        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, idPersonajes);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> joinPersonajes(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToJoin, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.joinPersonajes(id, personajesToJoin.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
     }
 
-    @PatchMapping(path = "/remove/{id}")
+    @PatchMapping(path = "/remove/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje
-            (@PathVariable Integer id, @RequestBody List<Integer> personajesToDelete, HttpServletRequest request) throws
-            ExceptionBBDD {
-        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete);
+    public ResponseEntity<EntityModel<AudioVisualResponseDTO>> removePersonaje(@PathVariable Integer id, @RequestBody Map<String, List<Integer>> personajesToDelete, HttpServletRequest request) throws ExceptionBBDD {
+        AudioVisualResponseDTO response = peliculaService.removePersonaje(id, personajesToDelete.get("personajesId"));
         return ResponseEntity.ok().body(EntityModel.of(response, peliculaService.getCollectionLink(request)));
+    }
+
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity<CollectionModel<EntityModel<AudioVisualResponseDTO>>> findByFilter
+            (@RequestParam(value = "titulo", required = false) String titulo,
+             @RequestParam(value = "genero", required = false) Integer idGenero,
+             @RequestParam(value = "order", required = false) String order,
+             HttpServletRequest request) throws ExceptionBBDD {
+
+        List<AudioVisualResponseDTO> listPeliculaResponseDTO = peliculaService.filterAudiovisual(titulo, idGenero, order);
+        List<EntityModel<AudioVisualResponseDTO>> series = new ArrayList<>();
+        for (AudioVisualResponseDTO serie : listPeliculaResponseDTO) {
+            series.add(EntityModel.of(serie, peliculaService.getSelfLink(serie.getId(), request)));
+        }
+        return ResponseEntity.ok().body(CollectionModel.of(series, peliculaService.getCollectionLink(request)));
     }
 
 }
