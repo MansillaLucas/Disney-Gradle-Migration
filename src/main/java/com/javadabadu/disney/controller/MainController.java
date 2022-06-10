@@ -1,6 +1,8 @@
 package com.javadabadu.disney.controller;
 
 import com.javadabadu.disney.exception.ExceptionBBDD;
+import com.javadabadu.disney.util.EnvioEmails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Email;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -17,9 +20,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("api/v1")
 public class MainController {
-
+@Autowired
+    EnvioEmails emails;
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Link>> mainMethod(HttpServletRequest request) throws ExceptionBBDD {
+        emails.send("msgonzalez@gylgroup.com","Sofia");
 
         Link selfLink = linkTo(methodOn(MainController.class).mainMethod(request)).withSelfRel();
         Link generoLink = linkTo(methodOn(GeneroController.class).findAll(request)).withRel("Genero:");
@@ -29,4 +34,6 @@ public class MainController {
 
         return ResponseEntity.ok(EntityModel.of(selfLink, generoLink, characterLink, movieLink, serieLink));
     }
+
+
 }
