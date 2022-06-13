@@ -1,5 +1,7 @@
 package com.javadabadu.disney.models.mapped;
 
+import com.javadabadu.disney.models.dto.RolResponseDTO;
+import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
 import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
@@ -43,6 +45,18 @@ public interface ModelMapperDTO {
     PeliculaPatchDTO peliculaPatchDTO(Pelicula pelicula);
 
     Serie requestDtoToSerie(SerieRequestDTO serieRequestDTO);
+
+    List<UsuarioResponseDTO> listUsuarioToUsuarioDTO(List<Usuario> usuarioList);
+
+    UsuarioResponseDTO usuarioToUsuarioDTO(Usuario usuario);
+
+    Usuario usuarioDTOToUsuario(UsuarioResponseDTO usuarioResponseDTO);
+
+    RolResponseDTO rolToRolDTO(Rol rol);
+
+    Rol rolDTOtoRol(RolResponseDTO rolResponseDTO);
+
+    List<RolResponseDTO> listRolToRolDTO(List<Rol> rolList);
 
     Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO);
 
