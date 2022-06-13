@@ -11,4 +11,5 @@ public class Uri {
     public static final String PELICULAS = PATH_BASE + "/movies";
     public static final String PERSONAJES = PATH_BASE + "/characters";
     public static final String SERIES = PATH_BASE + "/series";
+    public final static String AUTENTICACION = PATH_BASE + "/auth";
 }

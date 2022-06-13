@@ -1,5 +1,7 @@
 package com.javadabadu.disney.models.mapped;
 
+import com.javadabadu.disney.models.dto.RolResponseDTO;
+import com.javadabadu.disney.models.dto.UsuarioResponseDTO;
 import com.javadabadu.disney.models.dto.patch.PeliculaPatchDTO;
 import com.javadabadu.disney.models.dto.patch.SerieDtoPatch;
 import com.javadabadu.disney.models.dto.request.GeneroRequestDTO;
@@ -74,13 +76,14 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
         return modelMapper.map(audiovisualDTO, AudioVisual.class);
     }
 
-     @Override
+    @Override
     public SerieResponseDTO serieToResponseDTO(Serie serie) {
-         return modelMapper.map(serie, SerieResponseDTO.class);
+        return modelMapper.map(serie, SerieResponseDTO.class);
     }
+
     @Override
     public Serie responseDtoToSerie(SerieResponseDTO serieResponseDTO) {
-       return modelMapper.map(serieResponseDTO, Serie.class);
+        return modelMapper.map(serieResponseDTO, Serie.class);
     }
 
     @Override
@@ -103,9 +106,37 @@ public class ModelMapperDTOImp implements ModelMapperDTO {
         return modelMapper.map(serieRequestDTO, Serie.class);
     }
 
-    @Override
+    public Usuario usuarioDTOToUsuario(UsuarioResponseDTO usuarioResponseDTO) {
+        return modelMapper.map(usuarioResponseDTO, Usuario.class);
+    }
+
+    public UsuarioResponseDTO usuarioToUsuarioDTO(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioResponseDTO.class);
+    }
+
+    public List<UsuarioResponseDTO> listUsuarioToUsuarioDTO(List<Usuario> usuarioList) {
+        return usuarioList.stream()
+                .map(this::usuarioToUsuarioDTO)
+                .collect(Collectors.toList());
+    }
+
+    public RolResponseDTO rolToRolDTO(Rol rol) {
+        return modelMapper.map(rol, RolResponseDTO.class);
+    }
+
+    public Rol rolDTOtoRol(RolResponseDTO rolResponseDTO) {
+        return modelMapper.map(rolResponseDTO, Rol.class);
+    }
+
+    public List<RolResponseDTO> listRolToRolDTO(List<Rol> rolList) {
+        return rolList.stream()
+                .map(this::rolToRolDTO)
+                .collect(Collectors.toList());
+    }
+
     public Pelicula requestDtoToPelicula(PeliculaRequestDTO peliculaRequestDTO) {
         return modelMapper.map(peliculaRequestDTO, Pelicula.class);
+
     }
 
     @Override
